@@ -303,6 +303,51 @@ a.row:hover{
     transform: none;
 }
 
+/* Underrated Section */
+.section-header {
+    margin-top: 40px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.section-header h2 {
+    font-family: 'Titan One', cursive;
+    font-size: 2.2rem;
+    color: white;
+    text-shadow: 3px 3px 0 #222;
+    letter-spacing: 2px;
+}
+
+.section-header p {
+    color: white;
+    font-size: 1rem;
+    text-shadow: 1px 1px 0 #222;
+    margin-bottom: 15px;
+}
+
+.leaderboard.underrated {
+    background: #f3e8ff;
+    border-color: #7c3aed;
+    box-shadow: 0 8px 0 #7c3aed;
+}
+
+.leaderboard.underrated a.row {
+    background: #ede9fe;
+    border-color: #7c3aed;
+}
+
+.leaderboard.underrated a.row:hover {
+    box-shadow: 0 4px 0 #7c3aed;
+}
+
+.leaderboard.underrated .bar {
+    background: #a78bfa;
+}
+
+.leaderboard.underrated .bar-bg {
+    border-color: #7c3aed;
+}
+
 @media (max-width: 768px) {
     .podium { flex-wrap: wrap; }
     .podium-card { width: 100px; font-size: 16px; }
@@ -345,25 +390,23 @@ a.row:hover{
 
     <input type="text" id="search" class="search" placeholder="Search Blooktubers...">
 
-    <div class="podium" id="podium">
-        <!-- Rendered by JS -->
-    </div>
+    <div class="podium" id="podium"></div>
 
     <div class="leaderboard" id="leaderboard">
         <div style="text-align:center; padding:30px; font-size:18px;">Loading live counts... 🔄</div>
     </div>
+
+    <div class="section-header" id="underratedHeader" style="display:none;">
+        <h2>💎 Underrated</h2>
+        <p>Blooktubers with under 100 subscribers</p>
+    </div>
+
+    <div class="leaderboard underrated" id="underratedBoard" style="display:none;"></div>
 </div>
 
 <script>
-// ============================================================
-// CONFIG — Your YouTube Data API v3 Key
-// ============================================================
 const API_KEY = "AIzaSyBUj3qxFbI2-IWeRU1EEa4w_ChFoZgSjUE";
 
-// ============================================================
-// Creator list: [name, youtubeHandle_or_channelId, url]
-// Use channel IDs (UC...) where we know them, handles otherwise
-// ============================================================
 const creatorList = [
     ["Waymore",         "WaymoreYT",              "https://www.youtube.com/@WaymoreYT"],
     ["LeonBlox",        "LeonBloxOfficial",        "https://www.youtube.com/@LeonBloxOfficial"],
@@ -403,7 +446,6 @@ const creatorList = [
     ["Blooket Gael",    "UCOhGtij6ftod4pJ6mhU-skQ","https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"]
 ];
 
-// Fallback sub counts (used if API fails)
 const fallbackSubs = {
     "Waymore": 150000, "LeonBlox": 79400, "iBlooket": 35200,
     "BIL": 31200, "Blooket": 31300, "Mega Bot": 27100,
@@ -422,22 +464,14 @@ const fallbackSubs = {
 let creators = [];
 let lastUpdated = null;
 
-// ============================================================
-// Format numbers: 150000 -> "150K", 1234 -> "1.2K", 999 -> "999"
-// ============================================================
 function formatSubs(num) {
     if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
     if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
     return num.toLocaleString();
 }
 
-// ============================================================
-// Resolve a handle to a channel ID using the YouTube API
-// ============================================================
 async function resolveHandle(handle) {
-    // Already a channel ID
     if (handle.startsWith("UC")) return handle;
-
     const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${encodeURIComponent(handle)}&key=${API_KEY}`;
     const res = await fetch(url);
     const data = await res.json();
@@ -445,15 +479,11 @@ async function resolveHandle(handle) {
     return null;
 }
 
-// ============================================================
-// Fetch sub counts for a batch of channel IDs (max 50 per call)
-// ============================================================
 async function fetchSubsBatch(channelIds) {
     const ids = channelIds.join(",");
     const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${ids}&key=${API_KEY}`;
     const res = await fetch(url);
     const data = await res.json();
-
     const map = {};
     if (data.items) {
         data.items.forEach(item => {
@@ -463,9 +493,6 @@ async function fetchSubsBatch(channelIds) {
     return map;
 }
 
-// ============================================================
-// Main: resolve all handles, fetch all sub counts, render
-// ============================================================
 async function fetchAllSubs() {
     const dot = document.getElementById("liveDot");
     const text = document.getElementById("liveText");
@@ -476,13 +503,11 @@ async function fetchAllSubs() {
     btn.disabled = true;
 
     try {
-        // Step 1: Resolve all handles to channel IDs
         text.textContent = "Resolving channels... (1/2)";
         const resolvedIds = await Promise.all(
             creatorList.map(([name, handle]) => resolveHandle(handle))
         );
 
-        // Step 2: Batch fetch sub counts (chunks of 50)
         text.textContent = "Fetching subscriber counts... (2/2)";
         const allIds = resolvedIds.filter(Boolean);
         const subMap = {};
@@ -493,7 +518,6 @@ async function fetchAllSubs() {
             Object.assign(subMap, batch);
         }
 
-        // Step 3: Build creators array
         creators = creatorList.map(([name, handle, url], idx) => {
             const channelId = resolvedIds[idx];
             const subs = (channelId && subMap[channelId] !== undefined)
@@ -502,7 +526,6 @@ async function fetchAllSubs() {
             return { name, url, subs };
         });
 
-        // Step 4: Sort by subs descending & assign ranks
         creators.sort((a, b) => b.subs - a.subs);
         creators.forEach((c, i) => c.rank = i + 1);
 
@@ -512,8 +535,8 @@ async function fetchAllSubs() {
 
         renderPodium(creators);
         renderBoard(creators);
+        renderUnderrated(creators);
 
-        // Auto-refresh every 5 minutes
         setTimeout(fetchAllSubs, 5 * 60 * 1000);
 
     } catch (err) {
@@ -521,7 +544,6 @@ async function fetchAllSubs() {
         dot.className = "live-dot error";
         text.textContent = "⚠️ API error — showing last known counts";
 
-        // Fall back to static data
         creators = creatorList.map(([name, handle, url]) => ({
             name, url, subs: fallbackSubs[name] || 0
         }));
@@ -529,14 +551,12 @@ async function fetchAllSubs() {
         creators.forEach((c, i) => c.rank = i + 1);
         renderPodium(creators);
         renderBoard(creators);
+        renderUnderrated(creators);
     }
 
     btn.disabled = false;
 }
 
-// ============================================================
-// Render podium (top 3)
-// ============================================================
 function renderPodium(data) {
     if (data.length < 3) return;
     const podium = document.getElementById("podium");
@@ -554,21 +574,21 @@ function renderPodium(data) {
     `).join("");
 }
 
-// ============================================================
-// Render leaderboard rows
-// ============================================================
 function renderBoard(data) {
     const board = document.getElementById("leaderboard");
     board.innerHTML = "";
 
-    if (data.length === 0) {
+    // Only show creators with 100+ subs in the main board
+    const mainData = data.filter(c => c.subs >= 100);
+
+    if (mainData.length === 0) {
         board.innerHTML = "<div style='text-align:center; padding: 20px; font-size: 18px;'>No Blooktubers found! 😭</div>";
         return;
     }
 
     const maxSubs = creators[0]?.subs || 1;
 
-    data.forEach(creator => {
+    mainData.forEach(creator => {
         const percent = (creator.subs / maxSubs) * 100;
         const row = document.createElement("a");
         row.href = creator.url;
@@ -591,18 +611,50 @@ function renderBoard(data) {
     });
 }
 
-// ============================================================
-// Search
-// ============================================================
+function renderUnderrated(data) {
+    const header = document.getElementById("underratedHeader");
+    const board = document.getElementById("underratedBoard");
+
+    const underrated = data.filter(c => c.subs < 100);
+
+    if (underrated.length === 0) {
+        header.style.display = "none";
+        board.style.display = "none";
+        return;
+    }
+
+    header.style.display = "block";
+    board.style.display = "block";
+    board.innerHTML = "";
+
+    const maxSubs = underrated[0]?.subs || 1;
+
+    underrated.forEach(creator => {
+        const percent = (creator.subs / maxSubs) * 100;
+        const row = document.createElement("a");
+        row.href = creator.url;
+        row.target = "_blank";
+        row.className = "row";
+
+        row.innerHTML = `
+            <div class="rank">#${creator.rank}</div>
+            <div class="name">${creator.name}</div>
+            <div class="subs">${formatSubs(creator.subs)}</div>
+            <div class="bar-bg">
+                <div class="bar" style="width: ${percent}%"></div>
+            </div>
+        `;
+        board.appendChild(row);
+    });
+}
+
 document.getElementById("search").addEventListener("input", e => {
     const value = e.target.value.toLowerCase();
     const filtered = creators.filter(c => c.name.toLowerCase().includes(value));
     renderBoard(filtered);
+    renderUnderrated(filtered);
 });
 
-// ============================================================
-// Kick it off!
-// ============================================================
 fetchAllSubs();
 </script>
 
