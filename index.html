@@ -6,7 +6,6 @@
 <title>Blooktuber Leaderboard</title>
 
 <style>
-/* Import Nunito for numbers/subtitles and Titan One for Titles/Names */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
 
@@ -24,7 +23,6 @@ body{
     padding-bottom: 40px;
 }
 
-/* Checkerboard */
 body::before{
     content: "";
     position: fixed;
@@ -39,26 +37,24 @@ body::before{
     z-index: -2;
 }
 
-/* Falling blooks */
 .blook{
     position: fixed;
-    top: -150px; /* Starts above the screen */
+    top: -150px;
     opacity: .25;
     animation: fall linear infinite;
     pointer-events: none;
-    z-index: -1; /* Keeps them behind the main content */
+    z-index: -1;
 }
 
-/* The falling animation */
 @keyframes fall{
     from{ transform: translateY(0) rotate(0deg); }
-    to{ transform: translateY(120vh) rotate(360deg); } /* Falls past the bottom */
+    to{ transform: translateY(120vh) rotate(360deg); }
 }
 
 h1{
     text-align: center;
     color: white;
-    font-family: 'Titan One', cursive; 
+    font-family: 'Titan One', cursive;
     font-size: 3.5rem;
     margin-top: 25px;
     text-shadow: 4px 4px 0 #222, 8px 8px 12px rgba(0,0,0,.2);
@@ -70,8 +66,43 @@ h1{
     text-align: center;
     color: white;
     font-size: 1.2rem;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     text-shadow: 2px 2px 0 #222;
+}
+
+.live-status {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    color: white;
+    text-shadow: 1px 1px 0 #222;
+    min-height: 22px;
+}
+
+.live-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4ade80;
+    margin-right: 6px;
+    animation: pulse 1.5s infinite;
+    vertical-align: middle;
+}
+
+.live-dot.loading {
+    background: #fbbf24;
+    animation: pulse 0.7s infinite;
+}
+
+.live-dot.error {
+    background: #f87171;
+    animation: none;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
 }
 
 .container{
@@ -117,6 +148,7 @@ h1{
     font-size: 22px;
     padding-top: 15px;
     box-shadow: 0 8px 0 #333;
+    transition: 0.3s;
 }
 
 .podium-name {
@@ -125,11 +157,18 @@ h1{
     letter-spacing: 1px;
 }
 
-/* Link Styling for Podium */
+.podium-subs {
+    font-size: 20px;
+    font-weight: 900;
+}
+
 a.podium-link {
     text-decoration: none;
     color: inherit;
     transition: 0.2s;
+    display: block;
+    height: 100%;
+    padding-bottom: 15px;
 }
 
 a.podium-link:hover .podium-name {
@@ -139,7 +178,7 @@ a.podium-link:hover .podium-name {
 .first{
     background: gold;
     height: 220px;
-    order: 2; 
+    order: 2;
 }
 
 .second{
@@ -162,7 +201,6 @@ a.podium-link:hover .podium-name {
     box-shadow: 0 8px 0 #333;
 }
 
-/* Link styling for rows */
 a.row {
     display: flex;
     align-items: center;
@@ -216,7 +254,7 @@ a.row:hover{
 .bar{
     height: 100%;
     background: #4ade80;
-    transition: width 0.5s ease-out;
+    transition: width 0.8s ease-out;
 }
 
 .fastyjay{
@@ -225,10 +263,51 @@ a.row:hover{
     box-shadow: 0 0 15px gold;
 }
 
+/* Loading skeleton */
+.skeleton {
+    background: linear-gradient(90deg, #eee 25%, #ddd 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite;
+    border-radius: 8px;
+    height: 20px;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.refresh-btn {
+    display: block;
+    margin: 0 auto 20px auto;
+    padding: 10px 25px;
+    background: white;
+    border: 3px solid #333;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #333;
+    transition: 0.2s;
+}
+
+.refresh-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #333;
+}
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
 @media (max-width: 768px) {
     .podium { flex-wrap: wrap; }
     .podium-card { width: 100px; font-size: 16px; }
     .podium-name { font-size: 18px; }
+    .podium-subs { font-size: 14px; }
     .first { height: 180px; }
     .second { height: 140px; }
     .third { height: 120px; }
@@ -254,91 +333,232 @@ a.row:hover{
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/mouse.svg" alt="" aria-hidden="true" style="left:68%; width:60px; animation-duration:14s; animation-delay:-15s;">
 
 <h1>Blooktuber Tracker</h1>
-<div class="subtitle">Subscriber Counts Update Every Week!</div>
+<div class="subtitle">Live Subscriber Counts via YouTube API</div>
+
+<div class="live-status" id="liveStatus">
+    <span class="live-dot loading" id="liveDot"></span>
+    <span id="liveText">Fetching live counts...</span>
+</div>
 
 <div class="container">
+    <button class="refresh-btn" id="refreshBtn" onclick="fetchAllSubs()" disabled>🔄 Refresh Now</button>
 
     <input type="text" id="search" class="search" placeholder="Search Blooktubers...">
 
-    <div class="podium">
-        <div class="podium-card first">
-            <a href="https://www.youtube.com/@WaymoreYT" target="_blank" class="podium-link">
-                🥇<br><span class="podium-name">Waymore</span><br><br>150K
-            </a>
-        </div>
-        <div class="podium-card second">
-            <a href="https://www.youtube.com/@iBlooket" target="_blank" class="podium-link">
-                🥈<br><span class="podium-name">iBlooket</span><br><br>35.2K
-            </a>
-        </div>
-        <div class="podium-card third">
-            <a href="https://www.youtube.com/@BILBRB" target="_blank" class="podium-link">
-                🥉<br><span class="podium-name">BIL</span><br><br>31.2K
-            </a>
-        </div>
+    <div class="podium" id="podium">
+        <!-- Rendered by JS -->
     </div>
 
-    <div class="leaderboard" id="leaderboard"></div>
-
+    <div class="leaderboard" id="leaderboard">
+        <div style="text-align:center; padding:30px; font-size:18px;">Loading live counts... 🔄</div>
+    </div>
 </div>
 
 <script>
-const rawData = [
-    ["Waymore", 150000, "https://www.youtube.com/@WaymoreYT"],
-    ["iBlooket", 35200, "https://www.youtube.com/@iBlooket"],
-    ["BIL", 31200, "https://www.youtube.com/@BILBRB"],
-    ["Blooket", 31100, "https://www.youtube.com/@PlayBlooket"],
-    ["Mega Bot", 27100, "https://www.youtube.com/MATHBOARDOM"],
-    ["Unblooked", 26800, "https://www.youtube.com/@unblooked"],
-    ["Monkey Master", 24000, "https://www.youtube.com/@MonkeyMasterYT"],
-    ["Lag0n", 23800, "https://www.youtube.com/channel/UCuiifqupfULUen105oNBUAw"],
-    ["Blooket Ace", 15400, "https://www.youtube.com/@blooketace"],
-    ["FastyJay", 12800, "https://www.youtube.com/@FastyJay"],
-    ["Blooket Gamer", 6230, "https://www.youtube.com/@theblooketgamer"],
-    ["Blooket Gods", 4600, "https://www.youtube.com/@BlooketGodsYT"],
-    ["Slade2", 3690, "https://www.youtube.com/@theslade2"],
-    ["Blooket Life", 3570, "https://www.youtube.com/@BlooketLifeYT"],
-    ["JustaPanda", 2990, "https://www.youtube.com/@JustaPanda888"],
-    ["Blooket Insane", 2980, "https://www.youtube.com/@blooketinsane"],
-    ["notRIC", 2740, "https://www.youtube.com/@playblacket"],
-    ["SRN Games", 2620, "https://www.youtube.com/@srngameslol"],
-    ["BlooketBam", 2430, "https://www.youtube.com/@BlooketBAM"],
-    ["Blook Master", 2100, "https://www.youtube.com/@BlookMasterYT"],
-    ["Twisted Bread", 2060, "https://www.youtube.com/@TwistedBread/"],
-    ["Pig55", 1520, "https://www.youtube.com/@Pig_55"],
-    ["Blooket Elite", 1500, "https://www.youtube.com/@BlooketEliteIsEatingYourFries"],
-    ["Turtelix", 1420, "https://www.youtube.com/@TurtelixYT"],
-    ["Green astronaut", 1020, "https://www.youtube.com/@ThegreenastronautYT"],
-    ["Blooket Warrior", 1020, "https://www.youtube.com/@BlooketWarriorYT"],
-    ["Blookbread", 930, "https://www.youtube.com/@Breadblook"],
-    ["YouLostMan", 653, "https://www.youtube.com/@YouLostMan"],
-    ["Peetwick", 391, "https://www.youtube.com/@PeetWickYT"],
-    ["Freedo", 138, "https://www.youtube.com/@TheRealFreedoBlox"],
-    ["Blooket Galaxy", 65, "https://www.youtube.com/@BlooketGalaxy"],
-    ["TheBlooketBro", 64, "https://www.youtube.com/@theblooketbro"],
-    ["Cosmic Dragon", 62, "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"],
-    ["XpBlooket32", 45, "https://www.youtube.com/@XPgamer32Blooket"],
-    ["Blooket Gael", 39, "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"]
+// ============================================================
+// CONFIG — Your YouTube Data API v3 Key
+// ============================================================
+const API_KEY = "AIzaSyBUj3qxFbI2-IWeRU1EEa4w_ChFoZgSjUE";
+
+// ============================================================
+// Creator list: [name, youtubeHandle_or_channelId, url]
+// Use channel IDs (UC...) where we know them, handles otherwise
+// ============================================================
+const creatorList = [
+    ["Waymore",         "WaymoreYT",              "https://www.youtube.com/@WaymoreYT"],
+    ["LeonBlox",        "LeonBloxOfficial",        "https://www.youtube.com/@LeonBloxOfficial"],
+    ["iBlooket",        "iBlooket",                "https://www.youtube.com/@iBlooket"],
+    ["BIL",             "BILBRB",                  "https://www.youtube.com/@BILBRB"],
+    ["Blooket",         "PlayBlooket",             "https://www.youtube.com/@PlayBlooket"],
+    ["Mega Bot",        "MATHBOARDOM",             "https://www.youtube.com/MATHBOARDOM"],
+    ["Unblooked",       "unblooked",               "https://www.youtube.com/@unblooked"],
+    ["Monkey Master",   "MonkeyMasterYT",          "https://www.youtube.com/@MonkeyMasterYT"],
+    ["Lag0n",           "Lag0n4",                  "https://www.youtube.com/@Lag0n4"],
+    ["Blooket Ace",     "blooketace",              "https://www.youtube.com/@blooketace"],
+    ["FastyJay",        "FastyJay",                "https://www.youtube.com/@FastyJay"],
+    ["Blooket Gamer",   "theblooketgamer",         "https://www.youtube.com/@theblooketgamer"],
+    ["Blooket Gods",    "BlooketGodsYT",           "https://www.youtube.com/@BlooketGodsYT"],
+    ["Slade2",          "theslade2",               "https://www.youtube.com/@theslade2"],
+    ["Blooket Life",    "BlooketLifeYT",           "https://www.youtube.com/@BlooketLifeYT"],
+    ["JustaPanda",      "JustaPanda888",            "https://www.youtube.com/@JustaPanda888"],
+    ["Blooket Insane",  "blooketinsane",           "https://www.youtube.com/@blooketinsane"],
+    ["notRIC",          "playblacket",             "https://www.youtube.com/@playblacket"],
+    ["SRN Games",       "srngameslol",             "https://www.youtube.com/@srngameslol"],
+    ["BlooketBam",      "BlooketBAM",              "https://www.youtube.com/@BlooketBAM"],
+    ["Blook Master",    "BlookMasterYT",           "https://www.youtube.com/@BlookMasterYT"],
+    ["Twisted Bread",   "TwistedBread",            "https://www.youtube.com/@TwistedBread/"],
+    ["Pig55",           "Pig_55",                  "https://www.youtube.com/@Pig_55"],
+    ["Blooket Elite",   "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries"],
+    ["Turtelix",        "TurtelixYT",              "https://www.youtube.com/@TurtelixYT"],
+    ["Green astronaut", "ThegreenastronautYT",     "https://www.youtube.com/@ThegreenastronautYT"],
+    ["Blooket Warrior", "BlooketWarriorYT",        "https://www.youtube.com/@BlooketWarriorYT"],
+    ["Blookbread",      "Breadblook",              "https://www.youtube.com/@Breadblook"],
+    ["YouLostMan",      "YouLostMan",              "https://www.youtube.com/@YouLostMan"],
+    ["Peetwick",        "PeetWickYT",              "https://www.youtube.com/@PeetWickYT"],
+    ["Freedo",          "TheRealFreedoBlox",       "https://www.youtube.com/@TheRealFreedoBlox"],
+    ["Cosmic Dragon",   "UCGkvZdya3AgXj7nAf54lTBw","https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"],
+    ["Blooket Galaxy",  "BlooketGalaxy",           "https://www.youtube.com/@BlooketGalaxy"],
+    ["TheBlooketBro",   "theblooketbro",           "https://www.youtube.com/@theblooketbro"],
+    ["XpBlooket32",     "XPgamer32Blooket",        "https://www.youtube.com/@XPgamer32Blooket"],
+    ["Blooket Gael",    "UCOhGtij6ftod4pJ6mhU-skQ","https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"]
 ];
 
-const creators = rawData.map((creator, index) => {
-    return {
-        rank: index + 1,
-        name: creator[0],
-        subs: creator[1],
-        url: creator[2]
-    };
-});
+// Fallback sub counts (used if API fails)
+const fallbackSubs = {
+    "Waymore": 150000, "LeonBlox": 79400, "iBlooket": 35200,
+    "BIL": 31200, "Blooket": 31300, "Mega Bot": 27100,
+    "Unblooked": 26900, "Monkey Master": 24000, "Lag0n": 23800,
+    "Blooket Ace": 15400, "FastyJay": 12900, "Blooket Gamer": 6250,
+    "Blooket Gods": 4740, "Slade2": 3690, "Blooket Life": 3620,
+    "JustaPanda": 2990, "Blooket Insane": 2900, "notRIC": 2740,
+    "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2100,
+    "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500,
+    "Turtelix": 1420, "Green astronaut": 1100, "Blooket Warrior": 1020,
+    "Blookbread": 1010, "YouLostMan": 660, "Peetwick": 396,
+    "Freedo": 289, "Cosmic Dragon": 69, "Blooket Galaxy": 66,
+    "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36
+};
 
-const maxSubs = creators[0].subs; 
-const board = document.getElementById("leaderboard");
+let creators = [];
+let lastUpdated = null;
 
+// ============================================================
+// Format numbers: 150000 -> "150K", 1234 -> "1.2K", 999 -> "999"
+// ============================================================
 function formatSubs(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
     if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
     return num.toLocaleString();
 }
 
-function render(data) {
+// ============================================================
+// Resolve a handle to a channel ID using the YouTube API
+// ============================================================
+async function resolveHandle(handle) {
+    // Already a channel ID
+    if (handle.startsWith("UC")) return handle;
+
+    const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${encodeURIComponent(handle)}&key=${API_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.items && data.items.length > 0) return data.items[0].id;
+    return null;
+}
+
+// ============================================================
+// Fetch sub counts for a batch of channel IDs (max 50 per call)
+// ============================================================
+async function fetchSubsBatch(channelIds) {
+    const ids = channelIds.join(",");
+    const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${ids}&key=${API_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const map = {};
+    if (data.items) {
+        data.items.forEach(item => {
+            map[item.id] = parseInt(item.statistics.subscriberCount, 10);
+        });
+    }
+    return map;
+}
+
+// ============================================================
+// Main: resolve all handles, fetch all sub counts, render
+// ============================================================
+async function fetchAllSubs() {
+    const dot = document.getElementById("liveDot");
+    const text = document.getElementById("liveText");
+    const btn = document.getElementById("refreshBtn");
+
+    dot.className = "live-dot loading";
+    text.textContent = "Fetching live counts...";
+    btn.disabled = true;
+
+    try {
+        // Step 1: Resolve all handles to channel IDs
+        text.textContent = "Resolving channels... (1/2)";
+        const resolvedIds = await Promise.all(
+            creatorList.map(([name, handle]) => resolveHandle(handle))
+        );
+
+        // Step 2: Batch fetch sub counts (chunks of 50)
+        text.textContent = "Fetching subscriber counts... (2/2)";
+        const allIds = resolvedIds.filter(Boolean);
+        const subMap = {};
+
+        for (let i = 0; i < allIds.length; i += 50) {
+            const chunk = allIds.slice(i, i + 50);
+            const batch = await fetchSubsBatch(chunk);
+            Object.assign(subMap, batch);
+        }
+
+        // Step 3: Build creators array
+        creators = creatorList.map(([name, handle, url], idx) => {
+            const channelId = resolvedIds[idx];
+            const subs = (channelId && subMap[channelId] !== undefined)
+                ? subMap[channelId]
+                : (fallbackSubs[name] || 0);
+            return { name, url, subs };
+        });
+
+        // Step 4: Sort by subs descending & assign ranks
+        creators.sort((a, b) => b.subs - a.subs);
+        creators.forEach((c, i) => c.rank = i + 1);
+
+        lastUpdated = new Date();
+        dot.className = "live-dot";
+        text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
+
+        renderPodium(creators);
+        renderBoard(creators);
+
+        // Auto-refresh every 5 minutes
+        setTimeout(fetchAllSubs, 5 * 60 * 1000);
+
+    } catch (err) {
+        console.error(err);
+        dot.className = "live-dot error";
+        text.textContent = "⚠️ API error — showing last known counts";
+
+        // Fall back to static data
+        creators = creatorList.map(([name, handle, url]) => ({
+            name, url, subs: fallbackSubs[name] || 0
+        }));
+        creators.sort((a, b) => b.subs - a.subs);
+        creators.forEach((c, i) => c.rank = i + 1);
+        renderPodium(creators);
+        renderBoard(creators);
+    }
+
+    btn.disabled = false;
+}
+
+// ============================================================
+// Render podium (top 3)
+// ============================================================
+function renderPodium(data) {
+    if (data.length < 3) return;
+    const podium = document.getElementById("podium");
+    const medals = ["🥇", "🥈", "🥉"];
+    const classes = ["first", "second", "third"];
+
+    podium.innerHTML = [0, 1, 2].map(i => `
+        <div class="podium-card ${classes[i]}">
+            <a href="${data[i].url}" target="_blank" class="podium-link">
+                ${medals[i]}<br>
+                <span class="podium-name">${data[i].name}</span><br><br>
+                <span class="podium-subs">${formatSubs(data[i].subs)}</span>
+            </a>
+        </div>
+    `).join("");
+}
+
+// ============================================================
+// Render leaderboard rows
+// ============================================================
+function renderBoard(data) {
+    const board = document.getElementById("leaderboard");
     board.innerHTML = "";
 
     if (data.length === 0) {
@@ -346,14 +566,15 @@ function render(data) {
         return;
     }
 
+    const maxSubs = creators[0]?.subs || 1;
+
     data.forEach(creator => {
         const percent = (creator.subs / maxSubs) * 100;
-        
         const row = document.createElement("a");
         row.href = creator.url;
-        row.target = "_blank"; 
+        row.target = "_blank";
         row.className = "row";
-        
+
         if (creator.name.toLowerCase() === "fastyjay") {
             row.classList.add("fastyjay");
         }
@@ -366,22 +587,23 @@ function render(data) {
                 <div class="bar" style="width: ${percent}%"></div>
             </div>
         `;
-
         board.appendChild(row);
     });
 }
 
-render(creators);
-
+// ============================================================
+// Search
+// ============================================================
 document.getElementById("search").addEventListener("input", e => {
     const value = e.target.value.toLowerCase();
-    
-    const filteredData = creators.filter(c => 
-        c.name.toLowerCase().includes(value)
-    );
-    
-    render(filteredData);
+    const filtered = creators.filter(c => c.name.toLowerCase().includes(value));
+    renderBoard(filtered);
 });
+
+// ============================================================
+// Kick it off!
+// ============================================================
+fetchAllSubs();
 </script>
 
 </body>
