@@ -263,6 +263,12 @@ a.row:hover{
     box-shadow: 0 0 15px gold;
 }
 
+.inactive {
+    background: #ffe0e0 !important;
+    border: 4px solid #333;
+    box-shadow: 0 0 15px red;
+}
+
 /* Loading skeleton */
 .skeleton {
     background: linear-gradient(90deg, #eee 25%, #ddd 50%, #eee 75%);
@@ -407,6 +413,8 @@ a.row:hover{
 <script>
 const API_KEY = "AIzaSyBUj3qxFbI2-IWeRU1EEa4w_ChFoZgSjUE";
 
+const inactiveCreators = ["kinkade", "blooket elite", "bil"];
+
 const creatorList = [
     ["Waymore",         "WaymoreYT",              "https://www.youtube.com/@WaymoreYT"],
     ["LeonBlox",        "LeonBloxOfficial",        "https://www.youtube.com/@LeonBloxOfficial"],
@@ -436,14 +444,18 @@ const creatorList = [
     ["Green astronaut", "ThegreenastronautYT",     "https://www.youtube.com/@ThegreenastronautYT"],
     ["Blooket Warrior", "BlooketWarriorYT",        "https://www.youtube.com/@BlooketWarriorYT"],
     ["Blookbread",      "Breadblook",              "https://www.youtube.com/@Breadblook"],
+    ["TOBP Blooket",    "ThatOneBlooketPlayer",    "https://www.youtube.com/@ThatOneBlooketPlayer"],
     ["YouLostMan",      "YouLostMan",              "https://www.youtube.com/@YouLostMan"],
+    ["Kinkade",         "ItzKinkade",              "https://www.youtube.com/@ItzKinkade"],
     ["Peetwick",        "PeetWickYT",              "https://www.youtube.com/@PeetWickYT"],
     ["Freedo",          "TheRealFreedoBlox",       "https://www.youtube.com/@TheRealFreedoBlox"],
     ["Cosmic Dragon",   "UCGkvZdya3AgXj7nAf54lTBw","https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"],
     ["Blooket Galaxy",  "BlooketGalaxy",           "https://www.youtube.com/@BlooketGalaxy"],
     ["TheBlooketBro",   "theblooketbro",           "https://www.youtube.com/@theblooketbro"],
     ["XpBlooket32",     "XPgamer32Blooket",        "https://www.youtube.com/@XPgamer32Blooket"],
-    ["Blooket Gael",    "UCOhGtij6ftod4pJ6mhU-skQ","https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"]
+    ["Blooket Gael",    "UCOhGtij6ftod4pJ6mhU-skQ","https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"],
+    ["c0mputerm4n",    "c0mputerm4n-yt","https://www.youtube.com/@c0mputerm4n-yt"],
+    ["BlookFun",    "blookfun","https://www.youtube.com/@blookfun"]
 ];
 
 const fallbackSubs = {
@@ -456,9 +468,9 @@ const fallbackSubs = {
     "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2100,
     "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500,
     "Turtelix": 1420, "Green astronaut": 1100, "Blooket Warrior": 1020,
-    "Blookbread": 1010, "YouLostMan": 660, "Peetwick": 396,
+    "Blookbread": 1010, "TOBP Blooket": 852, "YouLostMan": 660, "Kinkade": 525, "Peetwick": 396,
     "Freedo": 289, "Cosmic Dragon": 69, "Blooket Galaxy": 66,
-    "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36
+    "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36, "c0mputerm4n": 27, "BlookFun": 6
 };
 
 let creators = [];
@@ -578,7 +590,6 @@ function renderBoard(data) {
     const board = document.getElementById("leaderboard");
     board.innerHTML = "";
 
-    // Only show creators with 100+ subs in the main board
     const mainData = data.filter(c => c.subs >= 100);
 
     if (mainData.length === 0) {
@@ -595,13 +606,13 @@ function renderBoard(data) {
         row.target = "_blank";
         row.className = "row";
 
-        if (creator.name.toLowerCase() === "fastyjay") {
-            row.classList.add("fastyjay");
-        }
+        if (creator.name.toLowerCase() === "fastyjay") row.classList.add("fastyjay");
+        const isInactive = inactiveCreators.includes(creator.name.toLowerCase());
+        if (isInactive) row.classList.add("inactive");
 
         row.innerHTML = `
             <div class="rank">#${creator.rank}</div>
-            <div class="name">${creator.name}</div>
+            <div class="name">${creator.name}${isInactive ? ' 🕊️' : ''}</div>
             <div class="subs">${formatSubs(creator.subs)}</div>
             <div class="bar-bg">
                 <div class="bar" style="width: ${percent}%"></div>
@@ -636,9 +647,12 @@ function renderUnderrated(data) {
         row.target = "_blank";
         row.className = "row";
 
+        const isInactiveU = inactiveCreators.includes(creator.name.toLowerCase());
+        if (isInactiveU) row.classList.add("inactive");
+
         row.innerHTML = `
             <div class="rank">#${creator.rank}</div>
-            <div class="name">${creator.name}</div>
+            <div class="name">${creator.name}${isInactiveU ? ' 🕊️' : ''}</div>
             <div class="subs">${formatSubs(creator.subs)}</div>
             <div class="bar-bg">
                 <div class="bar" style="width: ${percent}%"></div>
