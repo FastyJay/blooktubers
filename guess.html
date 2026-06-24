@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="https://blooket.mathuniverse.online/blooktools.png">
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght=800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -64,21 +64,16 @@ h1 {
   text-align: center;
   letter-spacing: 2px;
   margin-bottom: 6px;
-  padding-left: 2px;
   animation: slideUpFade 0.6s ease-out;
 }
 
-/* Styled header link */
 .title-link {
   color: white;
   text-decoration: none;
   text-shadow: 4px 4px 0 #222;
   transition: filter 0.15s ease;
 }
-
-.title-link:hover {
-  filter: brightness(1.1);
-}
+.title-link:hover { filter: brightness(1.1); }
 
 .subtitle {
   text-align: center;
@@ -86,8 +81,34 @@ h1 {
   font-size: 1rem;
   font-weight: 800;
   text-shadow: 1px 1px 0 #333;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
   animation: slideUpFade 0.7s ease-out;
+}
+
+.live-status {
+  text-align: center;
+  margin-bottom: 18px;
+  font-size: 0.9rem;
+  color: white;
+  text-shadow: 1px 1px 0 #333;
+  font-weight: 800;
+  min-height: 22px;
+  animation: slideUpFade 0.7s ease-out;
+}
+.live-dot {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #4ade80;
+  margin-right: 5px;
+  animation: pulse 1.5s infinite;
+  vertical-align: middle;
+}
+.live-dot.loading { background: #fbbf24; animation: pulse 0.7s infinite; }
+.live-dot.error   { background: #f87171; animation: none; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
 }
 
 .score-bar {
@@ -95,12 +116,10 @@ h1 {
   margin-bottom: 18px;
   display: none;
 }
-
 .score-bar.show {
   display: block;
   animation: slideUpFade 0.5s ease-out forwards;
 }
-
 .score-bar span {
   background: #ffe066;
   border: 3px solid #333;
@@ -109,12 +128,7 @@ h1 {
   font-size: 15px;
   font-weight: 900;
   color: #333;
-  transition: transform 0.2s;
   display: inline-block;
-}
-
-.score-bar span:hover {
-  transform: scale(1.05);
 }
 
 .container {
@@ -152,6 +166,23 @@ h1 {
   margin-top: -6px;
   margin-bottom: 10px;
   line-height: 1.4;
+}
+
+.loading-card {
+  text-align: center;
+  padding: 30px 10px;
+}
+.loading-spinner {
+  font-size: 2.5rem;
+  animation: spin 1s linear infinite;
+  display: block;
+  margin-bottom: 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-msg {
+  font-weight: 900;
+  color: #444;
+  font-size: 15px;
 }
 
 .clue-label {
@@ -197,8 +228,7 @@ h1 {
   background: #0bc2cf;
   color: white;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 28px; height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -210,8 +240,7 @@ h1 {
 .clue-num-hidden {
   background: #555;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 28px; height: 28px;
   flex-shrink: 0;
 }
 
@@ -237,7 +266,6 @@ h1 {
 .trivia-btn:nth-child(2) { background: #0bc2cf; box-shadow: 0 4px 0 #00838f; }
 .trivia-btn:nth-child(3) { background: #f59e0b; box-shadow: 0 4px 0 #b45309; }
 .trivia-btn:nth-child(4) { background: #3cb529; box-shadow: 0 4px 0 #247a15; }
-
 .trivia-btn:hover { transform: translateY(2px); }
 .trivia-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
@@ -253,7 +281,6 @@ input[type="text"] {
   margin-top: 16px;
   transition: .2s ease;
 }
-
 input[type="text"]:focus {
   box-shadow: 0 0 0 4px rgba(11,194,207,.3);
   transform: translateY(-2px);
@@ -267,7 +294,6 @@ input[type="text"]:focus {
   min-height: 22px;
   transition: all 0.3s;
 }
-
 .feedback.correct { color: #16a34a; animation: popInSoft 0.4s ease-out; }
 .feedback.wrong   { color: #dc2626; animation: popInSoft 0.4s ease-out; }
 
@@ -286,7 +312,6 @@ input[type="text"]:focus {
   transition: all .15s ease;
   letter-spacing: 1px;
 }
-
 .btn:hover  { transform: translateY(2px); box-shadow: 0 3px 0 #222; filter: brightness(1.05); }
 .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #222; filter: brightness(0.95); }
 .btn:disabled { background: #aaa !important; cursor: not-allowed; transform: none; box-shadow: 0 5px 0 #777; filter: none; }
@@ -295,6 +320,7 @@ input[type="text"]:focus {
 .btn-yellow { background: #f59e0b; }
 .btn-red    { background: #e53935; }
 .btn-blue   { background: #0bc2cf; }
+.btn-purple { background: #8b5cf6; }
 
 .answer-box {
   text-align: center;
@@ -302,23 +328,19 @@ input[type="text"]:focus {
   display: none;
   animation: slideUpFade 0.5s ease-out forwards;
 }
-
 .answer-img {
-  width: 90px;
-  height: 90px;
+  width: 90px; height: 90px;
   border-radius: 50%;
   border: 4px solid #333;
   object-fit: cover;
   margin-bottom: 10px;
 }
-
 .answer-name {
   font-family: 'Titan One', cursive;
   font-size: 24px;
   color: #111;
   letter-spacing: 1px;
 }
-
 .answer-desc {
   font-size: 13px;
   color: #555;
@@ -339,10 +361,7 @@ input[type="text"]:focus {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-.popup-overlay.show {
-  display: flex;
-  opacity: 1;
-}
+.popup-overlay.show { display: flex; opacity: 1; }
 .popup-box {
   background: white;
   border: 4px solid #333;
@@ -365,7 +384,6 @@ input[type="text"]:focus {
   margin-top: 15px;
   border-top: 3px dashed #ccc;
   padding-top: 15px;
-  animation: popInSoft 0.4s ease-out;
 }
 .scoreboard-title {
   font-family: 'Titan One', cursive;
@@ -391,11 +409,6 @@ input[type="text"]:focus {
   padding: 6px 12px;
   font-size: 14px;
   font-weight: 800;
-  transition: transform 0.2s;
-}
-.score-row:hover {
-  transform: translateX(4px);
-  background: #e5e7eb;
 }
 .score-rank {
   background: #333;
@@ -404,8 +417,16 @@ input[type="text"]:focus {
   padding: 2px 6px;
   font-size: 11px;
 }
+.live-badge {
+  background: #4ade80;
+  color: #166534;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 900;
+}
 
-.popup-emoji { font-size: 3rem; margin-bottom: 8px; animation: popInSoft 0.5s ease-out; }
+.popup-emoji { font-size: 3rem; margin-bottom: 8px; }
 .popup-title {
   font-family: "Titan One", cursive;
   font-size: 2rem;
@@ -421,8 +442,7 @@ input[type="text"]:focus {
   margin-bottom: 14px;
 }
 .popup-img {
-  width: 80px;
-  height: 80px;
+  width: 80px; height: 80px;
   border-radius: 50%;
   border: 4px solid #333;
   object-fit: cover;
@@ -454,15 +474,10 @@ input[type="text"]:focus {
   opacity: 0;
   transition: opacity 0.4s ease;
 }
-.easter-egg.show {
-  display: flex;
-}
-.easter-egg.visible {
-  opacity: 1;
-}
+.easter-egg.show { display: flex; }
+.easter-egg.visible { opacity: 1; }
 .easter-egg img {
-  max-width: 80%;
-  max-height: 80%;
+  max-width: 80%; max-height: 80%;
   border-radius: 20px;
   border: 5px solid white;
   box-shadow: 0 0 40px rgba(255,255,255,0.4);
@@ -486,27 +501,43 @@ input[type="text"]:focus {
   <h1><a href="https://blooket.mathuniverse.online" class="title-link">BlookTools</a></h1>
   <p class="subtitle">Guess the Blooktuber! 🎮</p>
 
+  <div class="live-status" id="live-status">
+    <span class="live-dot loading" id="live-dot"></span>
+    <span id="live-text">Fetching live subscriber counts...</span>
+  </div>
+
   <div class="score-bar" id="main-score-bar"><span>Score: <span id="score">0</span> pts</span></div>
 
   <div class="card">
-    <div id="welcome-message" style="text-align:center; padding: 20px 0;">
-      <div class="menu-title" style="margin-bottom: 12px;">Welcome to the Game!</div>
-      <p style="font-weight: 800; color: #444; margin-bottom: 20px;">Click the button below to choose a game mode and view the scoreboards!</p>
-      <button class="btn btn-yellow" onclick="openModePopup()">Open Mode Picker</button>
+    <div id="loading-view" class="loading-card">
+      <span class="loading-spinner">🔄</span>
+      <div class="loading-msg">Fetching live YouTube data...<br>This takes just a moment!</div>
+    </div>
+
+    <div id="welcome-message" style="display:none; text-align:center; padding: 20px 0;">
+      <div class="menu-title" style="margin-bottom: 12px;">Ready to Play!</div>
+      <p style="font-weight: 800; color: #444; margin-bottom: 20px;">Live subscriber counts loaded! Pick a mode below.</p>
+      <button class="btn btn-yellow" onclick="openModePopup()">Choose Game Mode</button>
+    </div>
+
+    <div id="error-view" style="display:none; text-align:center; padding: 20px 0;">
+      <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
+      <div class="menu-title" style="margin-bottom: 8px; color: #e53935;">API Error</div>
+      <p style="font-weight: 800; color: #444; margin-bottom: 20px;">Using last known subscriber counts instead.</p>
+      <button class="btn btn-yellow" onclick="openModePopup()">Choose Game Mode</button>
     </div>
 
     <div id="game-area" style="display: none;">
       <div class="clue-label" id="clue-label">CLUE 1 OF 3</div>
       <div id="clues-container"></div>
-      
       <div id="trivia-container" class="trivia-grid" style="display: none;"></div>
 
       <div id="classic-input-container">
         <input type="text" id="guess-input" placeholder="Type your guess here..." />
-        <button class="btn btn-green"  id="guess-btn"      onclick="checkGuess()">Submit Guess</button>
-        <button class="btn btn-red"    id="give-up-btn"    onclick="giveUp()">Give Up & Reveal</button>
+        <button class="btn btn-green" id="guess-btn" onclick="checkGuess()">Submit Guess</button>
+        <button class="btn btn-red"   id="give-up-btn" onclick="giveUp()">Give Up & Reveal</button>
       </div>
-      
+
       <div class="feedback" id="feedback"></div>
       <button class="btn btn-blue" onclick="openModePopup()" style="margin-top: 12px;">Change Game Mode</button>
 
@@ -519,35 +550,38 @@ input[type="text"]:focus {
     </div>
   </div>
 
+  <!-- Mode Picker Popup -->
   <div class="popup-overlay" id="mode-popup-overlay">
     <div class="popup-box" style="text-align: left;">
       <div class="menu-title" style="margin-bottom: 15px;">Choose Game Mode</div>
-      
+
       <div id="popup-menu-view">
         <div class="mode-container">
           <button class="btn btn-green" onclick="clickMode('classic')">Play Classic Mode</button>
-          <div class="mode-info">Over 30 tracker creators with 100+ subs using live clue tracking facts.</div>
+          <div class="mode-info">Guess using live clues — sub count, status, and first letter. Earn more points for fewer clues used!</div>
 
-          <button class="btn btn-purple" onclick="clickMode('trivia')" style="background: #8b5cf6; border-color: #222; box-shadow: 0 5px 0 #222;">Play Trivia Mode</button>
-          <div class="mode-info">Blooket style multiple-choice questions with highly deceptive options!</div>
+          <button class="btn btn-purple" onclick="clickMode('trivia')">Play Trivia Mode</button>
+          <div class="mode-info">Blooket-style multiple choice with tricky options. +20 pts per correct answer!</div>
         </div>
         <button class="btn btn-red" onclick="closeModePopup()" style="margin-top: 15px; padding: 8px;">Cancel</button>
       </div>
 
       <div id="popup-scoreboard-view" style="display: none;">
         <div id="selected-mode-title" class="menu-title" style="font-size: 20px; color: #0bc2cf;"></div>
-        
+
         <div class="scoreboard-section">
-          <div class="scoreboard-title">🏆 Mode Pool Database Rankings</div>
+          <div class="scoreboard-title">🏆 Live Sub Count Rankings</div>
+          <div style="font-size: 12px; font-weight: 800; color: #888; margin-bottom: 8px;" id="scoreboard-timestamp"></div>
           <div class="score-list" id="scoreboard-data-list"></div>
         </div>
 
-        <button class="btn btn-green" id="start-game-btn">Start Game Pool ▶</button>
+        <button class="btn btn-green" id="start-game-btn" style="margin-top: 14px;">Start Game ▶</button>
         <button class="btn btn-blue" onclick="backToModeSelect()" style="margin-top: 8px; padding: 8px;">◀ Back to Modes</button>
       </div>
     </div>
   </div>
 
+  <!-- Correct Answer Popup -->
   <div class="popup-overlay" id="popup-overlay">
     <div class="popup-box">
       <div class="popup-emoji">🎉</div>
@@ -561,49 +595,81 @@ input[type="text"]:focus {
   </div>
 </div>
 
-<script>
-const defaultImage = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fyt3.googleusercontent.com%2Fytc%2FAIdro_l1w6Mc5WEokWWYbrNNP_5BEshKUO25cIZVOqiU6AojVw%3Ds900-c-k-c0x00ffffff-no-rj&f=1&nofb=1&ipt=9e9827da110a3ddd46c8388025131ce04094fdaa5ea06308022c4c6612b4d6ff";
+<div class="easter-egg" id="easter-egg">
+  <img src="https://mathuniverse.online/chicken.png" alt="Crazy Chicken" id="easter-img" />
+</div>
 
-const rawSubscribers = [
-  { name: "Waymore", subs: 150000, status: "Active", img: "https://yt3.googleusercontent.com/fpVQ5VoYlN-UptRogESSqHnxEX61T-7YW1YNGObVrFX2w_1jBO-njl76kt-6vkPF_2cC9x66kQ=s800-c-k-c0x00ffffff-no-rj" },
-  { name: "LeonBlox", subs: 79400, status: "Active", img: "https://yt3.googleusercontent.com/IVhsWHLcVbC1983DmOiSRYNd2QMIU7R6eHOAHrpk_sT6dBBJj4CWAWyTAJoI_CySgNRcrb6HQQ=s800-c-k-c0x00ffffff-no-rj" },
-  { name: "iBlooket", subs: 35200, status: "Active", img: "https://yt3.googleusercontent.com/OmDwNKSgt4mxydmndADjlva5mWYKLVpm2BGLrzMlU7GWIRTgE3eReMX40s147P31K4Z1k51Phg=s800-c-k-c0x00ffffff-no-rj" },
-  { name: "BIL", subs: 31200, status: "Inactive" },
-  { name: "Blooket", subs: 31300, status: "Active", img: "https://yt3.googleusercontent.com/ytc/AIdro_n9MuS8YZrvKTzvVPJhLaRlgDjUouMy9flhM8rbKox6epI=s800-c-k-c0x00ffffff-no-rj" },
-  { name: "Mega Bot", subs: 27100, status: "Active", img: "https://yt3.googleusercontent.com/FNAGuNPpY_GZyYDCck-3L_Zd31u90SBJuzcc4hXG9N94_D7vt7PM9iU2GZ43ndU01jUygXjn=s800-c-k-c0x00ffffff-no-rj" },
-  { name: "Unblooked", subs: 26900, status: "Active", img: "https://yt3.googleusercontent.com/w_Hs7-L_VL_uZGxhSfncFe7aZfhRjkP5O1BF2NjukAKYbGfSeFcLeCYTDfyfNnRH95l32Aj6DA=s800-c-k-c0x00ffffff-no-rj" },
-  { name: "Monkey Master", subs: 24000, status: "Active", img: "https://yt3.ggpht.com/vHPdt2TV8_lN5eYY6ODGprTOb2rLt9Z0PHCA8I5n0vwvcvzrFCo-0ZC3B9MR7M16hyZMcIgT4miW-w=s400-c-fcrop64=1,38000000c7ffffff-rw-nd-v1" },
-  { name: "Lag0n", subs: 23800, status: "Active", img: "https://yt3.googleusercontent.com/sGMDSWtF1ljfF1LvdvSfWvvHUaDFY7xiqhNZHawJ-Kz-pLvMcd2sf3HkX3ojPe7XIAOHxgAzkm4=s800-c-k-c0x00ffffff-no-rj" },
-  { name: "Blooket Ace", subs: 15400, status: "Active" },
-  { name: "FastyJay", subs: 12900, status: "Active", img: "https://yt3.googleusercontent.com/VuM8z5VYXi_TIw7dr0z5mg9O6fwzy8lzOGUFTR63zmciyPMVzB8ORpnSAwdcs_AUISyBHH0K=s800-c-k-c0x00ffffff-no-rj" },
-  { name: "the blooket gamer", subs: 6250, status: "Active", img: "https://yt3.googleusercontent.com/IbwGyfwHd4-lH4gA69Uns3iHqwO9VnyM4azJEca1sjiRn2yEzZf5vDBbs0zC4hjvEzK4en3L=s800-c-k-c0x00ffffff-no-rj" },
-  { name: "Blooket Gods", subs: 4740, status: "Active" },
-  { name: "Slade2", subs: 3690, status: "Active" },
-  { name: "Blooket Life", subs: 3620, status: "Active" },
-  { name: "JustaPanda", subs: 2990, status: "Active" },
-  { name: "Blooket Insane", subs: 2900, status: "Active" },
-  { name: "notRIC", subs: 2740, status: "Active" },
-  { name: "SRN Games", subs: 2650, status: "Active" },
-  { name: "BlooketBam", subs: 2430, status: "Active" },
-  { name: "Blook Master", subs: 2100, status: "Active" },
-  { name: "Twisted Bread", subs: 2060, status: "Active" },
-  { name: "Pig55", subs: 1520, status: "Active" },
-  { name: "Blooket Elite", subs: 1500, status: "Inactive" },
-  { name: "Turtelix", subs: 1420, status: "Active" },
-  { name: "Green astronaut", subs: 1100, status: "Active", img: "https://yt3.googleusercontent.com/jqSEQqOe03q2My36l3Khz09hh8qmrhDGkbD-VsLGrW-ESIbSneCIfSeYVravW7BwhlKfiaUPpg=s800-c-k-c0x00ffffff-no-rj" },
-  { name: "Blooket Warrior", status: "Active", subs: 1020 },
-  { name: "Blookbread", subs: 1010, status: "Active" },
-  { name: "TOBP Blooket", subs: 852, status: "Active" },
-  { name: "YouLostMan", subs: 660, status: "Active" },
-  { name: "Kinkade", subs: 525, status: "Inactive" },
-  { name: "Peetwick", subs: 396, status: "Active" },
-  { name: "Freedo", subs: 289, status: "Active" }
+<script>
+// ─── YouTube API Config (same key as leaderboard) ───────────────────────────
+const API_KEY = "AIzaSyBUj3qxFbI2-IWeRU1EEa4w_ChFoZgSjUE";
+
+// ─── Creator list: [displayName, ytHandle, ytUrl, optionalImg] ──────────────
+const creatorList = [
+  ["Waymore",          "WaymoreYT",                    "https://www.youtube.com/@WaymoreYT",                    "https://yt3.googleusercontent.com/fpVQ5VoYlN-UptRogESSqHnxEX61T-7YW1YNGObVrFX2w_1jBO-njl76kt-6vkPF_2cC9x66kQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["LeonBlox",         "LeonBloxOfficial",             "https://www.youtube.com/@LeonBloxOfficial",             "https://yt3.googleusercontent.com/IVhsWHLcVbC1983DmOiSRYNd2QMIU7R6eHOAHrpk_sT6dBBJj4CWAWyTAJoI_CySgNRcrb6HQQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["iBlooket",         "iBlooket",                     "https://www.youtube.com/@iBlooket",                     "https://yt3.googleusercontent.com/OmDwNKSgt4mxydmndADjlva5mWYKLVpm2BGLrzMlU7GWIRTgE3eReMX40s147P31K4Z1k51Phg=s800-c-k-c0x00ffffff-no-rj"],
+  ["BIL",              "BILBRB",                       "https://www.youtube.com/@BILBRB",                       null],
+  ["Blooket",          "PlayBlooket",                  "https://www.youtube.com/@PlayBlooket",                  "https://yt3.googleusercontent.com/ytc/AIdro_n9MuS8YZrvKTzvVPJhLaRlgDjUouMy9flhM8rbKox6epI=s800-c-k-c0x00ffffff-no-rj"],
+  ["Mega Bot",         "MATHBOARDOM",                  "https://www.youtube.com/MATHBOARDOM",                   "https://yt3.googleusercontent.com/FNAGuNPpY_GZyYDCck-3L_Zd31u90SBJuzcc4hXG9N94_D7vt7PM9iU2GZ43ndU01jUygXjn=s800-c-k-c0x00ffffff-no-rj"],
+  ["Unblooked",        "unblooked",                    "https://www.youtube.com/@unblooked",                    "https://yt3.googleusercontent.com/w_Hs7-L_VL_uZGxhSfncFe7aZfhRjkP5O1BF2NjukAKYbGfSeFcLeCYTDfyfNnRH95l32Aj6DA=s800-c-k-c0x00ffffff-no-rj"],
+  ["Monkey Master",    "MonkeyMasterYT",               "https://www.youtube.com/@MonkeyMasterYT",               "https://yt3.ggpht.com/vHPdt2TV8_lN5eYY6ODGprTOb2rLt9Z0PHCA8I5n0vwvcvzrFCo-0ZC3B9MR7M16hyZMcIgT4miW-w=s400-c-fcrop64=1,38000000c7ffffff-rw-nd-v1"],
+  ["Lag0n",            "Lag0n4",                       "https://www.youtube.com/@Lag0n4",                       "https://yt3.googleusercontent.com/sGMDSWtF1ljfF1LvdvSfWvvHUaDFY7xiqhNZHawJ-Kz-pLvMcd2sf3HkX3ojPe7XIAOHxgAzkm4=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Ace",      "blooketace",                   "https://www.youtube.com/@blooketace",                   null],
+  ["FastyJay",         "FastyJay",                     "https://www.youtube.com/@FastyJay",                     "https://yt3.googleusercontent.com/VuM8z5VYXi_TIw7dr0z5mg9O6fwzy8lzOGUFTR63zmciyPMVzB8ORpnSAwdcs_AUISyBHH0K=s800-c-k-c0x00ffffff-no-rj"],
+  ["the blooket gamer","theblooketgamer",              "https://www.youtube.com/@theblooketgamer",              "https://yt3.googleusercontent.com/IbwGyfwHd4-lH4gA69Uns3iHqwO9VnyM4azJEca1sjiRn2yEzZf5vDBbs0zC4hjvEzK4en3L=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Gods",     "BlooketGodsYT",                "https://www.youtube.com/@BlooketGodsYT",                null],
+  ["Slade2",           "theslade2",                    "https://www.youtube.com/@theslade2",                    null],
+  ["Blooket Life",     "BlooketLifeYT",                "https://www.youtube.com/@BlooketLifeYT",                null],
+  ["JustaPanda",       "JustaPanda888",                "https://www.youtube.com/@JustaPanda888",                null],
+  ["Blooket Insane",   "blooketinsane",                "https://www.youtube.com/@blooketinsane",                null],
+  ["notRIC",           "playblacket",                  "https://www.youtube.com/@playblacket",                  null],
+  ["SRN Games",        "srngameslol",                  "https://www.youtube.com/@srngameslol",                  null],
+  ["BlooketBam",       "BlooketBAM",                   "https://www.youtube.com/@BlooketBAM",                   null],
+  ["Blook Master",     "BlookMasterYT",                "https://www.youtube.com/@BlookMasterYT",                null],
+  ["Twisted Bread",    "TwistedBread",                 "https://www.youtube.com/@TwistedBread/",                null],
+  ["Pig55",            "Pig_55",                       "https://www.youtube.com/@Pig_55",                       null],
+  ["Blooket Elite",    "BlooketEliteIsEatingYourFries","https://www.youtube.com/@BlooketEliteIsEatingYourFries",null],
+  ["Turtelix",         "TurtelixYT",                   "https://www.youtube.com/@TurtelixYT",                   null],
+  ["Green astronaut",  "ThegreenastronautYT",          "https://www.youtube.com/@ThegreenastronautYT",          "https://yt3.googleusercontent.com/jqSEQqOe03q2My36l3Khz09hh8qmrhDGkbD-VsLGrW-ESIbSneCIfSeYVravW7BwhlKfiaUPpg=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Warrior",  "BlooketWarriorYT",             "https://www.youtube.com/@BlooketWarriorYT",             null],
+  ["Blookbread",       "Breadblook",                   "https://www.youtube.com/@Breadblook",                   null],
+  ["TOBP Blooket",     "ThatOneBlooketPlayer",         "https://www.youtube.com/@ThatOneBlooketPlayer",         null],
+  ["YouLostMan",       "YouLostMan",                   "https://www.youtube.com/@YouLostMan",                   null],
+  ["Kinkade",          "ItzKinkade",                   "https://www.youtube.com/@ItzKinkade",                   null],
+  ["Peetwick",         "PeetWickYT",                   "https://www.youtube.com/@PeetWickYT",                   null],
+  ["Freedo",           "TheRealFreedoBlox",            "https://www.youtube.com/@TheRealFreedoBlox",            null],
 ];
 
+const inactiveCreators = ["kinkade", "blooket elite", "bil"];
+const fallbackSubs = {
+  "Waymore":150000,"LeonBlox":79400,"iBlooket":35200,"BIL":31200,"Blooket":31300,
+  "Mega Bot":27100,"Unblooked":26900,"Monkey Master":24000,"Lag0n":23800,"Blooket Ace":15400,
+  "FastyJay":12900,"the blooket gamer":6250,"Blooket Gods":4740,"Slade2":3690,"Blooket Life":3620,
+  "JustaPanda":2990,"Blooket Insane":2900,"notRIC":2740,"SRN Games":2650,"BlooketBam":2430,
+  "Blook Master":2100,"Twisted Bread":2060,"Pig55":1520,"Blooket Elite":1500,"Turtelix":1420,
+  "Green astronaut":1100,"Blooket Warrior":1020,"Blookbread":1010,"TOBP Blooket":852,
+  "YouLostMan":660,"Kinkade":525,"Peetwick":396,"Freedo":289
+};
+
+const defaultImage = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fyt3.googleusercontent.com%2Fytc%2FAIdro_l1w6Mc5WEokWWYbrNNP_5BEshKUO25cIZVOqiU6AojVw%3Ds900-c-k-c0x00ffffff-no-rj&f=1&nofb=1&ipt=9e9827da110a3ddd46c8388025131ce04094fdaa5ea06308022c4c6612b4d6ff";
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let loadedCreators = [];   // enriched with live subs after fetch
+let lastUpdated = null;
+let currentGameMode = 'classic';
+let activePool = [];
+let current = null;
+let lastBlooktuber = null;
+let lastFirstClue = null;
+let shuffledClues = [];
+let revealedCount = 0;
+let score = 0;
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 function formatSubs(num) {
   if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-  if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-  return num.toString();
+  if (num >= 1000)    return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+  return num.toLocaleString();
 }
 
 function shuffle(arr) {
@@ -615,15 +681,83 @@ function shuffle(arr) {
   return a;
 }
 
-let currentGameMode = 'classic';
-let activePool = [];
-let current = null;
-let lastBlooktuber = null;
-let lastFirstClue = null;
-let shuffledClues = [];
-let revealedCount = 0;
-let score = 0;
+// ─── YouTube API ─────────────────────────────────────────────────────────────
+async function resolveHandle(handle) {
+  if (handle.startsWith("UC")) return handle;
+  const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${encodeURIComponent(handle)}&key=${API_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  if (data.items && data.items.length > 0) return data.items[0].id;
+  return null;
+}
 
+async function fetchSubsBatch(channelIds) {
+  const ids = channelIds.join(",");
+  const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${ids}&key=${API_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const map = {};
+  if (data.items) {
+    data.items.forEach(item => {
+      map[item.id] = parseInt(item.statistics.subscriberCount, 10);
+    });
+  }
+  return map;
+}
+
+async function loadLiveData() {
+  const dot  = document.getElementById("live-dot");
+  const text = document.getElementById("live-text");
+
+  dot.className = "live-dot loading";
+  text.textContent = "Fetching live subscriber counts...";
+
+  try {
+    const resolvedIds = await Promise.all(creatorList.map(([,handle]) => resolveHandle(handle)));
+    const allIds = resolvedIds.filter(Boolean);
+    const subMap = {};
+    for (let i = 0; i < allIds.length; i += 50) {
+      Object.assign(subMap, await fetchSubsBatch(allIds.slice(i, i + 50)));
+    }
+
+    loadedCreators = creatorList.map(([name, handle, url, img], idx) => {
+      const channelId = resolvedIds[idx];
+      const subs = (channelId && subMap[channelId] !== undefined)
+        ? subMap[channelId]
+        : (fallbackSubs[name] || 0);
+      const status = inactiveCreators.includes(name.toLowerCase()) ? "Inactive" : "Active";
+      return { name, url, subs, status, image: img || defaultImage };
+    });
+
+    loadedCreators.sort((a, b) => b.subs - a.subs);
+    lastUpdated = new Date();
+
+    dot.className = "live-dot";
+    text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
+
+    document.getElementById("loading-view").style.display = "none";
+    document.getElementById("welcome-message").style.display = "block";
+
+    // Auto-refresh every 5 minutes
+    setTimeout(loadLiveData, 5 * 60 * 1000);
+
+  } catch (err) {
+    console.error("YouTube API error:", err);
+    dot.className = "live-dot error";
+    text.textContent = "⚠️ API error — using last known counts";
+
+    loadedCreators = creatorList.map(([name, , url, img]) => {
+      const status = inactiveCreators.includes(name.toLowerCase()) ? "Inactive" : "Active";
+      return { name, url, subs: fallbackSubs[name] || 0, status, image: img || defaultImage };
+    });
+    loadedCreators.sort((a, b) => b.subs - a.subs);
+
+    document.getElementById("loading-view").style.display = "none";
+    document.getElementById("error-view").style.display = "block";
+  }
+}
+
+// ─── Mode Popup ──────────────────────────────────────────────────────────────
 function openModePopup() {
   backToModeSelect();
   document.getElementById("mode-popup-overlay").classList.add("show");
@@ -642,20 +776,27 @@ function clickMode(mode) {
   currentGameMode = mode;
   document.getElementById("popup-menu-view").style.display = "none";
   document.getElementById("popup-scoreboard-view").style.display = "block";
-  
+
   const titleEl = document.getElementById("selected-mode-title");
-  const listEl = document.getElementById("scoreboard-data-list");
+  const listEl  = document.getElementById("scoreboard-data-list");
+  const tsEl    = document.getElementById("scoreboard-timestamp");
   const startBtn = document.getElementById("start-game-btn");
-  
+
+  titleEl.textContent = mode === 'classic' ? "Classic Mode" : "Trivia Mode";
+  startBtn.onclick = () => selectMode(mode);
+
+  if (lastUpdated) {
+    tsEl.innerHTML = `<span class="live-badge">LIVE</span> Updated ${lastUpdated.toLocaleTimeString()}`;
+  } else {
+    tsEl.textContent = "Using fallback counts";
+  }
+
   listEl.innerHTML = "";
-  titleEl.textContent = mode === 'classic' ? "Classic Mode Selected" : "Trivia Mode Selected";
-  startBtn.onclick = function() { selectMode(mode); };
-  
-  const sortedSubs = [...rawSubscribers].sort((a,b) => b.subs - a.subs);
-  sortedSubs.forEach((item, index) => {
+  [...loadedCreators].forEach((item, index) => {
     const row = document.createElement("div");
     row.className = "score-row";
-    row.innerHTML = `<span><span class="score-rank">#${index+1}</span> ${item.name}</span> <span>${formatSubs(item.subs)} Subs</span>`;
+    const isInactive = inactiveCreators.includes(item.name.toLowerCase());
+    row.innerHTML = `<span><span class="score-rank">#${index+1}</span> ${item.name}${isInactive ? ' 🕊️' : ''}</span><span>${formatSubs(item.subs)} subs</span>`;
     listEl.appendChild(row);
   });
 }
@@ -663,32 +804,31 @@ function clickMode(mode) {
 function selectMode(mode) {
   closeModePopup();
   document.getElementById("welcome-message").style.display = "none";
+  document.getElementById("error-view").style.display = "none";
   document.getElementById("game-area").style.display = "block";
   document.getElementById("main-score-bar").classList.add("show");
-  
-  activePool = rawSubscribers.map(creator => {
-    let profileImg = (creator.img && creator.img.trim() !== "") ? creator.img : defaultImage;
-    return {
-      name: creator.name,
-      image: profileImg,
-      subs: creator.subs,
-      status: creator.status,
-      desc: `Target Information: Features approximately ${formatSubs(creator.subs)} subscribers. Activity state: ${creator.status}.`,
-      clues: [
-        `This Blooktuber contains around ${formatSubs(creator.subs)} subscribers.`,
-        `This Blooktuber's status is currently: ${creator.status}.`,
-        `The name of this Blooktuber starts with the character "${creator.name.charAt(0)}".`
-      ]
-    };
-  });
+
+  activePool = loadedCreators.map(creator => ({
+    ...creator,
+    desc: `${formatSubs(creator.subs)} subscribers • ${creator.status}`,
+    clues: [
+      `This Blooktuber has around ${formatSubs(creator.subs)} subscribers.`,
+      `This Blooktuber's status is currently: ${creator.status}.`,
+      `The name of this Blooktuber starts with "${creator.name.charAt(0)}".`
+    ]
+  }));
+
   startRound();
 }
 
+// ─── Game Logic ───────────────────────────────────────────────────────────────
 function startRound() {
-  let pool = activePool.length > 1 ? activePool.filter(b => b.name !== (lastBlooktuber && lastBlooktuber.name)) : activePool;
+  let pool = activePool.length > 1
+    ? activePool.filter(b => b.name !== (lastBlooktuber && lastBlooktuber.name))
+    : activePool;
   current = pool[Math.floor(Math.random() * pool.length)];
-  
   lastBlooktuber = current;
+
   document.getElementById("feedback").textContent = "";
   document.getElementById("feedback").className = "feedback";
   document.getElementById("answer-box").style.display = "none";
@@ -698,7 +838,7 @@ function startRound() {
     document.getElementById("classic-input-container").style.display = "block";
     document.getElementById("clues-container").style.display = "block";
     document.getElementById("clue-label").style.display = "block";
-    
+
     let attempts = 0;
     do {
       shuffledClues = shuffle(current.clues);
@@ -706,7 +846,7 @@ function startRound() {
     } while (shuffledClues[0] === lastFirstClue && attempts < 10);
     lastFirstClue = shuffledClues[0];
     revealedCount = 1;
-    
+
     document.getElementById("guess-input").value = "";
     document.getElementById("guess-btn").disabled = false;
     document.getElementById("give-up-btn").disabled = false;
@@ -716,75 +856,7 @@ function startRound() {
     document.getElementById("clues-container").style.display = "none";
     document.getElementById("trivia-container").style.display = "grid";
     document.getElementById("clue-label").style.display = "block";
-    
     generateTriviaQuestion();
-  }
-}
-
-function generateTriviaQuestion() {
-  const triviaContainer = document.getElementById("trivia-container");
-  triviaContainer.innerHTML = "";
-  
-  const types = ['exact_subs', 'status_pool', 'name_structure'];
-  const chosenType = types[Math.floor(Math.random() * types.length)];
-  
-  let questionText = "";
-  let correctAnswer = current.name;
-  let wrongAnswers = [];
-
-  if (chosenType === 'exact_subs') {
-    questionText = `Which specific creator has exactly ${current.subs.toLocaleString()} subscribers?`;
-    wrongAnswers = rawSubscribers.filter(c => c.name !== current.name).sort((a,b) => Math.abs(a.subs - current.subs) - Math.abs(b.subs - current.subs)).map(c => c.name);
-  } else if (chosenType === 'status_pool') {
-    questionText = `Which of these creators are an "${current.status}" blooktuber?`;
-    wrongAnswers = rawSubscribers.filter(c => c.status !== current.status).map(c => c.name);
-  } else {
-    const len = current.name.length;
-    questionText = `Which creator name contains exactly ${len} characters and starts with "${current.name.charAt(0)}".`;
-    wrongAnswers = rawSubscribers.filter(c => c.name !== current.name).map(c => c.name);
-  }
-
-  document.getElementById("clue-label").textContent = questionText;
-  
-  wrongAnswers = [...new Set(wrongAnswers)];
-  let choices = [correctAnswer];
-  let shuffledWrongs = shuffle(wrongAnswers);
-  
-  for (let i = 0; i < 3; i++) {
-    if (shuffledWrongs[i]) choices.push(shuffledWrongs[i]);
-  }
-  while (choices.length < 4) {
-    let fallback = rawSubscribers[Math.floor(Math.random() * rawSubscribers.length)].name;
-    if (!choices.includes(fallback)) choices.push(fallback);
-  }
-  
-  choices = shuffle(choices);
-
-  choices.forEach(choice => {
-    const btn = document.createElement("button");
-    btn.className = "trivia-btn";
-    btn.textContent = choice;
-    btn.onclick = function() { checkTriviaAnswer(choice, correctAnswer); };
-    triviaContainer.appendChild(btn);
-  });
-}
-
-function checkTriviaAnswer(selected, correct) {
-  const fb = document.getElementById("feedback");
-  document.querySelectorAll(".trivia-btn").forEach(b => b.disabled = true);
-
-  if (selected === correct) {
-    const correctAudio = new Audio("https://mathuniverse.online/correctanswer.MP3");
-    correctAudio.play();
-    score += 20;
-    document.getElementById("score").textContent = score;
-    showCorrectPopup(20);
-  } else {
-    const wrongAudio = new Audio("https://mathuniverse.online/wrong.MP3");
-    wrongAudio.play();
-    fb.textContent = `Incorrect! The actual target answer was ${correct}.`;
-    fb.className = "feedback wrong";
-    revealAnswer();
   }
 }
 
@@ -796,7 +868,6 @@ function renderClues() {
   shuffledClues.forEach((clue, i) => {
     const div = document.createElement("div");
     div.style.animationDelay = `${i * 0.1}s`;
-    
     if (i < revealedCount) {
       div.className = "clue";
       div.innerHTML = `<div class="clue-num">${i + 1}</div>${clue}`;
@@ -808,6 +879,75 @@ function renderClues() {
   });
 }
 
+function generateTriviaQuestion() {
+  const triviaContainer = document.getElementById("trivia-container");
+  triviaContainer.innerHTML = "";
+
+  const types = ['exact_subs', 'status_pool', 'name_structure'];
+  const chosenType = types[Math.floor(Math.random() * types.length)];
+
+  let questionText = "";
+  const correctAnswer = current.name;
+  let wrongAnswers = [];
+
+  if (chosenType === 'exact_subs') {
+    questionText = `Which creator has approximately ${formatSubs(current.subs)} subscribers?`;
+    wrongAnswers = [...loadedCreators]
+      .filter(c => c.name !== current.name)
+      .sort((a, b) => Math.abs(a.subs - current.subs) - Math.abs(b.subs - current.subs))
+      .map(c => c.name);
+  } else if (chosenType === 'status_pool') {
+    questionText = `Which of these is an "${current.status}" Blooktuber?`;
+    wrongAnswers = loadedCreators.filter(c => c.status !== current.status).map(c => c.name);
+    if (wrongAnswers.length < 3) {
+      wrongAnswers = loadedCreators.filter(c => c.name !== current.name).map(c => c.name);
+    }
+  } else {
+    const len = current.name.length;
+    questionText = `Which creator has exactly ${len} characters in their name and starts with "${current.name.charAt(0)}"?`;
+    wrongAnswers = loadedCreators.filter(c => c.name !== current.name).map(c => c.name);
+  }
+
+  document.getElementById("clue-label").textContent = questionText;
+
+  wrongAnswers = [...new Set(wrongAnswers)];
+  let choices = [correctAnswer];
+  let shuffledWrongs = shuffle(wrongAnswers);
+  for (let i = 0; i < 3; i++) {
+    if (shuffledWrongs[i]) choices.push(shuffledWrongs[i]);
+  }
+  while (choices.length < 4) {
+    const fallback = loadedCreators[Math.floor(Math.random() * loadedCreators.length)].name;
+    if (!choices.includes(fallback)) choices.push(fallback);
+  }
+  choices = shuffle(choices);
+
+  choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.className = "trivia-btn";
+    btn.textContent = choice;
+    btn.onclick = () => checkTriviaAnswer(choice, correctAnswer);
+    triviaContainer.appendChild(btn);
+  });
+}
+
+function checkTriviaAnswer(selected, correct) {
+  document.querySelectorAll(".trivia-btn").forEach(b => b.disabled = true);
+  const fb = document.getElementById("feedback");
+
+  if (selected === correct) {
+    new Audio("https://mathuniverse.online/correctanswer.MP3").play();
+    score += 20;
+    document.getElementById("score").textContent = score;
+    showCorrectPopup(20);
+  } else {
+    new Audio("https://mathuniverse.online/wrong.MP3").play();
+    fb.textContent = `Incorrect! The answer was ${correct}.`;
+    fb.className = "feedback wrong";
+    revealAnswer();
+  }
+}
+
 function checkGuess() {
   const input = document.getElementById("guess-input").value.trim().toLowerCase();
   const fb = document.getElementById("feedback");
@@ -816,17 +956,13 @@ function checkGuess() {
   if (input === 'crazy chicken') { triggerEasterEgg(); return; }
 
   if (input === current.name.toLowerCase()) {
-    const correctAudio = new Audio("https://mathuniverse.online/correctanswer.MP3");
-    correctAudio.play();
-
+    new Audio("https://mathuniverse.online/correctanswer.MP3").play();
     const pts = Math.max(10, 40 - (revealedCount - 1) * 10);
     score += pts;
     document.getElementById("score").textContent = score;
     showCorrectPopup(pts);
   } else {
-    const wrongAudio = new Audio("https://mathuniverse.online/wrong.MP3");
-    wrongAudio.play();
-
+    new Audio("https://mathuniverse.online/wrong.MP3").play();
     if (revealedCount < shuffledClues.length) {
       revealedCount++;
       renderClues();
@@ -839,8 +975,8 @@ function checkGuess() {
 }
 
 function showCorrectPopup(pts) {
-  if(document.getElementById("guess-btn")) document.getElementById("guess-btn").disabled = true;
-  if(document.getElementById("give-up-btn")) document.getElementById("give-up-btn").disabled = true;
+  document.getElementById("guess-btn") && (document.getElementById("guess-btn").disabled = true);
+  document.getElementById("give-up-btn") && (document.getElementById("give-up-btn").disabled = true);
   document.getElementById("classic-input-container").style.display = "none";
   document.getElementById("feedback").textContent = "";
   document.getElementById("clues-container").innerHTML = "";
@@ -865,19 +1001,19 @@ function giveUp() {
 }
 
 function revealAnswer() {
-  if(document.getElementById("guess-btn")) document.getElementById("guess-btn").disabled = true;
-  if(document.getElementById("give-up-btn")) document.getElementById("give-up-btn").disabled = true;
+  document.getElementById("guess-btn") && (document.getElementById("guess-btn").disabled = true);
+  document.getElementById("give-up-btn") && (document.getElementById("give-up-btn").disabled = true);
   document.getElementById("classic-input-container").style.display = "none";
   document.getElementById("trivia-container").style.display = "none";
-  
+
   if (currentGameMode === 'classic') {
     revealedCount = shuffledClues.length;
     renderClues();
   } else {
-    document.getElementById("clue-label").textContent = "CORRECT TRIVIA ANSWER";
+    document.getElementById("clue-label").textContent = "CORRECT ANSWER";
     document.getElementById("clues-container").innerHTML = "";
   }
-  
+
   document.getElementById("answer-img").src = current.image;
   document.getElementById("answer-name").textContent = current.name;
   document.getElementById("answer-desc").textContent = current.desc;
@@ -888,23 +1024,18 @@ function nextRound() { startRound(); }
 
 function triggerEasterEgg() {
   const el = document.getElementById('easter-egg');
-  const img = document.getElementById('easter-img');
   el.style.display = 'flex';
-  img.onload = function() {
-    setTimeout(() => el.classList.add('visible'), 50);
-    setTimeout(() => el.classList.remove('visible'), 2500);
-    setTimeout(() => { el.style.display = 'none'; }, 3000);
-  };
-  img.src = img.src;
+  setTimeout(() => el.classList.add('visible'), 50);
+  setTimeout(() => el.classList.remove('visible'), 2500);
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
 }
 
 document.getElementById("guess-input").addEventListener("keydown", e => {
   if (e.key === "Enter") checkGuess();
 });
-</script>
 
-<div class="easter-egg" id="easter-egg">
-  <img src="https://mathuniverse.online/chicken.png" alt="Crazy Chicken" id="easter-img" />
-</div>
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+loadLiveData();
+</script>
 </body>
 </html>
