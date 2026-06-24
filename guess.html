@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Guess the Blooktuber</title>
 <link rel="icon" type="image/png" href="https://blooket.mathuniverse.online/blooktools.png">
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
@@ -41,21 +40,77 @@ body::before {
   from { transform: translateY(0) rotate(0deg); }
   to   { transform: translateY(120vh) rotate(360deg); }
 }
-
 @keyframes slideUpFade {
   from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes slideLeftFade {
   from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
+  to   { opacity: 1; transform: translateX(0); }
 }
-
 @keyframes popInSoft {
-  0% { opacity: 0; transform: scale(0.9); }
-  70% { transform: scale(1.02); }
+  0%   { opacity: 0; transform: scale(0.9); }
+  70%  { transform: scale(1.02); }
   100% { opacity: 1; transform: scale(1); }
+}
+@keyframes cardReveal {
+  0%   { opacity: 0; transform: translateY(40px) scale(0.92); }
+  60%  { transform: translateY(-6px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes flamePop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+@keyframes timerPulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.08); }
+}
+@keyframes popIn {
+  from { transform: scale(0.8) translateY(20px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+@keyframes wordlePop {
+  0%   { transform: scale(0.85); }
+  40%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+@keyframes wordleFlip {
+  0%   { transform: rotateX(0deg); }
+  50%  { transform: rotateX(90deg); }
+  100% { transform: rotateX(0deg); }
+}
+@keyframes wordleShake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px); }
+  40%      { transform: translateX(8px); }
+  60%      { transform: translateX(-6px); }
+  80%      { transform: translateX(6px); }
+}
+@keyframes wordleBounce {
+  0%, 100% { transform: translateY(0); }
+  30%      { transform: translateY(-10px); }
+  50%      { transform: translateY(0); }
+  70%      { transform: translateY(-4px); }
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translate(-50%, 0); }
+  to   { opacity: 0; transform: translate(-50%, -10px); }
+}
+@keyframes keyPress {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
 }
 
 h1 {
@@ -66,425 +121,281 @@ h1 {
   margin-bottom: 6px;
   animation: slideUpFade 0.6s ease-out;
 }
-
-.title-link {
-  color: white;
-  text-decoration: none;
-  text-shadow: 4px 4px 0 #222;
-  transition: filter 0.15s ease;
-}
+.title-link { color: white; text-decoration: none; text-shadow: 4px 4px 0 #222; transition: filter .15s; }
 .title-link:hover { filter: brightness(1.1); }
 
 .subtitle {
-  text-align: center;
-  color: white;
-  font-size: 1rem;
-  font-weight: 800;
-  text-shadow: 1px 1px 0 #333;
-  margin-bottom: 8px;
+  text-align: center; color: white; font-size: 1rem; font-weight: 800;
+  text-shadow: 1px 1px 0 #333; margin-bottom: 8px;
   animation: slideUpFade 0.7s ease-out;
 }
 
 .live-status {
-  text-align: center;
-  margin-bottom: 18px;
-  font-size: 0.9rem;
-  color: white;
-  text-shadow: 1px 1px 0 #333;
-  font-weight: 800;
-  min-height: 22px;
+  text-align: center; margin-bottom: 18px; font-size: .9rem; color: white;
+  text-shadow: 1px 1px 0 #333; font-weight: 800; min-height: 22px;
   animation: slideUpFade 0.7s ease-out;
 }
-.live-dot {
-  display: inline-block;
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  background: #4ade80;
-  margin-right: 5px;
-  animation: pulse 1.5s infinite;
-  vertical-align: middle;
-}
-.live-dot.loading { background: #fbbf24; animation: pulse 0.7s infinite; }
-.live-dot.error   { background: #f87171; animation: none; }
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
-}
+.live-dot { display:inline-block; width:9px; height:9px; border-radius:50%; background:#4ade80; margin-right:5px; animation:pulse 1.5s infinite; vertical-align:middle; }
+.live-dot.loading { background:#fbbf24; animation:pulse .7s infinite; }
+.live-dot.error   { background:#f87171; animation:none; }
 
-.score-bar {
-  text-align: center;
-  margin-bottom: 18px;
+.top-bar {
   display: none;
-}
-.score-bar.show {
-  display: block;
-  animation: slideUpFade 0.5s ease-out forwards;
-}
-.score-bar span {
-  background: #ffe066;
-  border: 3px solid #333;
-  border-radius: 12px;
-  padding: 6px 20px;
-  font-size: 15px;
-  font-weight: 900;
-  color: #333;
-  display: inline-block;
-}
-
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.card {
-  background: white;
-  border: 4px solid #333;
-  border-radius: 20px;
-  box-shadow: 0 8px 0 #333;
-  padding: 24px 26px;
-  animation: slideUpFade 0.9s ease-out forwards;
-}
-
-.menu-title {
-  font-family: 'Titan One', cursive;
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 4px;
-  text-align: center;
-}
-.mode-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 15px;
-}
-.mode-info {
-  font-size: 13px;
-  color: #666;
-  font-weight: 800;
-  text-align: center;
-  margin-top: -6px;
-  margin-bottom: 10px;
-  line-height: 1.4;
-}
-
-.loading-card {
-  text-align: center;
-  padding: 30px 10px;
-}
-.loading-spinner {
-  font-size: 2.5rem;
-  animation: spin 1s linear infinite;
-  display: block;
-  margin-bottom: 12px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-msg {
-  font-weight: 900;
-  color: #444;
-  font-size: 15px;
-}
-
-.clue-label {
-  font-family: 'Titan One', cursive;
-  font-size: 15px;
-  color: #0bc2cf;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
-}
-
-.clue {
-  background: #f0f9ff;
-  border: 3px solid #333;
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  font-size: 15px;
-  font-weight: 800;
-  color: #222;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  animation: slideLeftFade 0.4s ease-out forwards;
-}
-
-.clue-hidden {
-  background: #333;
-  border: 3px solid #333;
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  font-size: 15px;
-  font-weight: 800;
-  color: #333;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  animation: slideLeftFade 0.4s ease-out forwards;
-}
-
-.clue-num {
-  background: #0bc2cf;
-  color: white;
-  border-radius: 50%;
-  width: 28px; height: 28px;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 13px;
-  font-weight: 900;
-  flex-shrink: 0;
-}
-
-.clue-num-hidden {
-  background: #555;
-  border-radius: 50%;
-  width: 28px; height: 28px;
-  flex-shrink: 0;
-}
-
-.trivia-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  align-items: center;
   gap: 12px;
-  margin-top: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
 }
-.trivia-btn {
-  font-family: 'Nunito', sans-serif;
-  font-weight: 900;
-  font-size: 16px;
-  color: white;
-  border: 3px solid #222;
-  border-radius: 12px;
-  padding: 16px;
-  cursor: pointer;
-  transition: all 0.1s ease;
-  text-align: center;
+.top-bar.show { display: flex; animation: slideUpFade .5s ease-out; }
+
+.score-pill {
+  background: #ffe066; border: 3px solid #333; border-radius: 12px;
+  padding: 6px 18px; font-size: 15px; font-weight: 900; color: #333;
 }
-.trivia-btn:nth-child(1) { background: #e53935; box-shadow: 0 4px 0 #b71c1c; }
-.trivia-btn:nth-child(2) { background: #0bc2cf; box-shadow: 0 4px 0 #00838f; }
-.trivia-btn:nth-child(3) { background: #f59e0b; box-shadow: 0 4px 0 #b45309; }
-.trivia-btn:nth-child(4) { background: #3cb529; box-shadow: 0 4px 0 #247a15; }
-.trivia-btn:hover { transform: translateY(2px); }
-.trivia-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.streak-pill {
+  background: white; border: 3px solid #333; border-radius: 12px;
+  padding: 6px 14px; font-size: 15px; font-weight: 900; color: #333;
+  display: flex; align-items: center; gap: 6px;
+}
+.flame { font-size: 18px; transition: transform .2s; }
+.flame.pop { animation: flamePop .3s ease-out; }
+
+.timer-wrap { margin-bottom: 12px; display: none; }
+.timer-wrap.active { display: block; }
+.timer-track {
+  height: 10px; background: #e5e7eb; border-radius: 8px;
+  border: 2px solid #333; overflow: hidden;
+}
+.timer-fill {
+  height: 100%; background: #3cb529; border-radius: 8px;
+  transition: width .1s linear, background .3s;
+}
+.timer-label { font-size: 13px; font-weight: 900; color: #555; text-align: right; margin-top: 3px; }
+.timer-label.urgent { color: #e53935; animation: timerPulse .5s infinite; }
+
+.container { max-width: 600px; margin: 0 auto; }
+.card {
+  background: white; border: 4px solid #333; border-radius: 20px;
+  box-shadow: 0 8px 0 #333; padding: 24px 26px;
+  animation: slideUpFade .9s ease-out forwards;
+}
+.menu-title { font-family:'Titan One',cursive; font-size:24px; color:#333; margin-bottom:4px; text-align:center; }
+.mode-container { display:flex; flex-direction:column; gap:12px; margin-top:15px; }
+.mode-info { font-size:13px; color:#666; font-weight:800; text-align:center; margin-top:-6px; margin-bottom:10px; line-height:1.4; }
+
+.loading-card { text-align:center; padding:30px 10px; }
+.loading-spinner { font-size:2.5rem; animation:spin 1s linear infinite; display:block; margin-bottom:12px; }
+.loading-msg { font-weight:900; color:#444; font-size:15px; }
+
+.clue-label { font-family:'Titan One',cursive; font-size:15px; color:#0bc2cf; letter-spacing:1px; margin-bottom:12px; }
+.clue {
+  background:#f0f9ff; border:3px solid #333; border-radius:12px;
+  padding:12px 16px; margin-bottom:8px; font-size:15px; font-weight:800; color:#222;
+  display:flex; align-items:center; gap:10px; animation:slideLeftFade .4s ease-out forwards;
+}
+.clue-hidden {
+  background:#333; border:3px solid #333; border-radius:12px;
+  padding:12px 16px; margin-bottom:8px; font-size:15px; font-weight:800; color:#333;
+  user-select:none; display:flex; align-items:center; gap:10px;
+  animation:slideLeftFade .4s ease-out forwards;
+}
+.clue-num { background:#0bc2cf; color:white; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; flex-shrink:0; }
+.clue-num-hidden { background:#555; border-radius:50%; width:28px; height:28px; flex-shrink:0; }
+
+.trivia-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+.trivia-btn { font-family:'Nunito',sans-serif; font-weight:900; font-size:16px; color:white; border:3px solid #222; border-radius:12px; padding:16px; cursor:pointer; transition:all .1s ease; text-align:center; }
+.trivia-btn:nth-child(1) { background:#e53935; box-shadow:0 4px 0 #b71c1c; }
+.trivia-btn:nth-child(2) { background:#0bc2cf; box-shadow:0 4px 0 #00838f; }
+.trivia-btn:nth-child(3) { background:#f59e0b; box-shadow:0 4px 0 #b45309; }
+.trivia-btn:nth-child(4) { background:#3cb529; box-shadow:0 4px 0 #247a15; }
+.trivia-btn:hover { transform:translateY(2px); }
+.trivia-btn:disabled { opacity:.6; cursor:not-allowed; transform:none !important; box-shadow:none !important; }
+.trivia-btn.correct-flash { background: #16a34a !important; box-shadow: 0 4px 0 #14532d !important; transform: scale(1.05) !important; }
+.trivia-btn.wrong-flash   { background: #991b1b !important; box-shadow: none !important; opacity: .7; }
 
 input[type="text"] {
-  width: 100%;
-  padding: 12px 16px;
-  border: 3px solid #333;
-  border-radius: 12px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 15px;
-  font-weight: 800;
-  outline: none;
-  margin-top: 16px;
-  transition: .2s ease;
+  width:100%; padding:12px 16px; border:3px solid #333; border-radius:12px;
+  font-family:'Nunito',sans-serif; font-size:15px; font-weight:800; outline:none;
+  margin-top:16px; transition:.2s ease;
 }
-input[type="text"]:focus {
-  box-shadow: 0 0 0 4px rgba(11,194,207,.3);
-  transform: translateY(-2px);
-}
+input[type="text"]:focus { box-shadow:0 0 0 4px rgba(11,194,207,.3); transform:translateY(-2px); }
+input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 
-.feedback {
-  text-align: center;
-  font-size: 15px;
-  font-weight: 900;
-  margin-top: 10px;
-  min-height: 22px;
-  transition: all 0.3s;
-}
-.feedback.correct { color: #16a34a; animation: popInSoft 0.4s ease-out; }
-.feedback.wrong   { color: #dc2626; animation: popInSoft 0.4s ease-out; }
+.feedback { text-align:center; font-size:15px; font-weight:900; margin-top:10px; min-height:22px; transition:all .3s; }
+.feedback.correct { color:#16a34a; animation:popInSoft .4s ease-out; }
+.feedback.wrong   { color:#dc2626; animation:popInSoft .4s ease-out; }
 
 .btn {
-  display: block;
-  width: 100%;
-  font-family: 'Titan One', cursive;
-  font-size: 17px;
-  color: white;
-  border: 3px solid #222;
-  border-radius: 12px;
-  box-shadow: 0 5px 0 #222;
-  padding: 13px;
-  cursor: pointer;
-  margin-top: 12px;
-  transition: all .15s ease;
-  letter-spacing: 1px;
+  display:block; width:100%; font-family:'Titan One',cursive; font-size:17px; color:white;
+  border:3px solid #222; border-radius:12px; box-shadow:0 5px 0 #222;
+  padding:13px; cursor:pointer; margin-top:12px; transition:all .15s ease; letter-spacing:1px;
 }
-.btn:hover  { transform: translateY(2px); box-shadow: 0 3px 0 #222; filter: brightness(1.05); }
-.btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #222; filter: brightness(0.95); }
-.btn:disabled { background: #aaa !important; cursor: not-allowed; transform: none; box-shadow: 0 5px 0 #777; filter: none; }
+.btn:hover   { transform:translateY(2px); box-shadow:0 3px 0 #222; filter:brightness(1.05); }
+.btn:active  { transform:translateY(4px); box-shadow:0 1px 0 #222; filter:brightness(.95); }
+.btn:disabled { background:#aaa !important; cursor:not-allowed; transform:none; box-shadow:0 5px 0 #777; filter:none; }
+.btn-green  { background:#3cb529; }
+.btn-yellow { background:#f59e0b; }
+.btn-red    { background:#e53935; }
+.btn-blue   { background:#0bc2cf; }
+.btn-purple { background:#8b5cf6; }
 
-.btn-green  { background: #3cb529; }
-.btn-yellow { background: #f59e0b; }
-.btn-red    { background: #e53935; }
-.btn-blue   { background: #0bc2cf; }
-.btn-purple { background: #8b5cf6; }
+.answer-box { text-align:center; margin-top:20px; display:none; }
+.answer-box.revealed { animation: cardReveal .55s cubic-bezier(.175,.885,.32,1.275) forwards; }
+.answer-img { width:90px; height:90px; border-radius:50%; border:4px solid #333; object-fit:cover; margin-bottom:10px; }
+.answer-name { font-family:'Titan One',cursive; font-size:24px; color:#111; letter-spacing:1px; }
+.answer-desc { font-size:13px; color:#555; font-weight:800; margin-top:6px; line-height:1.5; }
 
-.answer-box {
-  text-align: center;
-  margin-top: 20px;
-  display: none;
-  animation: slideUpFade 0.5s ease-out forwards;
-}
-.answer-img {
-  width: 90px; height: 90px;
-  border-radius: 50%;
-  border: 4px solid #333;
-  object-fit: cover;
-  margin-bottom: 10px;
-}
-.answer-name {
-  font-family: 'Titan One', cursive;
-  font-size: 24px;
-  color: #111;
-  letter-spacing: 1px;
-}
-.answer-desc {
-  font-size: 13px;
-  color: #555;
-  font-weight: 800;
-  margin-top: 6px;
-  line-height: 1.5;
-}
-
-.popup-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(3px);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.popup-overlay.show { display: flex; opacity: 1; }
-.popup-box {
-  background: white;
-  border: 4px solid #333;
-  border-radius: 24px;
-  box-shadow: 0 10px 0 #333;
-  padding: 32px 28px;
-  text-align: center;
-  max-width: 420px;
-  width: 90%;
-  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  max-height: 85vh;
-  overflow-y: auto;
-}
-@keyframes popIn {
-  from { transform: scale(0.8) translateY(20px); opacity: 0; }
-  to   { transform: scale(1) translateY(0); opacity: 1; }
-}
-
-.scoreboard-section {
-  margin-top: 15px;
-  border-top: 3px dashed #ccc;
-  padding-top: 15px;
-}
-.scoreboard-title {
-  font-family: 'Titan One', cursive;
-  font-size: 18px;
-  color: #333;
-  margin-bottom: 10px;
-}
-.score-list {
+/* ── WORDLE ── */
+.wordle-wrap {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: 200px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-.score-row {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: #f3f4f6;
-  border: 2px solid #333;
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 14px;
-  font-weight: 800;
-}
-.score-rank {
-  background: #333;
-  color: white;
-  border-radius: 4px;
-  padding: 2px 6px;
-  font-size: 11px;
-}
-.live-badge {
-  background: #4ade80;
-  color: #166534;
-  border-radius: 4px;
-  padding: 2px 6px;
-  font-size: 11px;
-  font-weight: 900;
-}
-
-.popup-emoji { font-size: 3rem; margin-bottom: 8px; }
-.popup-title {
-  font-family: "Titan One", cursive;
-  font-size: 2rem;
-  color: #16a34a;
-  text-shadow: 2px 2px 0 #ccc;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
-}
-.popup-pts {
-  font-size: 1.1rem;
-  font-weight: 900;
-  color: #555;
-  margin-bottom: 14px;
-}
-.popup-img {
-  width: 80px; height: 80px;
-  border-radius: 50%;
-  border: 4px solid #333;
-  object-fit: cover;
-  margin-bottom: 10px;
-}
-.popup-name {
-  font-family: "Titan One", cursive;
-  font-size: 1.4rem;
-  color: #111;
-  letter-spacing: 1px;
   margin-bottom: 4px;
-}
-.popup-desc {
-  font-size: 13px;
-  color: #666;
-  font-weight: 800;
-  margin-bottom: 18px;
-  line-height: 1.5;
+  width: 100%;
 }
 
-.easter-egg {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 999;
+.wordle-board {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+  perspective: 600px;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.wordle-row {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  width: 100%;
+}
+.wordle-row.shake { animation: wordleShake .42s ease-in-out; }
+
+/* Base tile — size is overridden by JS via --tile-sz on the board */
+.wordle-tile {
+  width: var(--tile-sz, 42px);
+  height: var(--tile-sz, 42px);
+  min-width: 0;
+  flex-shrink: 0;
+  border-radius: 7px;
+  border: 2.5px solid #d1d5db;
+  background: #fff;
+  display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.6);
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  font-family: 'Nunito', sans-serif;
+  font-size: var(--tile-font, 17px);
+  font-weight: 900;
+  color: #333;
+  text-transform: uppercase;
+  transition: border-color .12s, transform .12s, background .12s;
+  backface-visibility: hidden;
 }
-.easter-egg.show { display: flex; }
-.easter-egg.visible { opacity: 1; }
-.easter-egg img {
-  max-width: 80%; max-height: 80%;
-  border-radius: 20px;
-  border: 5px solid white;
-  box-shadow: 0 0 40px rgba(255,255,255,0.4);
+.wordle-tile.filled  { border-color: #9ca3af; animation: wordlePop .12s ease-out; }
+.wordle-tile.green   { background:#16a34a; border-color:#16a34a; color:#fff; animation: wordleFlip .5s ease; }
+.wordle-tile.yellow  { background:#f59e0b; border-color:#f59e0b; color:#fff; animation: wordleFlip .5s ease; }
+.wordle-tile.gray    { background:#6b7280; border-color:#6b7280; color:#fff; animation: wordleFlip .5s ease; }
+.wordle-tile.empty   { opacity: .55; }
+.wordle-tile.bounce  { animation: wordleBounce .5s ease .15s; }
+
+.wordle-status-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.wordle-attempts-pill { background: #f0f9ff; border: 2.5px solid #333; border-radius: 10px; padding: 5px 14px; font-size: 12.5px; font-weight: 900; color: #0bc2cf; }
+.wordle-len-pill { background: #fff7e6; border: 2.5px solid #333; border-radius: 10px; padding: 5px 14px; font-size: 12.5px; font-weight: 900; color: #b45309; }
+
+.wordle-toast {
+  position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+  background: #222; color: #fff; font-weight: 900; font-size: 13px;
+  padding: 9px 18px; border-radius: 8px; white-space: nowrap; z-index: 20;
+  box-shadow: 0 4px 0 rgba(0,0,0,.2); animation: toastIn .18s ease-out forwards;
+}
+.wordle-toast.hide { animation: toastOut .18s ease-in forwards; }
+.wordle-toast-anchor { position: relative; height: 0; }
+
+.wordle-keyboard { display: flex; flex-direction: column; gap: 7px; margin-bottom: 6px; user-select: none; width: 100%; }
+.wordle-key-row { display: flex; gap: 5px; justify-content: center; }
+.wordle-key {
+  font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 12.5px; color: #333;
+  background: #e5e7eb; border: none; border-radius: 6px; height: 40px; min-width: 28px;
+  flex: 1; max-width: 34px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: filter .1s, transform .08s; text-transform: uppercase;
+}
+.wordle-key:hover { filter: brightness(.95); }
+.wordle-key:active, .wordle-key.pressed { animation: keyPress .12s ease; }
+.wordle-key.wide { max-width: 56px; font-size: 10.5px; flex: 1.4; }
+.wordle-key.wordle-spacebar { max-width: 220px; flex: 1; font-size: 12px; letter-spacing: 1px; }
+.wordle-key.green  { background:#16a34a; color:#fff; }
+.wordle-key.yellow { background:#f59e0b; color:#fff; }
+.wordle-key.gray   { background:#9ca3af; color:#fff; }
+
+.wordle-hint { text-align: center; font-size: 12.5px; font-weight: 800; color: #888; margin-bottom: 10px; }
+
+.wordle-result { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin: 10px 0 4px; }
+.wordle-box {
+  width: 28px; height: 28px; border-radius: 6px; border: 2px solid #333;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900; color: white; transition: transform .15s;
+}
+.wordle-box.green  { background: #16a34a; }
+.wordle-box.yellow { background: #f59e0b; }
+.wordle-box.gray   { background: #6b7280; }
+.wordle-share-text { font-size: 12px; font-weight: 800; color: #555; text-align: center; margin-bottom: 8px; }
+.wordle-copy-btn {
+  font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900;
+  background: #333; color: white; border: none; border-radius: 8px;
+  padding: 6px 14px; cursor: pointer; margin: 0 auto 10px; display: block; transition: .15s;
+}
+.wordle-copy-btn:hover { background: #555; }
+
+.popup-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+  backdrop-filter:blur(3px); z-index:100; align-items:center; justify-content:center;
+  opacity:0; transition:opacity .3s ease;
+}
+.popup-overlay.show { display:flex; opacity:1; }
+.popup-box {
+  background:white; border:4px solid #333; border-radius:24px; box-shadow:0 10px 0 #333;
+  padding:32px 28px; text-align:center; max-width:420px; width:90%;
+  animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);
+  max-height:85vh; overflow-y:auto;
+}
+
+.scoreboard-section { margin-top:15px; border-top:3px dashed #ccc; padding-top:15px; }
+.scoreboard-title { font-family:'Titan One',cursive; font-size:18px; color:#333; margin-bottom:10px; }
+.score-list { display:flex; flex-direction:column; gap:6px; max-height:200px; overflow-y:auto; padding-right:4px; }
+.score-row {
+  display:flex; justify-content:space-between; align-items:center;
+  background:#f3f4f6; border:2px solid #333; border-radius:8px;
+  padding:6px 12px; font-size:14px; font-weight:800;
+}
+.score-rank { background:#333; color:white; border-radius:4px; padding:2px 6px; font-size:11px; }
+.live-badge { background:#4ade80; color:#166534; border-radius:4px; padding:2px 6px; font-size:11px; font-weight:900; }
+
+.popup-emoji { font-size:3rem; margin-bottom:8px; }
+.popup-title { font-family:"Titan One",cursive; font-size:2rem; color:#16a34a; text-shadow:2px 2px 0 #ccc; letter-spacing:1px; margin-bottom:6px; }
+.popup-pts   { font-size:1.1rem; font-weight:900; color:#555; margin-bottom:10px; }
+.popup-streak { font-size:1rem; font-weight:900; color:#f59e0b; margin-bottom:12px; }
+.popup-img  { width:80px; height:80px; border-radius:50%; border:4px solid #333; object-fit:cover; margin-bottom:10px; }
+.popup-name { font-family:"Titan One",cursive; font-size:1.4rem; color:#111; letter-spacing:1px; margin-bottom:4px; }
+.popup-desc { font-size:13px; color:#666; font-weight:800; margin-bottom:14px; line-height:1.5; }
+
+#confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 200; }
+
+.easter-egg { display:none; position:fixed; inset:0; z-index:999; align-items:center; justify-content:center; background:rgba(0,0,0,.6); opacity:0; transition:opacity .4s ease; }
+.easter-egg.show { display:flex; }
+.easter-egg.visible { opacity:1; }
+.easter-egg img { max-width:80%; max-height:80%; border-radius:20px; border:5px solid white; box-shadow:0 0 40px rgba(255,255,255,.4); }
+
+@media (max-width: 420px) {
+  .wordle-key { height: 36px; font-size: 11px; }
 }
 </style>
 </head>
 <body>
+
+<canvas id="confetti-canvas"></canvas>
 
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/chick.svg"   alt="" aria-hidden="true" style="left:5%;  width:80px;  animation-duration:16s; animation-delay:-2s;">
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/dragon.svg"  alt="" aria-hidden="true" style="left:75%; width:100px; animation-duration:20s; animation-delay:-8s;">
@@ -506,7 +417,13 @@ input[type="text"]:focus {
     <span id="live-text">Fetching live subscriber counts...</span>
   </div>
 
-  <div class="score-bar" id="main-score-bar"><span>Score: <span id="score">0</span> pts</span></div>
+  <div class="top-bar" id="top-bar">
+    <div class="score-pill">Score: <span id="score">0</span> pts</div>
+    <div class="streak-pill">
+      <span class="flame" id="flame-icon">🔥</span>
+      Streak: <span id="streak-count">0</span>
+    </div>
+  </div>
 
   <div class="card">
     <div id="loading-view" class="loading-card">
@@ -514,32 +431,50 @@ input[type="text"]:focus {
       <div class="loading-msg">Fetching live YouTube data...<br>This takes just a moment!</div>
     </div>
 
-    <div id="welcome-message" style="display:none; text-align:center; padding: 20px 0;">
-      <div class="menu-title" style="margin-bottom: 12px;">Ready to Play!</div>
-      <p style="font-weight: 800; color: #444; margin-bottom: 20px;">Live subscriber counts loaded! Pick a mode below.</p>
+    <div id="welcome-message" style="display:none; text-align:center; padding:20px 0;">
+      <div class="menu-title" style="margin-bottom:12px;">Ready to Play!</div>
+      <p style="font-weight:800; color:#444; margin-bottom:20px;">Live subscriber counts loaded! Pick a mode below.</p>
       <button class="btn btn-yellow" onclick="openModePopup()">Choose Game Mode</button>
     </div>
 
-    <div id="error-view" style="display:none; text-align:center; padding: 20px 0;">
-      <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
-      <div class="menu-title" style="margin-bottom: 8px; color: #e53935;">API Error</div>
-      <p style="font-weight: 800; color: #444; margin-bottom: 20px;">Using last known subscriber counts instead.</p>
+    <div id="error-view" style="display:none; text-align:center; padding:20px 0;">
+      <div style="font-size:2rem; margin-bottom:10px;">⚠️</div>
+      <div class="menu-title" style="margin-bottom:8px; color:#e53935;">API Error</div>
+      <p style="font-weight:800; color:#444; margin-bottom:20px;">Using last known subscriber counts instead.</p>
       <button class="btn btn-yellow" onclick="openModePopup()">Choose Game Mode</button>
     </div>
 
-    <div id="game-area" style="display: none;">
+    <div id="game-area" style="display:none;">
+
+      <div class="timer-wrap" id="timer-wrap">
+        <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+        <div class="timer-label" id="timer-label">30s</div>
+      </div>
+
       <div class="clue-label" id="clue-label">CLUE 1 OF 3</div>
+
+      <div class="wordle-wrap" id="wordle-wrap" style="display:none;">
+        <div class="wordle-toast-anchor" id="wordle-toast-anchor"></div>
+        <div class="wordle-board" id="wordle-board"></div>
+        <div class="wordle-status-row">
+          <div class="wordle-len-pill" id="wordle-len-pill"></div>
+          <div class="wordle-attempts-pill" id="wordle-attempts-pill"></div>
+        </div>
+        <div class="wordle-hint" id="wordle-hint">Type a guess, then press Enter or hit Guess</div>
+        <div class="wordle-keyboard" id="wordle-keyboard"></div>
+      </div>
+
       <div id="clues-container"></div>
-      <div id="trivia-container" class="trivia-grid" style="display: none;"></div>
+      <div id="trivia-container" class="trivia-grid" style="display:none;"></div>
 
       <div id="classic-input-container">
-        <input type="text" id="guess-input" placeholder="Type your guess here..." />
-        <button class="btn btn-green" id="guess-btn" onclick="checkGuess()">Submit Guess</button>
+        <input type="text" id="guess-input" placeholder="Type your guess here…" />
+        <button class="btn btn-green" id="guess-btn" onclick="checkGuessRouted()">Submit Guess</button>
         <button class="btn btn-red"   id="give-up-btn" onclick="giveUp()">Give Up & Reveal</button>
       </div>
 
       <div class="feedback" id="feedback"></div>
-      <button class="btn btn-blue" onclick="openModePopup()" style="margin-top: 12px;">Change Game Mode</button>
+      <button class="btn btn-blue" onclick="openModePopup()" style="margin-top:12px;">Change Game Mode</button>
 
       <div class="answer-box" id="answer-box">
         <img class="answer-img" id="answer-img" src="" alt="Blooktuber profile picture" />
@@ -550,44 +485,52 @@ input[type="text"]:focus {
     </div>
   </div>
 
-  <!-- Mode Picker Popup -->
   <div class="popup-overlay" id="mode-popup-overlay">
-    <div class="popup-box" style="text-align: left;">
-      <div class="menu-title" style="margin-bottom: 15px;">Choose Game Mode</div>
+    <div class="popup-box" style="text-align:left;">
+      <div class="menu-title" style="margin-bottom:15px;">Choose Game Mode</div>
 
       <div id="popup-menu-view">
         <div class="mode-container">
-          <button class="btn btn-green" onclick="clickMode('classic')">Play Classic Mode</button>
-          <div class="mode-info">Guess using live clues — sub count, status, and first letter. Earn more points for fewer clues used!</div>
+          <button class="btn btn-green"  onclick="clickMode('classic')">Play Classic Mode</button>
+          <div class="mode-info">Guess using live clues. Earn more points the fewer clues you use!</div>
 
           <button class="btn btn-purple" onclick="clickMode('trivia')">Play Trivia Mode</button>
           <div class="mode-info">Blooket-style multiple choice with tricky options. +20 pts per correct answer!</div>
+
+          <button class="btn btn-yellow" onclick="clickMode('timer')">Play Timer Mode</button>
+          <div class="mode-info">30 seconds per round, if you answer a question fast you get bonus points!</div>
+
+          <button class="btn" style="background:#e91e63; box-shadow:0 5px 0 #222;" onclick="clickMode('wordle')">Play Wordle Mode</button>
+          <div class="mode-info">6 letter-by-letter guesses. Share your result like Wordle!</div>
         </div>
-        <button class="btn btn-red" onclick="closeModePopup()" style="margin-top: 15px; padding: 8px;">Cancel</button>
+        <button class="btn btn-red" onclick="closeModePopup()" style="margin-top:15px; padding:8px;">Cancel</button>
       </div>
 
-      <div id="popup-scoreboard-view" style="display: none;">
-        <div id="selected-mode-title" class="menu-title" style="font-size: 20px; color: #0bc2cf;"></div>
-
+      <div id="popup-scoreboard-view" style="display:none;">
+        <div id="selected-mode-title" class="menu-title" style="font-size:20px; color:#0bc2cf;"></div>
         <div class="scoreboard-section">
           <div class="scoreboard-title">🏆 Live Sub Count Rankings</div>
-          <div style="font-size: 12px; font-weight: 800; color: #888; margin-bottom: 8px;" id="scoreboard-timestamp"></div>
+          <div style="font-size:12px; font-weight:800; color:#888; margin-bottom:8px;" id="scoreboard-timestamp"></div>
           <div class="score-list" id="scoreboard-data-list"></div>
         </div>
-
-        <button class="btn btn-green" id="start-game-btn" style="margin-top: 14px;">Start Game ▶</button>
-        <button class="btn btn-blue" onclick="backToModeSelect()" style="margin-top: 8px; padding: 8px;">◀ Back to Modes</button>
+        <button class="btn btn-green" id="start-game-btn" style="margin-top:14px;">Start Game ▶</button>
+        <button class="btn btn-blue"  onclick="backToModeSelect()" style="margin-top:8px; padding:8px;">◀ Back to Modes</button>
       </div>
     </div>
   </div>
 
-  <!-- Correct Answer Popup -->
   <div class="popup-overlay" id="popup-overlay">
     <div class="popup-box">
       <div class="popup-emoji">🎉</div>
       <div class="popup-title">Correct!</div>
-      <div class="popup-pts" id="popup-pts"></div>
-      <img class="popup-img" id="popup-img" src="" alt="" />
+      <div class="popup-pts"    id="popup-pts"></div>
+      <div class="popup-streak" id="popup-streak" style="display:none;"></div>
+      <div id="wordle-result-area" style="display:none;">
+        <div class="wordle-result" id="popup-wordle-grid"></div>
+        <div class="wordle-share-text" id="wordle-share-text"></div>
+        <button class="wordle-copy-btn" onclick="copyWordleResult()">📋 Copy Result</button>
+      </div>
+      <img class="popup-img"  id="popup-img"  src="" alt="" />
       <div class="popup-name" id="popup-name"></div>
       <div class="popup-desc" id="popup-desc"></div>
       <button class="btn btn-green" onclick="closePopupAndNext()">Next Round ▶</button>
@@ -600,10 +543,8 @@ input[type="text"]:focus {
 </div>
 
 <script>
-// ─── YouTube API Config (same key as leaderboard) ───────────────────────────
 const API_KEY = "AIzaSyBUj3qxFbI2-IWeRU1EEa4w_ChFoZgSjUE";
 
-// ─── Creator list: [displayName, ytHandle, ytUrl, optionalImg] ──────────────
 const creatorList = [
   ["Waymore",          "WaymoreYT",                    "https://www.youtube.com/@WaymoreYT",                    "https://yt3.googleusercontent.com/fpVQ5VoYlN-UptRogESSqHnxEX61T-7YW1YNGObVrFX2w_1jBO-njl76kt-6vkPF_2cC9x66kQ=s800-c-k-c0x00ffffff-no-rj"],
   ["LeonBlox",         "LeonBloxOfficial",             "https://www.youtube.com/@LeonBloxOfficial",             "https://yt3.googleusercontent.com/IVhsWHLcVbC1983DmOiSRYNd2QMIU7R6eHOAHrpk_sT6dBBJj4CWAWyTAJoI_CySgNRcrb6HQQ=s800-c-k-c0x00ffffff-no-rj"],
@@ -630,14 +571,14 @@ const creatorList = [
   ["Pig55",            "Pig_55",                       "https://www.youtube.com/@Pig_55",                       null],
   ["Blooket Elite",    "BlooketEliteIsEatingYourFries","https://www.youtube.com/@BlooketEliteIsEatingYourFries",null],
   ["Turtelix",         "TurtelixYT",                   "https://www.youtube.com/@TurtelixYT",                   null],
-  ["Green astronaut",  "ThegreenastronautYT",          "https://www.youtube.com/@ThegreenastronautYT",          "https://yt3.googleusercontent.com/jqSEQqOe03q2My36l3Khz09hh8qmrhDGkbD-VsLGrW-ESIbSneCIfSeYVravW7BwhlKfiaUPpg=s800-c-k-c0x00ffffff-no-rj"],
+  ["The green astronaut",  "ThegreenastronautYT",          "https://www.youtube.com/@ThegreenastronautYT",          "https://yt3.googleusercontent.com/jqSEQqOe03q2My36l3Khz09hh8qmrhDGkbD-VsLGrW-ESIbSneCIfSeYVravW7BwhlKfiaUPpg=s800-c-k-c0x00ffffff-no-rj"],
   ["Blooket Warrior",  "BlooketWarriorYT",             "https://www.youtube.com/@BlooketWarriorYT",             null],
   ["Blookbread",       "Breadblook",                   "https://www.youtube.com/@Breadblook",                   null],
   ["TOBP Blooket",     "ThatOneBlooketPlayer",         "https://www.youtube.com/@ThatOneBlooketPlayer",         null],
   ["YouLostMan",       "YouLostMan",                   "https://www.youtube.com/@YouLostMan",                   null],
   ["Kinkade",          "ItzKinkade",                   "https://www.youtube.com/@ItzKinkade",                   null],
   ["Peetwick",         "PeetWickYT",                   "https://www.youtube.com/@PeetWickYT",                   null],
-  ["Freedo",           "TheRealFreedoBlox",            "https://www.youtube.com/@TheRealFreedoBlox",            null],
+  ["Freedo",           "TheRealFreedoBlox",            "https://www.youtube.com/@TheRealFreedoBlox",            null]
 ];
 
 const inactiveCreators = ["kinkade", "blooket elite", "bil"];
@@ -647,381 +588,692 @@ const fallbackSubs = {
   "FastyJay":12900,"the blooket gamer":6250,"Blooket Gods":4740,"Slade2":3690,"Blooket Life":3620,
   "JustaPanda":2990,"Blooket Insane":2900,"notRIC":2740,"SRN Games":2650,"BlooketBam":2430,
   "Blook Master":2100,"Twisted Bread":2060,"Pig55":1520,"Blooket Elite":1500,"Turtelix":1420,
-  "Green astronaut":1100,"Blooket Warrior":1020,"Blookbread":1010,"TOBP Blooket":852,
+  "The green astronaut":1100,"Blooket Warrior":1020,"Blookbread":1010,"TOBP Blooket":852,
   "YouLostMan":660,"Kinkade":525,"Peetwick":396,"Freedo":289
 };
-
 const defaultImage = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fyt3.googleusercontent.com%2Fytc%2FAIdro_l1w6Mc5WEokWWYbrNNP_5BEshKUO25cIZVOqiU6AojVw%3Ds900-c-k-c0x00ffffff-no-rj&f=1&nofb=1&ipt=9e9827da110a3ddd46c8388025131ce04094fdaa5ea06308022c4c6612b4d6ff";
 
-// ─── State ───────────────────────────────────────────────────────────────────
-let loadedCreators = [];   // enriched with live subs after fetch
-let lastUpdated = null;
+// ── State ─────────────────────────────────────────────────────────────────────
+let loadedCreators = [], lastUpdated = null;
 let currentGameMode = 'classic';
-let activePool = [];
-let current = null;
-let lastBlooktuber = null;
-let lastFirstClue = null;
-let shuffledClues = [];
-let revealedCount = 0;
-let score = 0;
+let activePool = [], current = null;
+let lastBlooktuber = null, lastFirstClue = null;
+let shuffledClues = [], revealedCount = 0;
+let score = 0, streak = 0;
+let gameStarted = false;
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-function formatSubs(num) {
-  if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-  if (num >= 1000)    return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-  return num.toLocaleString();
+// Timer state
+const TIMER_SECONDS = 30;
+let timerInterval = null, timerRemaining = 0;
+
+// Wordle state
+let wordleGuesses = [], wordleAnswer = "", wordleAttempt = 0;
+const WORDLE_MAX = 6;
+let wordleShareStr = "", wordleLocked = false, wordleKeyState = {};
+let wordleToastTimeout = null, wordleCurrentGuess = '';
+
+// Confetti
+let confettiParticles = [], confettiRAF = null;
+
+// ── Tile size calculator ───────────────────────────────────────────────────────
+// Computes the largest square tile that fits in the card without overflow.
+// cardPadding: 26px each side = 52px; gap between tiles: 5px
+function calcTileSize(wordLen) {
+  const cardWidth = Math.min(600, window.innerWidth) - 40 - 52; // viewport - container padding - card padding
+  const totalGap = (wordLen - 1) * 5;
+  const raw = Math.floor((cardWidth - totalGap) / wordLen);
+  // clamp: never larger than 42px, never smaller than 20px
+  return Math.max(20, Math.min(42, raw));
 }
 
+function applyTileSize(wordLen) {
+  const sz = calcTileSize(wordLen);
+  const fontSize = Math.max(10, Math.floor(sz * 0.44));
+  const board = document.getElementById('wordle-board');
+  board.style.setProperty('--tile-sz', sz + 'px');
+  board.style.setProperty('--tile-font', fontSize + 'px');
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function formatSubs(n) {
+  if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K';
+  return n.toLocaleString();
+}
 function shuffle(arr) {
   const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
   }
   return a;
 }
 
-// ─── YouTube API ─────────────────────────────────────────────────────────────
-async function resolveHandle(handle) {
-  if (handle.startsWith("UC")) return handle;
-  const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${encodeURIComponent(handle)}&key=${API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  if (data.items && data.items.length > 0) return data.items[0].id;
-  return null;
+// ── Confetti ──────────────────────────────────────────────────────────────────
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#f59e0b','#3cb529','#0bc2cf','#e53935','#8b5cf6','#ffe066','#fff'];
+  confettiParticles = Array.from({length: 120}, () => ({
+    x: Math.random()*canvas.width, y: -10-Math.random()*80,
+    r: 5+Math.random()*7, d: 1.5+Math.random()*3,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    tilt: Math.random()*10-5, tiltAngle: 0,
+    tiltSpeed: 0.05+Math.random()*0.1, opacity: 1
+  }));
+  if (confettiRAF) cancelAnimationFrame(confettiRAF);
+  let elapsed = 0;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    elapsed++;
+    confettiParticles.forEach(p => {
+      p.tiltAngle += p.tiltSpeed; p.y += p.d; p.tilt = Math.sin(p.tiltAngle)*12;
+      if (elapsed > 80) p.opacity -= 0.012;
+      ctx.save(); ctx.globalAlpha = Math.max(0,p.opacity); ctx.fillStyle = p.color;
+      ctx.beginPath(); ctx.ellipse(p.x+p.tilt, p.y, p.r, p.r*0.4, p.tiltAngle, 0, Math.PI*2);
+      ctx.fill(); ctx.restore();
+    });
+    if (confettiParticles.some(p => p.opacity > 0)) confettiRAF = requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
 }
 
-async function fetchSubsBatch(channelIds) {
-  const ids = channelIds.join(",");
-  const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${ids}&key=${API_KEY}`;
-  const res = await fetch(url);
+// ── Streak ────────────────────────────────────────────────────────────────────
+function updateStreak(correct) {
+  if (correct) streak++; else streak = 0;
+  const countEl = document.getElementById('streak-count');
+  const flameEl = document.getElementById('flame-icon');
+  countEl.textContent = streak;
+  flameEl.textContent = streak < 3 ? '🔥' : streak < 6 ? '🔥🔥' : '🔥🔥🔥';
+  flameEl.classList.remove('pop');
+  void flameEl.offsetWidth;
+  if (correct) flameEl.classList.add('pop');
+}
+
+// ── Timer ─────────────────────────────────────────────────────────────────────
+function startTimer() {
+  clearInterval(timerInterval);
+  timerRemaining = TIMER_SECONDS;
+  document.getElementById('timer-wrap').classList.add('active');
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    timerRemaining--;
+    updateTimerUI();
+    if (timerRemaining <= 0) { clearInterval(timerInterval); timerExpired(); }
+  }, 1000);
+}
+function stopTimer() {
+  clearInterval(timerInterval);
+  document.getElementById('timer-wrap').classList.remove('active');
+}
+function updateTimerUI() {
+  const fill = document.getElementById('timer-fill');
+  const label = document.getElementById('timer-label');
+  const pct = (timerRemaining/TIMER_SECONDS)*100;
+  fill.style.width = pct+'%';
+  fill.style.background = timerRemaining<=8 ? '#e53935' : timerRemaining<=15 ? '#f59e0b' : '#3cb529';
+  label.textContent = timerRemaining+'s';
+  label.className = 'timer-label'+(timerRemaining<=8 ? ' urgent' : '');
+}
+function timerExpired() {
+  const fb = document.getElementById('feedback');
+  fb.textContent = "⏱ Time's up!";
+  fb.className = 'feedback wrong';
+  updateStreak(false);
+  revealAnswer();
+}
+function getTimerBonus() { return Math.floor((timerRemaining/TIMER_SECONDS)*20); }
+
+// ── YouTube API ───────────────────────────────────────────────────────────────
+async function resolveHandle(handle) {
+  if (handle.startsWith("UC")) return handle;
+  const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${encodeURIComponent(handle)}&key=${API_KEY}`);
+  const data = await res.json();
+  return data.items?.[0]?.id || null;
+}
+async function fetchSubsBatch(ids) {
+  const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${ids.join(',')}&key=${API_KEY}`);
   const data = await res.json();
   const map = {};
-  if (data.items) {
-    data.items.forEach(item => {
-      map[item.id] = parseInt(item.statistics.subscriberCount, 10);
-    });
-  }
+  data.items?.forEach(item => { map[item.id] = parseInt(item.statistics.subscriberCount, 10); });
   return map;
 }
 
 async function loadLiveData() {
-  const dot  = document.getElementById("live-dot");
-  const text = document.getElementById("live-text");
-
-  dot.className = "live-dot loading";
-  text.textContent = "Fetching live subscriber counts...";
-
+  const dot = document.getElementById('live-dot'), text = document.getElementById('live-text');
+  dot.className = 'live-dot loading';
+  text.textContent = 'Fetching live subscriber counts…';
   try {
-    const resolvedIds = await Promise.all(creatorList.map(([,handle]) => resolveHandle(handle)));
-    const allIds = resolvedIds.filter(Boolean);
+    const resolvedIds = await Promise.all(creatorList.map(([,h]) => resolveHandle(h)));
     const subMap = {};
-    for (let i = 0; i < allIds.length; i += 50) {
-      Object.assign(subMap, await fetchSubsBatch(allIds.slice(i, i + 50)));
-    }
+    const validIds = resolvedIds.filter(Boolean);
+    for (let i = 0; i < validIds.length; i += 50)
+      Object.assign(subMap, await fetchSubsBatch(validIds.slice(i, i+50)));
 
-    loadedCreators = creatorList.map(([name, handle, url, img], idx) => {
-      const channelId = resolvedIds[idx];
-      const subs = (channelId && subMap[channelId] !== undefined)
-        ? subMap[channelId]
-        : (fallbackSubs[name] || 0);
-      const status = inactiveCreators.includes(name.toLowerCase()) ? "Inactive" : "Active";
-      return { name, url, subs, status, image: img || defaultImage };
+    loadedCreators = creatorList.map(([name,,url,img], idx) => {
+      const cid = resolvedIds[idx];
+      const subs = (cid && subMap[cid] !== undefined) ? subMap[cid] : (fallbackSubs[name] || 0);
+      return { name, url, subs, status: inactiveCreators.includes(name.toLowerCase()) ? 'Inactive' : 'Active', image: img || defaultImage };
     });
-
-    loadedCreators.sort((a, b) => b.subs - a.subs);
+    loadedCreators.sort((a,b) => b.subs - a.subs);
     lastUpdated = new Date();
-
-    dot.className = "live-dot";
-    text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
-
-    document.getElementById("loading-view").style.display = "none";
-    document.getElementById("welcome-message").style.display = "block";
-
-    // Auto-refresh every 5 minutes
-    setTimeout(loadLiveData, 5 * 60 * 1000);
-
-  } catch (err) {
-    console.error("YouTube API error:", err);
-    dot.className = "live-dot error";
-    text.textContent = "⚠️ API error — using last known counts";
-
-    loadedCreators = creatorList.map(([name, , url, img]) => {
-      const status = inactiveCreators.includes(name.toLowerCase()) ? "Inactive" : "Active";
-      return { name, url, subs: fallbackSubs[name] || 0, status, image: img || defaultImage };
-    });
-    loadedCreators.sort((a, b) => b.subs - a.subs);
-
-    document.getElementById("loading-view").style.display = "none";
-    document.getElementById("error-view").style.display = "block";
+    dot.className = 'live-dot';
+    text.textContent = `Last updated ${lastUpdated.toLocaleTimeString()}`;
+    document.getElementById('loading-view').style.display = 'none';
+    if (!gameStarted) {
+      document.getElementById('welcome-message').style.display = 'block';
+    }
+    setTimeout(loadLiveData, 5*60*1000);
+  } catch(e) {
+    dot.className = 'live-dot error';
+    text.textContent = '⚠️ API error — using last known counts';
+    loadedCreators = creatorList.map(([name,,url,img]) => ({
+      name, url, subs: fallbackSubs[name]||0,
+      status: inactiveCreators.includes(name.toLowerCase()) ? 'Inactive' : 'Active',
+      image: img||defaultImage
+    }));
+    loadedCreators.sort((a,b) => b.subs - a.subs);
+    document.getElementById('loading-view').style.display = 'none';
+    if (!gameStarted) {
+      document.getElementById('error-view').style.display = 'block';
+    }
   }
 }
 
-// ─── Mode Popup ──────────────────────────────────────────────────────────────
-function openModePopup() {
-  backToModeSelect();
-  document.getElementById("mode-popup-overlay").classList.add("show");
-}
-
-function closeModePopup() {
-  document.getElementById("mode-popup-overlay").classList.remove("show");
-}
-
+// ── Mode popup ────────────────────────────────────────────────────────────────
+function openModePopup()  { backToModeSelect(); document.getElementById('mode-popup-overlay').classList.add('show'); }
+function closeModePopup() { document.getElementById('mode-popup-overlay').classList.remove('show'); }
 function backToModeSelect() {
-  document.getElementById("popup-menu-view").style.display = "block";
-  document.getElementById("popup-scoreboard-view").style.display = "none";
+  document.getElementById('popup-menu-view').style.display = 'block';
+  document.getElementById('popup-scoreboard-view').style.display = 'none';
 }
 
 function clickMode(mode) {
   currentGameMode = mode;
-  document.getElementById("popup-menu-view").style.display = "none";
-  document.getElementById("popup-scoreboard-view").style.display = "block";
-
-  const titleEl = document.getElementById("selected-mode-title");
-  const listEl  = document.getElementById("scoreboard-data-list");
-  const tsEl    = document.getElementById("scoreboard-timestamp");
-  const startBtn = document.getElementById("start-game-btn");
-
-  titleEl.textContent = mode === 'classic' ? "Classic Mode" : "Trivia Mode";
-  startBtn.onclick = () => selectMode(mode);
-
-  if (lastUpdated) {
-    tsEl.innerHTML = `<span class="live-badge">LIVE</span> Updated ${lastUpdated.toLocaleTimeString()}`;
-  } else {
-    tsEl.textContent = "Using fallback counts";
-  }
-
-  listEl.innerHTML = "";
-  [...loadedCreators].forEach((item, index) => {
-    const row = document.createElement("div");
-    row.className = "score-row";
-    const isInactive = inactiveCreators.includes(item.name.toLowerCase());
-    row.innerHTML = `<span><span class="score-rank">#${index+1}</span> ${item.name}${isInactive ? ' 🕊️' : ''}</span><span>${formatSubs(item.subs)} subs</span>`;
+  document.getElementById('popup-menu-view').style.display = 'none';
+  document.getElementById('popup-scoreboard-view').style.display = 'block';
+  const labels = { classic:'Classic Mode', trivia:'Trivia Mode', timer:'⏱ Timer Mode', wordle:'🟩 Wordle Mode' };
+  document.getElementById('selected-mode-title').textContent = labels[mode] || mode;
+  document.getElementById('start-game-btn').onclick = () => selectMode(mode);
+  const tsEl = document.getElementById('scoreboard-timestamp');
+  tsEl.innerHTML = lastUpdated
+    ? `<span class="live-badge">LIVE</span> Updated ${lastUpdated.toLocaleTimeString()}`
+    : 'Using fallback counts';
+  const listEl = document.getElementById('scoreboard-data-list');
+  listEl.innerHTML = '';
+  loadedCreators.forEach((item, i) => {
+    const row = document.createElement('div');
+    row.className = 'score-row';
+    const inactive = inactiveCreators.includes(item.name.toLowerCase());
+    row.innerHTML = `<span><span class="score-rank">#${i+1}</span> ${item.name}${inactive?' 🕊️':''}</span><span>${formatSubs(item.subs)} subs</span>`;
     listEl.appendChild(row);
   });
 }
 
 function selectMode(mode) {
   closeModePopup();
-  document.getElementById("welcome-message").style.display = "none";
-  document.getElementById("error-view").style.display = "none";
-  document.getElementById("game-area").style.display = "block";
-  document.getElementById("main-score-bar").classList.add("show");
-
-  activePool = loadedCreators.map(creator => ({
-    ...creator,
-    desc: `${formatSubs(creator.subs)} subscribers • ${creator.status}`,
+  gameStarted = true;
+  document.getElementById('welcome-message').style.display = 'none';
+  document.getElementById('error-view').style.display = 'none';
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('top-bar').classList.add('show');
+  activePool = loadedCreators.map(c => ({
+    ...c,
+    desc: `${formatSubs(c.subs)} subscribers • ${c.status}`,
     clues: [
-      `This Blooktuber has around ${formatSubs(creator.subs)} subscribers.`,
-      `This Blooktuber's status is currently: ${creator.status}.`,
-      `The name of this Blooktuber starts with "${creator.name.charAt(0)}".`
+      `This Blooktuber has around ${formatSubs(c.subs)} subscribers.`,
+      `This Blooktuber's status is currently: ${c.status}.`,
+      `The name of this Blooktuber starts with "${c.name.charAt(0)}".`
     ]
   }));
-
   startRound();
 }
 
-// ─── Game Logic ───────────────────────────────────────────────────────────────
+// ── Round ─────────────────────────────────────────────────────────────────────
 function startRound() {
-  let pool = activePool.length > 1
-    ? activePool.filter(b => b.name !== (lastBlooktuber && lastBlooktuber.name))
-    : activePool;
-  current = pool[Math.floor(Math.random() * pool.length)];
+  stopTimer();
+  let pool = activePool.length > 1 ? activePool.filter(b => b.name !== (lastBlooktuber?.name)) : activePool;
+  current = pool[Math.floor(Math.random()*pool.length)];
   lastBlooktuber = current;
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  const ab = document.getElementById('answer-box');
+  ab.style.display = 'none';
+  ab.classList.remove('revealed');
+  document.getElementById('wordle-result-area').style.display = 'none';
+  if (currentGameMode === 'wordle') startWordleRound();
+  else if (currentGameMode === 'trivia') startTriviaRound();
+  else { startClassicRound(); if (currentGameMode === 'timer') startTimer(); }
+}
 
-  document.getElementById("feedback").textContent = "";
-  document.getElementById("feedback").className = "feedback";
-  document.getElementById("answer-box").style.display = "none";
-
-  if (currentGameMode === 'classic') {
-    document.getElementById("trivia-container").style.display = "none";
-    document.getElementById("classic-input-container").style.display = "block";
-    document.getElementById("clues-container").style.display = "block";
-    document.getElementById("clue-label").style.display = "block";
-
-    let attempts = 0;
-    do {
-      shuffledClues = shuffle(current.clues);
-      attempts++;
-    } while (shuffledClues[0] === lastFirstClue && attempts < 10);
-    lastFirstClue = shuffledClues[0];
-    revealedCount = 1;
-
-    document.getElementById("guess-input").value = "";
-    document.getElementById("guess-btn").disabled = false;
-    document.getElementById("give-up-btn").disabled = false;
-    renderClues();
-  } else {
-    document.getElementById("classic-input-container").style.display = "none";
-    document.getElementById("clues-container").style.display = "none";
-    document.getElementById("trivia-container").style.display = "grid";
-    document.getElementById("clue-label").style.display = "block";
-    generateTriviaQuestion();
-  }
+// ── Classic / Timer ───────────────────────────────────────────────────────────
+function startClassicRound() {
+  document.getElementById('wordle-wrap').style.display = 'none';
+  document.getElementById('trivia-container').style.display = 'none';
+  document.getElementById('classic-input-container').style.display = 'block';
+  document.getElementById('clues-container').style.display = 'block';
+  document.getElementById('clue-label').style.display = 'block';
+  const input = document.getElementById('guess-input');
+  input.classList.remove('locked'); input.disabled = false; input.placeholder = 'Type your guess here…';
+  let attempts = 0;
+  do { shuffledClues = shuffle(current.clues); attempts++; }
+  while (shuffledClues[0] === lastFirstClue && attempts < 10);
+  lastFirstClue = shuffledClues[0];
+  revealedCount = 1;
+  document.getElementById('guess-input').value = '';
+  document.getElementById('guess-btn').textContent = 'Submit Guess';
+  document.getElementById('guess-btn').disabled = false;
+  document.getElementById('give-up-btn').disabled = false;
+  renderClues();
 }
 
 function renderClues() {
-  const container = document.getElementById("clues-container");
-  container.innerHTML = "";
-  document.getElementById("clue-label").textContent = `CLUE ${revealedCount} OF ${shuffledClues.length}`;
-
+  const container = document.getElementById('clues-container');
+  container.innerHTML = '';
+  document.getElementById('clue-label').textContent = `CLUE ${revealedCount} OF ${shuffledClues.length}`;
   shuffledClues.forEach((clue, i) => {
-    const div = document.createElement("div");
-    div.style.animationDelay = `${i * 0.1}s`;
+    const div = document.createElement('div');
+    div.style.animationDelay = `${i*0.1}s`;
     if (i < revealedCount) {
-      div.className = "clue";
-      div.innerHTML = `<div class="clue-num">${i + 1}</div>${clue}`;
+      div.className = 'clue';
+      div.innerHTML = `<div class="clue-num">${i+1}</div>${clue}`;
     } else {
-      div.className = "clue-hidden";
+      div.className = 'clue-hidden';
       div.innerHTML = `<div class="clue-num-hidden"></div>???`;
     }
     container.appendChild(div);
   });
 }
 
-function generateTriviaQuestion() {
-  const triviaContainer = document.getElementById("trivia-container");
-  triviaContainer.innerHTML = "";
-
-  const types = ['exact_subs', 'status_pool', 'name_structure'];
-  const chosenType = types[Math.floor(Math.random() * types.length)];
-
-  let questionText = "";
-  const correctAnswer = current.name;
-  let wrongAnswers = [];
-
-  if (chosenType === 'exact_subs') {
-    questionText = `Which creator has approximately ${formatSubs(current.subs)} subscribers?`;
-    wrongAnswers = [...loadedCreators]
-      .filter(c => c.name !== current.name)
-      .sort((a, b) => Math.abs(a.subs - current.subs) - Math.abs(b.subs - current.subs))
-      .map(c => c.name);
-  } else if (chosenType === 'status_pool') {
-    questionText = `Which of these is an "${current.status}" Blooktuber?`;
-    wrongAnswers = loadedCreators.filter(c => c.status !== current.status).map(c => c.name);
-    if (wrongAnswers.length < 3) {
-      wrongAnswers = loadedCreators.filter(c => c.name !== current.name).map(c => c.name);
-    }
-  } else {
-    const len = current.name.length;
-    questionText = `Which creator has exactly ${len} characters in their name and starts with "${current.name.charAt(0)}"?`;
-    wrongAnswers = loadedCreators.filter(c => c.name !== current.name).map(c => c.name);
-  }
-
-  document.getElementById("clue-label").textContent = questionText;
-
-  wrongAnswers = [...new Set(wrongAnswers)];
-  let choices = [correctAnswer];
-  let shuffledWrongs = shuffle(wrongAnswers);
-  for (let i = 0; i < 3; i++) {
-    if (shuffledWrongs[i]) choices.push(shuffledWrongs[i]);
-  }
-  while (choices.length < 4) {
-    const fallback = loadedCreators[Math.floor(Math.random() * loadedCreators.length)].name;
-    if (!choices.includes(fallback)) choices.push(fallback);
-  }
-  choices = shuffle(choices);
-
-  choices.forEach(choice => {
-    const btn = document.createElement("button");
-    btn.className = "trivia-btn";
-    btn.textContent = choice;
-    btn.onclick = () => checkTriviaAnswer(choice, correctAnswer);
-    triviaContainer.appendChild(btn);
-  });
-}
-
-function checkTriviaAnswer(selected, correct) {
-  document.querySelectorAll(".trivia-btn").forEach(b => b.disabled = true);
-  const fb = document.getElementById("feedback");
-
-  if (selected === correct) {
-    new Audio("https://mathuniverse.online/correctanswer.MP3").play();
-    score += 20;
-    document.getElementById("score").textContent = score;
-    showCorrectPopup(20);
-  } else {
-    new Audio("https://mathuniverse.online/wrong.MP3").play();
-    fb.textContent = `Incorrect! The answer was ${correct}.`;
-    fb.className = "feedback wrong";
-    revealAnswer();
-  }
-}
-
 function checkGuess() {
-  const input = document.getElementById("guess-input").value.trim().toLowerCase();
-  const fb = document.getElementById("feedback");
+  const input = document.getElementById('guess-input').value.trim().toLowerCase();
+  const fb = document.getElementById('feedback');
   if (!input) return;
-
   if (input === 'crazy chicken') { triggerEasterEgg(); return; }
-
   if (input === current.name.toLowerCase()) {
-    new Audio("https://mathuniverse.online/correctanswer.MP3").play();
-    const pts = Math.max(10, 40 - (revealedCount - 1) * 10);
+    new Audio('https://mathuniverse.online/correctanswer.MP3').play();
+    stopTimer();
+    let pts = Math.max(10, 40-(revealedCount-1)*10);
+    if (currentGameMode === 'timer') pts += getTimerBonus();
     score += pts;
-    document.getElementById("score").textContent = score;
+    document.getElementById('score').textContent = score;
+    updateStreak(true);
     showCorrectPopup(pts);
   } else {
-    new Audio("https://mathuniverse.online/wrong.MP3").play();
+    new Audio('https://mathuniverse.online/wrong.MP3').play();
     if (revealedCount < shuffledClues.length) {
       revealedCount++;
       renderClues();
-      fb.textContent = "Wrong! Here's your next clue...";
+      fb.textContent = 'Wrong! Here\'s your next clue…';
     } else {
-      fb.textContent = "No more clues! Give up?";
+      fb.textContent = 'No more clues! Give up?';
     }
-    fb.className = "feedback wrong";
+    fb.className = 'feedback wrong';
   }
-}
-
-function showCorrectPopup(pts) {
-  document.getElementById("guess-btn") && (document.getElementById("guess-btn").disabled = true);
-  document.getElementById("give-up-btn") && (document.getElementById("give-up-btn").disabled = true);
-  document.getElementById("classic-input-container").style.display = "none";
-  document.getElementById("feedback").textContent = "";
-  document.getElementById("clues-container").innerHTML = "";
-  document.getElementById("trivia-container").style.display = "none";
-  document.getElementById("clue-label").textContent = "";
-  document.getElementById("popup-pts").textContent = "+" + pts + " pts";
-  document.getElementById("popup-img").src = current.image;
-  document.getElementById("popup-name").textContent = current.name;
-  document.getElementById("popup-desc").textContent = current.desc;
-  document.getElementById("popup-overlay").classList.add("show");
-}
-
-function closePopupAndNext() {
-  document.getElementById("popup-overlay").classList.remove("show");
-  nextRound();
 }
 
 function giveUp() {
-  document.getElementById("feedback").textContent = "Better luck next time! 😔";
-  document.getElementById("feedback").className = "feedback wrong";
+  stopTimer();
+  document.getElementById('feedback').textContent = 'Better luck next time! 😔';
+  document.getElementById('feedback').className = 'feedback wrong';
+  updateStreak(false);
   revealAnswer();
 }
 
-function revealAnswer() {
-  document.getElementById("guess-btn") && (document.getElementById("guess-btn").disabled = true);
-  document.getElementById("give-up-btn") && (document.getElementById("give-up-btn").disabled = true);
-  document.getElementById("classic-input-container").style.display = "none";
-  document.getElementById("trivia-container").style.display = "none";
+// ── Trivia ────────────────────────────────────────────────────────────────────
+function startTriviaRound() {
+  document.getElementById('wordle-wrap').style.display = 'none';
+  document.getElementById('classic-input-container').style.display = 'none';
+  document.getElementById('clues-container').style.display = 'none';
+  document.getElementById('trivia-container').style.display = 'grid';
+  document.getElementById('clue-label').style.display = 'block';
+  generateTriviaQuestion();
+}
 
-  if (currentGameMode === 'classic') {
-    revealedCount = shuffledClues.length;
-    renderClues();
+function generateTriviaQuestion() {
+  const tc = document.getElementById('trivia-container');
+  tc.innerHTML = '';
+  const types = ['exact_subs','status_pool','name_structure'];
+  const type = types[Math.floor(Math.random()*types.length)];
+  const correct = current.name;
+  let wrongs = [], qText = '';
+  if (type === 'exact_subs') {
+    qText = `Which creator has approximately ${formatSubs(current.subs)} subscribers?`;
+    wrongs = [...loadedCreators].filter(c=>c.name!==correct).sort((a,b)=>Math.abs(a.subs-current.subs)-Math.abs(b.subs-current.subs)).map(c=>c.name);
+  } else if (type === 'status_pool') {
+    qText = `Which of these is an "${current.status}" Blooktuber?`;
+    wrongs = loadedCreators.filter(c=>c.status!==current.status).map(c=>c.name);
+    if (wrongs.length < 3) wrongs = loadedCreators.filter(c=>c.name!==correct).map(c=>c.name);
   } else {
-    document.getElementById("clue-label").textContent = "CORRECT ANSWER";
-    document.getElementById("clues-container").innerHTML = "";
+    qText = `Which creator has exactly ${current.name.length} characters and starts with "${current.name.charAt(0)}"?`;
+    wrongs = loadedCreators.filter(c=>c.name!==correct).map(c=>c.name);
   }
+  document.getElementById('clue-label').textContent = qText;
+  wrongs = [...new Set(wrongs)];
+  let choices = [correct, ...shuffle(wrongs).slice(0,3)];
+  while (choices.length < 4) {
+    const fb = loadedCreators[Math.floor(Math.random()*loadedCreators.length)].name;
+    if (!choices.includes(fb)) choices.push(fb);
+  }
+  shuffle(choices).forEach(ch => {
+    const btn = document.createElement('button');
+    btn.className = 'trivia-btn';
+    btn.textContent = ch;
+    btn.onclick = () => checkTriviaAnswer(btn, ch, correct);
+    tc.appendChild(btn);
+  });
+}
 
-  document.getElementById("answer-img").src = current.image;
-  document.getElementById("answer-name").textContent = current.name;
-  document.getElementById("answer-desc").textContent = current.desc;
-  document.getElementById("answer-box").style.display = "block";
+function checkTriviaAnswer(btn, selected, correct) {
+  document.querySelectorAll('.trivia-btn').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === correct) b.classList.add('correct-flash');
+    else if (b === btn && selected !== correct) b.classList.add('wrong-flash');
+  });
+  if (selected === correct) {
+    new Audio('https://mathuniverse.online/correctanswer.MP3').play();
+    score += 20;
+    document.getElementById('score').textContent = score;
+    updateStreak(true);
+    setTimeout(() => showCorrectPopup(20), 400);
+  } else {
+    new Audio('https://mathuniverse.online/wrong.MP3').play();
+    updateStreak(false);
+    setTimeout(() => {
+      document.getElementById('feedback').textContent = `Incorrect! The answer was ${correct}.`;
+      document.getElementById('feedback').className = 'feedback wrong';
+      revealAnswer();
+    }, 600);
+  }
+}
+
+// ── Wordle ────────────────────────────────────────────────────────────────────
+function startWordleRound() {
+  wordleAnswer = current.name.toLowerCase();
+  wordleGuesses = []; wordleAttempt = 0; wordleShareStr = '';
+  wordleLocked = false; wordleKeyState = {}; wordleCurrentGuess = '';
+  document.getElementById('classic-input-container').style.display = 'none';
+  document.getElementById('trivia-container').style.display = 'none';
+  document.getElementById('clues-container').style.display = 'none';
+  document.getElementById('clue-label').style.display = 'block';
+  document.getElementById('clue-label').textContent = `YOU HAVE ${WORDLE_MAX} GUESSES TO NAME THIS BLOOKTUBER`;
+  document.getElementById('wordle-wrap').style.display = 'flex';
+  document.getElementById('wordle-len-pill').textContent = `${wordleAnswer.length} LETTERS`;
+  updateAttemptsPill();
+  document.getElementById('wordle-hint').textContent = 'Type a guess, then press Enter or hit Guess';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+
+  // Apply dynamic tile sizing BEFORE rendering the board
+  applyTileSize(wordleAnswer.length);
+
+  renderWordleBoard();
+  renderWordleKeyboard();
+}
+
+function updateAttemptsPill() {
+  const left = WORDLE_MAX - wordleAttempt;
+  document.getElementById('wordle-attempts-pill').textContent = `${left} GUESS${left===1?'':'ES'} LEFT`;
+}
+
+function renderWordleBoard() {
+  const board = document.getElementById('wordle-board');
+  board.innerHTML = '';
+  const len = wordleAnswer.length;
+
+  // Re-apply tile size on every render (handles resize)
+  applyTileSize(len);
+
+  for (let r = 0; r < WORDLE_MAX; r++) {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'wordle-row'; rowEl.id = `wordle-row-${r}`;
+    const g = wordleGuesses[r];
+    const isCurrentRow = (r === wordleAttempt) && !g;
+    for (let c = 0; c < len; c++) {
+      const tile = document.createElement('div');
+      tile.className = 'wordle-tile';
+      if (g) {
+        tile.classList.add(g.colors[c]);
+        tile.textContent = g.guess[c] === ' ' ? '·' : (g.guess[c]||'').toUpperCase();
+        tile.style.animationDelay = `${c*0.12}s`;
+      } else if (isCurrentRow) {
+        const ch = wordleCurrentGuess[c];
+        if (ch) { tile.classList.add('filled'); tile.textContent = ch === ' ' ? '·' : ch.toUpperCase(); }
+        else tile.classList.add('empty');
+      } else {
+        tile.classList.add('empty');
+      }
+      rowEl.appendChild(tile);
+    }
+    board.appendChild(rowEl);
+  }
+}
+
+function renderWordleKeyboard() {
+  const kb = document.getElementById('wordle-keyboard');
+  kb.innerHTML = '';
+  const needsDigits = /[0-9]/.test(wordleAnswer);
+  const needsSpace = wordleAnswer.includes(' ');
+  const rows = [];
+  if (needsDigits) rows.push(['1','2','3','4','5','6','7','8','9','0']);
+  rows.push(['q','w','e','r','t','y','u','i','o','p']);
+  rows.push(['a','s','d','f','g','h','j','k','l']);
+  rows.push(['ENTER','z','x','c','v','b','n','m','⌫']);
+  rows.forEach(rowKeys => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'wordle-key-row';
+    rowKeys.forEach(key => {
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'wordle-key';
+      if (key === 'ENTER' || key === '⌫') btn.classList.add('wide');
+      btn.textContent = key === 'ENTER' ? 'Enter' : key;
+      const stateKey = (key === 'ENTER' || key === '⌫') ? null : key;
+      if (stateKey && wordleKeyState[stateKey]) btn.classList.add(wordleKeyState[stateKey]);
+      btn.onclick = () => handleWordleKey(key === 'ENTER' ? 'Enter' : (key === '⌫' ? 'Backspace' : key));
+      rowEl.appendChild(btn);
+    });
+    kb.appendChild(rowEl);
+  });
+  if (needsSpace) {
+    const spaceRow = document.createElement('div');
+    spaceRow.className = 'wordle-key-row';
+    const spaceBtn = document.createElement('button');
+    spaceBtn.type = 'button'; spaceBtn.className = 'wordle-key wordle-spacebar';
+    spaceBtn.textContent = 'space';
+    if (wordleKeyState[' ']) spaceBtn.classList.add(wordleKeyState[' ']);
+    spaceBtn.onclick = () => handleWordleKey(' ');
+    spaceRow.appendChild(spaceBtn);
+    kb.appendChild(spaceRow);
+  }
+}
+
+function showWordleToast(msg, opts = {}) {
+  const anchor = document.getElementById('wordle-toast-anchor');
+  clearTimeout(wordleToastTimeout);
+  anchor.innerHTML = '';
+  const toast = document.createElement('div');
+  toast.className = 'wordle-toast'; toast.textContent = msg;
+  anchor.appendChild(toast);
+  const duration = opts.duration || 1300;
+  wordleToastTimeout = setTimeout(() => {
+    toast.classList.add('hide');
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 200);
+  }, duration);
+}
+
+function shakeCurrentRow() {
+  const rowEl = document.getElementById(`wordle-row-${wordleAttempt}`);
+  if (!rowEl) return;
+  rowEl.classList.remove('shake'); void rowEl.offsetWidth; rowEl.classList.add('shake');
+}
+
+function handleWordleKey(key) {
+  if (wordleLocked || currentGameMode !== 'wordle') return;
+  const len = wordleAnswer.length;
+  if (key === 'Enter') { submitWordleGuess(); return; }
+  if (key === 'Backspace') { wordleCurrentGuess = wordleCurrentGuess.slice(0,-1); renderWordleBoard(); return; }
+  if (!/^[a-zA-Z0-9 ]$/.test(key)) return;
+  if (wordleCurrentGuess.length >= len) return;
+  wordleCurrentGuess += key.toLowerCase();
+  renderWordleBoard();
+}
+
+function submitWordleGuess() {
+  const len = wordleAnswer.length;
+  if (wordleCurrentGuess.length === 0 || wordleCurrentGuess.length < len) {
+    showWordleToast('Not enough letters'); shakeCurrentRow(); return;
+  }
+  const guess = wordleCurrentGuess;
+  const colors = evaluateWordle(guess, wordleAnswer);
+  wordleGuesses.push({ guess, colors });
+  wordleAttempt++;
+  wordleCurrentGuess = '';
+  updateAttemptsPill();
+  const rank = { gray:0, yellow:1, green:2 };
+  guess.split('').forEach((ch, i) => {
+    const col = colors[i];
+    if (!wordleKeyState[ch] || rank[col] > rank[wordleKeyState[ch]]) wordleKeyState[ch] = col;
+  });
+  const emojiMap = { green:'🟩', yellow:'🟨', gray:'⬛' };
+  wordleShareStr += colors.map(c => emojiMap[c]).join('') + '\n';
+  renderWordleBoard();
+  renderWordleKeyboard();
+  const won = colors.every(c => c === 'green');
+  const fb = document.getElementById('feedback');
+  if (won) {
+    wordleLocked = true;
+    new Audio('https://mathuniverse.online/correctanswer.MP3').play();
+    const lastRow = document.getElementById(`wordle-row-${wordleAttempt-1}`);
+    if (lastRow) [...lastRow.children].forEach((tile, i) => setTimeout(() => tile.classList.add('bounce'), i*80+500));
+    const pts = Math.max(10, (WORDLE_MAX-wordleAttempt+1)*10);
+    score += pts;
+    document.getElementById('score').textContent = score;
+    updateStreak(true);
+    setTimeout(() => showCorrectPopup(pts, true), 900);
+  } else if (wordleAttempt >= WORDLE_MAX) {
+    wordleLocked = true;
+    new Audio('https://mathuniverse.online/wrong.MP3').play();
+    fb.textContent = `Out of guesses! It was ${current.name}.`;
+    fb.className = 'feedback wrong';
+    updateStreak(false);
+    setTimeout(() => revealAnswer(), 500);
+  } else {
+    fb.textContent = '';
+  }
+}
+
+function evaluateWordle(guess, answer) {
+  const colors = Array(guess.length).fill('gray');
+  const ansArr = answer.split('');
+  const remaining = [...ansArr];
+  guess.split('').forEach((ch, i) => { if (ch === ansArr[i]) { colors[i] = 'green'; remaining[i] = null; } });
+  guess.split('').forEach((ch, i) => {
+    if (colors[i] === 'green') return;
+    const ri = remaining.indexOf(ch);
+    if (ri !== -1) { colors[i] = 'yellow'; remaining[ri] = null; }
+  });
+  return colors;
+}
+
+let wordleShareFull = '';
+function copyWordleResult() {
+  navigator.clipboard.writeText(wordleShareFull).then(() => {
+    const btn = document.querySelector('.wordle-copy-btn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy Result', 2000);
+  });
+}
+
+document.addEventListener('keydown', (e) => {
+  if (currentGameMode !== 'wordle') return;
+  if (document.getElementById('wordle-wrap').style.display === 'none') return;
+  if (wordleLocked) return;
+  if (document.getElementById('popup-overlay').classList.contains('show')) return;
+  if (document.getElementById('mode-popup-overlay').classList.contains('show')) return;
+  if (e.key === 'Enter') handleWordleKey('Enter');
+  else if (e.key === 'Backspace') handleWordleKey('Backspace');
+  else if (e.key === ' ') { e.preventDefault(); handleWordleKey(' '); }
+  else if (/^[a-zA-Z0-9]$/.test(e.key)) handleWordleKey(e.key);
+});
+
+// Re-calc tile sizes on window resize
+window.addEventListener('resize', () => {
+  if (currentGameMode === 'wordle' && wordleAnswer) {
+    applyTileSize(wordleAnswer.length);
+  }
+});
+
+// ── Popup ─────────────────────────────────────────────────────────────────────
+function showCorrectPopup(pts, isWordle = false) {
+  document.getElementById('guess-btn') && (document.getElementById('guess-btn').disabled = true);
+  document.getElementById('give-up-btn') && (document.getElementById('give-up-btn').disabled = true);
+  document.getElementById('classic-input-container').style.display = 'none';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('clues-container').innerHTML = '';
+  document.getElementById('trivia-container').style.display = 'none';
+  document.getElementById('clue-label').textContent = '';
+  document.getElementById('popup-pts').textContent = `+${pts} pts`;
+  const streakEl = document.getElementById('popup-streak');
+  if (streak >= 3) { streakEl.textContent = `${'🔥'.repeat(Math.min(streak,5))} ${streak} in a row!`; streakEl.style.display = 'block'; }
+  else streakEl.style.display = 'none';
+  const wordleArea = document.getElementById('wordle-result-area');
+  if (isWordle) {
+    wordleArea.style.display = 'block';
+    const grid = document.getElementById('popup-wordle-grid');
+    grid.innerHTML = '';
+    wordleGuesses.forEach(g => {
+      g.colors.forEach((col, i) => {
+        const box = document.createElement('div');
+        box.className = `wordle-box ${col}`;
+        box.textContent = g.guess[i] === ' ' ? '·' : (g.guess[i]||'').toUpperCase();
+        grid.appendChild(box);
+      });
+    });
+    wordleShareFull = `Guess the Blooktuber — ${current.name}\n${wordleAttempt}/${WORDLE_MAX}\n\n${wordleShareStr}`;
+    document.getElementById('wordle-share-text').textContent = `${wordleAttempt}/${WORDLE_MAX} · Share your result!`;
+  } else {
+    wordleArea.style.display = 'none';
+  }
+  document.getElementById('popup-img').src = current.image;
+  document.getElementById('popup-name').textContent = current.name;
+  document.getElementById('popup-desc').textContent = current.desc;
+  document.getElementById('popup-overlay').classList.add('show');
+  launchConfetti();
+}
+
+function closePopupAndNext() {
+  document.getElementById('popup-overlay').classList.remove('show');
+  nextRound();
+}
+
+// ── Reveal ────────────────────────────────────────────────────────────────────
+function revealAnswer() {
+  document.getElementById('guess-btn') && (document.getElementById('guess-btn').disabled = true);
+  document.getElementById('give-up-btn') && (document.getElementById('give-up-btn').disabled = true);
+  document.getElementById('classic-input-container').style.display = 'none';
+  document.getElementById('trivia-container').style.display = 'none';
+  if (currentGameMode === 'classic' || currentGameMode === 'timer') {
+    revealedCount = shuffledClues.length; renderClues();
+  } else {
+    document.getElementById('clue-label').textContent = 'CORRECT ANSWER';
+    document.getElementById('clues-container').innerHTML = '';
+  }
+  const ab = document.getElementById('answer-box');
+  document.getElementById('answer-img').src = current.image;
+  document.getElementById('answer-name').textContent = current.name;
+  document.getElementById('answer-desc').textContent = current.desc;
+  ab.style.display = 'block';
+  void ab.offsetWidth;
+  ab.classList.add('revealed');
 }
 
 function nextRound() { startRound(); }
+function checkGuessRouted() { if (currentGameMode === 'wordle') submitWordleGuess(); else checkGuess(); }
 
+// ── Easter egg ────────────────────────────────────────────────────────────────
 function triggerEasterEgg() {
   const el = document.getElementById('easter-egg');
   el.style.display = 'flex';
@@ -1030,11 +1282,11 @@ function triggerEasterEgg() {
   setTimeout(() => { el.style.display = 'none'; }, 3000);
 }
 
-document.getElementById("guess-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") checkGuess();
-});
+// ── Event listeners ───────────────────────────────────────────────────────────
+document.getElementById('guess-btn').onclick = checkGuessRouted;
+document.getElementById('guess-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkGuessRouted(); });
 
-// ─── Boot ─────────────────────────────────────────────────────────────────────
+// ── Boot ──────────────────────────────────────────────────────────────────────
 loadLiveData();
 </script>
 </body>
