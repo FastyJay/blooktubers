@@ -735,7 +735,7 @@ function generateTriviaQuestion() {
     questionText = `Which specific creator has exactly ${current.subs.toLocaleString()} subscribers?`;
     wrongAnswers = rawSubscribers.filter(c => c.name !== current.name).sort((a,b) => Math.abs(a.subs - current.subs) - Math.abs(b.subs - current.subs)).map(c => c.name);
   } else if (chosenType === 'status_pool') {
-    questionText = `Which of these creators are a "${current.status}" blooktuber?`;
+    questionText = `Which of these creators are an "${current.status}" blooktuber?`;
     wrongAnswers = rawSubscribers.filter(c => c.status !== current.status).map(c => c.name);
   } else {
     const len = current.name.length;
