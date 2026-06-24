@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guess the Blooktuber</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght=800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #0bc2cf;
+  min-height: 100vh;
+  font-family: 'Nunito', sans-serif;
+  padding: 40px 20px 60px;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%);
+  background-size: 80px 80px;
+  z-index: -1;
+}
+
+.blook {
+  position: fixed;
+  top: -150px;
+  opacity: .22;
+  animation: fall linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes fall {
+  from { transform: translateY(0) rotate(0deg); }
+  to   { transform: translateY(120vh) rotate(360deg); }
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideLeftFade {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes popInSoft {
+  0% { opacity: 0; transform: scale(0.9); }
+  70% { transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+h1 {
+  font-family: 'Titan One', cursive;
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  text-align: center;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  padding-left: 2px;
+  animation: slideUpFade 0.6s ease-out;
+}
+
+/* Styled header link */
+.title-link {
+  color: white;
+  text-decoration: none;
+  text-shadow: 4px 4px 0 #222;
+  transition: filter 0.15s ease;
+}
+
+.title-link:hover {
+  filter: brightness(1.1);
+}
+
+.subtitle {
+  text-align: center;
+  color: white;
+  font-size: 1rem;
+  font-weight: 800;
+  text-shadow: 1px 1px 0 #333;
+  margin-bottom: 24px;
+  animation: slideUpFade 0.7s ease-out;
+}
+
+.score-bar {
+  text-align: center;
+  margin-bottom: 18px;
+  display: none;
+}
+
+.score-bar.show {
+  display: block;
+  animation: slideUpFade 0.5s ease-out forwards;
+}
+
+.score-bar span {
+  background: #ffe066;
+  border: 3px solid #333;
+  border-radius: 12px;
+  padding: 6px 20px;
+  font-size: 15px;
+  font-weight: 900;
+  color: #333;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.score-bar span:hover {
+  transform: scale(1.05);
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.card {
+  background: white;
+  border: 4px solid #333;
+  border-radius: 20px;
+  box-shadow: 0 8px 0 #333;
+  padding: 24px 26px;
+  animation: slideUpFade 0.9s ease-out forwards;
+}
+
+.menu-title {
+  font-family: 'Titan One', cursive;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.mode-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+.mode-info {
+  font-size: 13px;
+  color: #666;
+  font-weight: 800;
+  text-align: center;
+  margin-top: -6px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.clue-label {
+  font-family: 'Titan One', cursive;
+  font-size: 15px;
+  color: #0bc2cf;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.clue {
+  background: #f0f9ff;
+  border: 3px solid #333;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #222;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideLeftFade 0.4s ease-out forwards;
+}
+
+.clue-hidden {
+  background: #333;
+  border: 3px solid #333;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #333;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideLeftFade 0.4s ease-out forwards;
+}
+
+.clue-num {
+  background: #0bc2cf;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.clue-num-hidden {
+  background: #555;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.trivia-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+.trivia-btn {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 16px;
+  color: white;
+  border: 3px solid #222;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  text-align: center;
+}
+.trivia-btn:nth-child(1) { background: #e53935; box-shadow: 0 4px 0 #b71c1c; }
+.trivia-btn:nth-child(2) { background: #0bc2cf; box-shadow: 0 4px 0 #00838f; }
+.trivia-btn:nth-child(3) { background: #f59e0b; box-shadow: 0 4px 0 #b45309; }
+.trivia-btn:nth-child(4) { background: #3cb529; box-shadow: 0 4px 0 #247a15; }
+
+.trivia-btn:hover { transform: translateY(2px); }
+.trivia-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px 16px;
+  border: 3px solid #333;
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  outline: none;
+  margin-top: 16px;
+  transition: .2s ease;
+}
+
+input[type="text"]:focus {
+  box-shadow: 0 0 0 4px rgba(11,194,207,.3);
+  transform: translateY(-2px);
+}
+
+.feedback {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 900;
+  margin-top: 10px;
+  min-height: 22px;
+  transition: all 0.3s;
+}
+
+.feedback.correct { color: #16a34a; animation: popInSoft 0.4s ease-out; }
+.feedback.wrong   { color: #dc2626; animation: popInSoft 0.4s ease-out; }
+
+.btn {
+  display: block;
+  width: 100%;
+  font-family: 'Titan One', cursive;
+  font-size: 17px;
+  color: white;
+  border: 3px solid #222;
+  border-radius: 12px;
+  box-shadow: 0 5px 0 #222;
+  padding: 13px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all .15s ease;
+  letter-spacing: 1px;
+}
+
+.btn:hover  { transform: translateY(2px); box-shadow: 0 3px 0 #222; filter: brightness(1.05); }
+.btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #222; filter: brightness(0.95); }
+.btn:disabled { background: #aaa !important; cursor: not-allowed; transform: none; box-shadow: 0 5px 0 #777; filter: none; }
+
+.btn-green  { background: #3cb529; }
+.btn-yellow { background: #f59e0b; }
+.btn-red    { background: #e53935; }
+.btn-blue   { background: #0bc2cf; }
+
+.answer-box {
+  text-align: center;
+  margin-top: 20px;
+  display: none;
+  animation: slideUpFade 0.5s ease-out forwards;
+}
+
+.answer-img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 4px solid #333;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.answer-name {
+  font-family: 'Titan One', cursive;
+  font-size: 24px;
+  color: #111;
+  letter-spacing: 1px;
+}
+
+.answer-desc {
+  font-size: 13px;
+  color: #555;
+  font-weight: 800;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.popup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(3px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.popup-overlay.show {
+  display: flex;
+  opacity: 1;
+}
+.popup-box {
+  background: white;
+  border: 4px solid #333;
+  border-radius: 24px;
+  box-shadow: 0 10px 0 #333;
+  padding: 32px 28px;
+  text-align: center;
+  max-width: 420px;
+  width: 90%;
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+@keyframes popIn {
+  from { transform: scale(0.8) translateY(20px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.scoreboard-section {
+  margin-top: 15px;
+  border-top: 3px dashed #ccc;
+  padding-top: 15px;
+  animation: popInSoft 0.4s ease-out;
+}
+.scoreboard-title {
+  font-family: 'Titan One', cursive;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+}
+.score-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f3f4f6;
+  border: 2px solid #333;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 800;
+  transition: transform 0.2s;
+}
+.score-row:hover {
+  transform: translateX(4px);
+  background: #e5e7eb;
+}
+.score-rank {
+  background: #333;
+  color: white;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+}
+
+.popup-emoji { font-size: 3rem; margin-bottom: 8px; animation: popInSoft 0.5s ease-out; }
+.popup-title {
+  font-family: "Titan One", cursive;
+  font-size: 2rem;
+  color: #16a34a;
+  text-shadow: 2px 2px 0 #ccc;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.popup-pts {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #555;
+  margin-bottom: 14px;
+}
+.popup-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #333;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+.popup-name {
+  font-family: "Titan One", cursive;
+  font-size: 1.4rem;
+  color: #111;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.popup-desc {
+  font-size: 13px;
+  color: #666;
+  font-weight: 800;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+.easter-egg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.easter-egg.show {
+  display: flex;
+}
+.easter-egg.visible {
+  opacity: 1;
+}
+.easter-egg img {
+  max-width: 80%;
+  max-height: 80%;
+  border-radius: 20px;
+  border: 5px solid white;
+  box-shadow: 0 0 40px rgba(255,255,255,0.4);
+}
+</style>
+</head>
+<body>
+
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/chick.svg"   alt="" aria-hidden="true" style="left:5%;  width:80px;  animation-duration:16s; animation-delay:-2s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/dragon.svg"  alt="" aria-hidden="true" style="left:75%; width:100px; animation-duration:20s; animation-delay:-8s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/cow.svg"     alt="" aria-hidden="true" style="left:45%; width:90px;  animation-duration:18s; animation-delay:-12s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/dog.svg"     alt="" aria-hidden="true" style="left:20%; width:70px;  animation-duration:14s; animation-delay:-5s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/cat.svg"     alt="" aria-hidden="true" style="left:85%; width:75px;  animation-duration:17s; animation-delay:-1s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/pig.svg"     alt="" aria-hidden="true" style="left:35%; width:85px;  animation-duration:19s; animation-delay:-10s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/alien.svg"   alt="" aria-hidden="true" style="left:60%; width:95px;  animation-duration:15s; animation-delay:-14s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/unicorn.svg" alt="" aria-hidden="true" style="left:12%; width:65px;  animation-duration:13s; animation-delay:-7s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/penguin.svg" alt="" aria-hidden="true" style="left:90%; width:80px;  animation-duration:21s; animation-delay:-4s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/frog.svg"    alt="" aria-hidden="true" style="left:50%; width:110px; animation-duration:22s; animation-delay:-18s;">
+
+<div class="container">
+  <h1><a href="https://blooket.mathuniverse.online" class="title-link">BlookTools</a></h1>
+  <p class="subtitle">Guess the Blooktuber! 🎮</p>
+
+  <div class="score-bar" id="main-score-bar"><span>Score: <span id="score">0</span> pts</span></div>
+
+  <div class="card">
+    <div id="welcome-message" style="text-align:center; padding: 20px 0;">
+      <div class="menu-title" style="margin-bottom: 12px;">Welcome to the Game!</div>
+      <p style="font-weight: 800; color: #444; margin-bottom: 20px;">Click the button below to choose a game mode and view the scoreboards!</p>
+      <button class="btn btn-yellow" onclick="openModePopup()">Open Mode Picker</button>
+    </div>
+
+    <div id="game-area" style="display: none;">
+      <div class="clue-label" id="clue-label">CLUE 1 OF 3</div>
+      <div id="clues-container"></div>
+      
+      <div id="trivia-container" class="trivia-grid" style="display: none;"></div>
+
+      <div id="classic-input-container">
+        <input type="text" id="guess-input" placeholder="Type your guess here..." />
+        <button class="btn btn-green"  id="guess-btn"      onclick="checkGuess()">Submit Guess</button>
+        <button class="btn btn-red"    id="give-up-btn"    onclick="giveUp()">Give Up & Reveal</button>
+      </div>
+      
+      <div class="feedback" id="feedback"></div>
+      <button class="btn btn-blue" onclick="openModePopup()" style="margin-top: 12px;">Change Game Mode</button>
+
+      <div class="answer-box" id="answer-box">
+        <img class="answer-img" id="answer-img" src="" alt="Blooktuber profile picture" />
+        <div class="answer-name" id="answer-name"></div>
+        <div class="answer-desc" id="answer-desc"></div>
+        <button class="btn btn-green" onclick="nextRound()" style="margin-top:16px;">Next Round ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup-overlay" id="mode-popup-overlay">
+    <div class="popup-box" style="text-align: left;">
+      <div class="menu-title" style="margin-bottom: 15px;">Choose Game Mode</div>
+      
+      <div id="popup-menu-view">
+        <div class="mode-container">
+          <button class="btn btn-green" onclick="clickMode('classic')">Play Classic Mode</button>
+          <div class="mode-info">Over 30 tracker creators with 100+ subs using live clue tracking facts.</div>
+
+          <button class="btn btn-purple" onclick="clickMode('trivia')" style="background: #8b5cf6; border-color: #222; box-shadow: 0 5px 0 #222;">Play Trivia Mode</button>
+          <div class="mode-info">Blooket style multiple-choice questions with highly deceptive options!</div>
+        </div>
+        <button class="btn btn-red" onclick="closeModePopup()" style="margin-top: 15px; padding: 8px;">Cancel</button>
+      </div>
+
+      <div id="popup-scoreboard-view" style="display: none;">
+        <div id="selected-mode-title" class="menu-title" style="font-size: 20px; color: #0bc2cf;"></div>
+        
+        <div class="scoreboard-section">
+          <div class="scoreboard-title">🏆 Mode Pool Database Rankings</div>
+          <div class="score-list" id="scoreboard-data-list"></div>
+        </div>
+
+        <button class="btn btn-green" id="start-game-btn">Start Game Pool ▶</button>
+        <button class="btn btn-blue" onclick="backToModeSelect()" style="margin-top: 8px; padding: 8px;">◀ Back to Modes</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup-overlay" id="popup-overlay">
+    <div class="popup-box">
+      <div class="popup-emoji">🎉</div>
+      <div class="popup-title">Correct!</div>
+      <div class="popup-pts" id="popup-pts"></div>
+      <img class="popup-img" id="popup-img" src="" alt="" />
+      <div class="popup-name" id="popup-name"></div>
+      <div class="popup-desc" id="popup-desc"></div>
+      <button class="btn btn-green" onclick="closePopupAndNext()">Next Round ▶</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const defaultImage = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fyt3.googleusercontent.com%2Fytc%2FAIdro_l1w6Mc5WEokWWYbrNNP_5BEshKUO25cIZVOqiU6AojVw%3Ds900-c-k-c0x00ffffff-no-rj&f=1&nofb=1&ipt=9e9827da110a3ddd46c8388025131ce04094fdaa5ea06308022c4c6612b4d6ff";
+
+const rawSubscribers = [
+  { name: "Waymore", subs: 150000, status: "Active", img: "https://yt3.googleusercontent.com/fpVQ5VoYlN-UptRogESSqHnxEX61T-7YW1YNGObVrFX2w_1jBO-njl76kt-6vkPF_2cC9x66kQ=s800-c-k-c0x00ffffff-no-rj" },
+  { name: "LeonBlox", subs: 79400, status: "Active", img: "https://yt3.googleusercontent.com/IVhsWHLcVbC1983DmOiSRYNd2QMIU7R6eHOAHrpk_sT6dBBJj4CWAWyTAJoI_CySgNRcrb6HQQ=s800-c-k-c0x00ffffff-no-rj" },
+  { name: "iBlooket", subs: 35200, status: "Active", img: "https://yt3.googleusercontent.com/OmDwNKSgt4mxydmndADjlva5mWYKLVpm2BGLrzMlU7GWIRTgE3eReMX40s147P31K4Z1k51Phg=s800-c-k-c0x00ffffff-no-rj" },
+  { name: "BIL", subs: 31200, status: "Inactive" },
+  { name: "Blooket", subs: 31300, status: "Active", img: "https://yt3.googleusercontent.com/ytc/AIdro_n9MuS8YZrvKTzvVPJhLaRlgDjUouMy9flhM8rbKox6epI=s800-c-k-c0x00ffffff-no-rj" },
+  { name: "Mega Bot", subs: 27100, status: "Active", img: "https://yt3.googleusercontent.com/FNAGuNPpY_GZyYDCck-3L_Zd31u90SBJuzcc4hXG9N94_D7vt7PM9iU2GZ43ndU01jUygXjn=s800-c-k-c0x00ffffff-no-rj" },
+  { name: "Unblooked", subs: 26900, status: "Active", img: "https://yt3.googleusercontent.com/w_Hs7-L_VL_uZGxhSfncFe7aZfhRjkP5O1BF2NjukAKYbGfSeFcLeCYTDfyfNnRH95l32Aj6DA=s800-c-k-c0x00ffffff-no-rj" },
+  { name: "Monkey Master", subs: 24000, status: "Active", img: "https://yt3.ggpht.com/vHPdt2TV8_lN5eYY6ODGprTOb2rLt9Z0PHCA8I5n0vwvcvzrFCo-0ZC3B9MR7M16hyZMcIgT4miW-w=s400-c-fcrop64=1,38000000c7ffffff-rw-nd-v1" },
+  { name: "Lag0n", subs: 23800, status: "Active", img: "https://yt3.googleusercontent.com/sGMDSWtF1ljfF1LvdvSfWvvHUaDFY7xiqhNZHawJ-Kz-pLvMcd2sf3HkX3ojPe7XIAOHxgAzkm4=s800-c-k-c0x00ffffff-no-rj" },
+  { name: "Blooket Ace", subs: 15400, status: "Active" },
+  { name: "FastyJay", subs: 12900, status: "Active", img: "https://yt3.googleusercontent.com/VuM8z5VYXi_TIw7dr0z5mg9O6fwzy8lzOGUFTR63zmciyPMVzB8ORpnSAwdcs_AUISyBHH0K=s800-c-k-c0x00ffffff-no-rj" },
+  { name: "the blooket gamer", subs: 6250, status: "Active", img: "https://yt3.googleusercontent.com/IbwGyfwHd4-lH4gA69Uns3iHqwO9VnyM4azJEca1sjiRn2yEzZf5vDBbs0zC4hjvEzK4en3L=s800-c-k-c0x00ffffff-no-rj" },
+  { name: "Blooket Gods", subs: 4740, status: "Active" },
+  { name: "Slade2", subs: 3690, status: "Active" },
+  { name: "Blooket Life", subs: 3620, status: "Active" },
+  { name: "JustaPanda", subs: 2990, status: "Active" },
+  { name: "Blooket Insane", subs: 2900, status: "Active" },
+  { name: "notRIC", subs: 2740, status: "Active" },
+  { name: "SRN Games", subs: 2650, status: "Active" },
+  { name: "BlooketBam", subs: 2430, status: "Active" },
+  { name: "Blook Master", subs: 2100, status: "Active" },
+  { name: "Twisted Bread", subs: 2060, status: "Active" },
+  { name: "Pig55", subs: 1520, status: "Active" },
+  { name: "Blooket Elite", subs: 1500, status: "Inactive" },
+  { name: "Turtelix", subs: 1420, status: "Active" },
+  { name: "Green astronaut", subs: 1100, status: "Active", img: "https://yt3.googleusercontent.com/jqSEQqOe03q2My36l3Khz09hh8qmrhDGkbD-VsLGrW-ESIbSneCIfSeYVravW7BwhlKfiaUPpg=s800-c-k-c0x00ffffff-no-rj" },
+  { name: "Blooket Warrior", status: "Active", subs: 1020 },
+  { name: "Blookbread", subs: 1010, status: "Active" },
+  { name: "TOBP Blooket", subs: 852, status: "Active" },
+  { name: "YouLostMan", subs: 660, status: "Active" },
+  { name: "Kinkade", subs: 525, status: "Inactive" },
+  { name: "Peetwick", subs: 396, status: "Active" },
+  { name: "Freedo", subs: 289, status: "Active" }
+];
+
+function formatSubs(num) {
+  if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+  return num.toString();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let currentGameMode = 'classic';
+let activePool = [];
+let current = null;
+let lastBlooktuber = null;
+let lastFirstClue = null;
+let shuffledClues = [];
+let revealedCount = 0;
+let score = 0;
+
+function openModePopup() {
+  backToModeSelect();
+  document.getElementById("mode-popup-overlay").classList.add("show");
+}
+
+function closeModePopup() {
+  document.getElementById("mode-popup-overlay").classList.remove("show");
+}
+
+function backToModeSelect() {
+  document.getElementById("popup-menu-view").style.display = "block";
+  document.getElementById("popup-scoreboard-view").style.display = "none";
+}
+
+function clickMode(mode) {
+  currentGameMode = mode;
+  document.getElementById("popup-menu-view").style.display = "none";
+  document.getElementById("popup-scoreboard-view").style.display = "block";
+  
+  const titleEl = document.getElementById("selected-mode-title");
+  const listEl = document.getElementById("scoreboard-data-list");
+  const startBtn = document.getElementById("start-game-btn");
+  
+  listEl.innerHTML = "";
+  titleEl.textContent = mode === 'classic' ? "Classic Mode Selected" : "Trivia Mode Selected";
+  startBtn.onclick = function() { selectMode(mode); };
+  
+  const sortedSubs = [...rawSubscribers].sort((a,b) => b.subs - a.subs);
+  sortedSubs.forEach((item, index) => {
+    const row = document.createElement("div");
+    row.className = "score-row";
+    row.innerHTML = `<span><span class="score-rank">#${index+1}</span> ${item.name}</span> <span>${formatSubs(item.subs)} Subs</span>`;
+    listEl.appendChild(row);
+  });
+}
+
+function selectMode(mode) {
+  closeModePopup();
+  document.getElementById("welcome-message").style.display = "none";
+  document.getElementById("game-area").style.display = "block";
+  document.getElementById("main-score-bar").classList.add("show");
+  
+  activePool = rawSubscribers.map(creator => {
+    let profileImg = (creator.img && creator.img.trim() !== "") ? creator.img : defaultImage;
+    return {
+      name: creator.name,
+      image: profileImg,
+      subs: creator.subs,
+      status: creator.status,
+      desc: `Target Information: Features approximately ${formatSubs(creator.subs)} subscribers. Activity state: ${creator.status}.`,
+      clues: [
+        `This tracker community Blooktuber contains around ${formatSubs(creator.subs)} subscribers.`,
+        `Their system active tracking status is classified as: ${creator.status}.`,
+        `The name of this targeted channel starts with the character "${creator.name.charAt(0)}".`
+      ]
+    };
+  });
+  startRound();
+}
+
+function startRound() {
+  let pool = activePool.length > 1 ? activePool.filter(b => b.name !== (lastBlooktuber && lastBlooktuber.name)) : activePool;
+  current = pool[Math.floor(Math.random() * pool.length)];
+  
+  lastBlooktuber = current;
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("feedback").className = "feedback";
+  document.getElementById("answer-box").style.display = "none";
+
+  if (currentGameMode === 'classic') {
+    document.getElementById("trivia-container").style.display = "none";
+    document.getElementById("classic-input-container").style.display = "block";
+    document.getElementById("clues-container").style.display = "block";
+    document.getElementById("clue-label").style.display = "block";
+    
+    let attempts = 0;
+    do {
+      shuffledClues = shuffle(current.clues);
+      attempts++;
+    } while (shuffledClues[0] === lastFirstClue && attempts < 10);
+    lastFirstClue = shuffledClues[0];
+    revealedCount = 1;
+    
+    document.getElementById("guess-input").value = "";
+    document.getElementById("guess-btn").disabled = false;
+    document.getElementById("give-up-btn").disabled = false;
+    renderClues();
+  } else {
+    document.getElementById("classic-input-container").style.display = "none";
+    document.getElementById("clues-container").style.display = "none";
+    document.getElementById("trivia-container").style.display = "grid";
+    document.getElementById("clue-label").style.display = "block";
+    
+    generateTriviaQuestion();
+  }
+}
+
+function generateTriviaQuestion() {
+  const triviaContainer = document.getElementById("trivia-container");
+  triviaContainer.innerHTML = "";
+  
+  const types = ['exact_subs', 'status_pool', 'name_structure'];
+  const chosenType = types[Math.floor(Math.random() * types.length)];
+  
+  let questionText = "";
+  let correctAnswer = current.name;
+  let wrongAnswers = [];
+
+  if (chosenType === 'exact_subs') {
+    questionText = `Which specific creator has exactly ${current.subs.toLocaleString()} subscribers?`;
+    wrongAnswers = rawSubscribers.filter(c => c.name !== current.name).sort((a,b) => Math.abs(a.subs - current.subs) - Math.abs(b.subs - current.subs)).map(c => c.name);
+  } else if (chosenType === 'status_pool') {
+    questionText = `Which of these creators are a "${current.status}" blooktuber?`;
+    wrongAnswers = rawSubscribers.filter(c => c.status !== current.status).map(c => c.name);
+  } else {
+    const len = current.name.length;
+    questionText = `Which creator name contains exactly ${len} characters and starts with "${current.name.charAt(0)}".`;
+    wrongAnswers = rawSubscribers.filter(c => c.name !== current.name).map(c => c.name);
+  }
+
+  document.getElementById("clue-label").textContent = questionText;
+  
+  wrongAnswers = [...new Set(wrongAnswers)];
+  let choices = [correctAnswer];
+  let shuffledWrongs = shuffle(wrongAnswers);
+  
+  for (let i = 0; i < 3; i++) {
+    if (shuffledWrongs[i]) choices.push(shuffledWrongs[i]);
+  }
+  while (choices.length < 4) {
+    let fallback = rawSubscribers[Math.floor(Math.random() * rawSubscribers.length)].name;
+    if (!choices.includes(fallback)) choices.push(fallback);
+  }
+  
+  choices = shuffle(choices);
+
+  choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.className = "trivia-btn";
+    btn.textContent = choice;
+    btn.onclick = function() { checkTriviaAnswer(choice, correctAnswer); };
+    triviaContainer.appendChild(btn);
+  });
+}
+
+function checkTriviaAnswer(selected, correct) {
+  const fb = document.getElementById("feedback");
+  document.querySelectorAll(".trivia-btn").forEach(b => b.disabled = true);
+
+  if (selected === correct) {
+    const correctAudio = new Audio("https://mathuniverse.online/correctanswer.MP3");
+    correctAudio.play();
+    score += 20;
+    document.getElementById("score").textContent = score;
+    showCorrectPopup(20);
+  } else {
+    const wrongAudio = new Audio("https://mathuniverse.online/wrong.MP3");
+    wrongAudio.play();
+    fb.textContent = `Incorrect! The actual target answer was ${correct}.`;
+    fb.className = "feedback wrong";
+    revealAnswer();
+  }
+}
+
+function renderClues() {
+  const container = document.getElementById("clues-container");
+  container.innerHTML = "";
+  document.getElementById("clue-label").textContent = `CLUE ${revealedCount} OF ${shuffledClues.length}`;
+
+  shuffledClues.forEach((clue, i) => {
+    const div = document.createElement("div");
+    div.style.animationDelay = `${i * 0.1}s`;
+    
+    if (i < revealedCount) {
+      div.className = "clue";
+      div.innerHTML = `<div class="clue-num">${i + 1}</div>${clue}`;
+    } else {
+      div.className = "clue-hidden";
+      div.innerHTML = `<div class="clue-num-hidden"></div>???`;
+    }
+    container.appendChild(div);
+  });
+}
+
+function checkGuess() {
+  const input = document.getElementById("guess-input").value.trim().toLowerCase();
+  const fb = document.getElementById("feedback");
+  if (!input) return;
+
+  if (input === 'crazy chicken') { triggerEasterEgg(); return; }
+
+  if (input === current.name.toLowerCase()) {
+    const correctAudio = new Audio("https://mathuniverse.online/correctanswer.MP3");
+    correctAudio.play();
+
+    const pts = Math.max(10, 40 - (revealedCount - 1) * 10);
+    score += pts;
+    document.getElementById("score").textContent = score;
+    showCorrectPopup(pts);
+  } else {
+    const wrongAudio = new Audio("https://mathuniverse.online/wrong.MP3");
+    wrongAudio.play();
+
+    if (revealedCount < shuffledClues.length) {
+      revealedCount++;
+      renderClues();
+      fb.textContent = "Wrong! Here's your next clue...";
+    } else {
+      fb.textContent = "No more clues! Give up?";
+    }
+    fb.className = "feedback wrong";
+  }
+}
+
+function showCorrectPopup(pts) {
+  if(document.getElementById("guess-btn")) document.getElementById("guess-btn").disabled = true;
+  if(document.getElementById("give-up-btn")) document.getElementById("give-up-btn").disabled = true;
+  document.getElementById("classic-input-container").style.display = "none";
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("clues-container").innerHTML = "";
+  document.getElementById("trivia-container").style.display = "none";
+  document.getElementById("clue-label").textContent = "";
+  document.getElementById("popup-pts").textContent = "+" + pts + " pts";
+  document.getElementById("popup-img").src = current.image;
+  document.getElementById("popup-name").textContent = current.name;
+  document.getElementById("popup-desc").textContent = current.desc;
+  document.getElementById("popup-overlay").classList.add("show");
+}
+
+function closePopupAndNext() {
+  document.getElementById("popup-overlay").classList.remove("show");
+  nextRound();
+}
+
+function giveUp() {
+  document.getElementById("feedback").textContent = "Better luck next time! 😔";
+  document.getElementById("feedback").className = "feedback wrong";
+  revealAnswer();
+}
+
+function revealAnswer() {
+  if(document.getElementById("guess-btn")) document.getElementById("guess-btn").disabled = true;
+  if(document.getElementById("give-up-btn")) document.getElementById("give-up-btn").disabled = true;
+  document.getElementById("classic-input-container").style.display = "none";
+  document.getElementById("trivia-container").style.display = "none";
+  
+  if (currentGameMode === 'classic') {
+    revealedCount = shuffledClues.length;
+    renderClues();
+  } else {
+    document.getElementById("clue-label").textContent = "CORRECT TRIVIA ANSWER";
+    document.getElementById("clues-container").innerHTML = "";
+  }
+  
+  document.getElementById("answer-img").src = current.image;
+  document.getElementById("answer-name").textContent = current.name;
+  document.getElementById("answer-desc").textContent = current.desc;
+  document.getElementById("answer-box").style.display = "block";
+}
+
+function nextRound() { startRound(); }
+
+function triggerEasterEgg() {
+  const el = document.getElementById('easter-egg');
+  const img = document.getElementById('easter-img');
+  el.style.display = 'flex';
+  img.onload = function() {
+    setTimeout(() => el.classList.add('visible'), 50);
+    setTimeout(() => el.classList.remove('visible'), 2500);
+    setTimeout(() => { el.style.display = 'none'; }, 3000);
+  };
+  img.src = img.src;
+}
+
+document.getElementById("guess-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") checkGuess();
+});
+</script>
+
+<div class="easter-egg" id="easter-egg">
+  <img src="https://mathuniverse.online/chicken.png" alt="Crazy Chicken" id="easter-img" />
+</div>
+</body>
+</html>
