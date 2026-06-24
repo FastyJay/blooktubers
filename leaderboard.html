@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blooktuber Leaderboard</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nunito', sans-serif;
+}
+
+body{
+    background: #0bc2cf;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: 40px;
+}
+
+body::before{
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+    linear-gradient(45deg,
+    rgba(255,255,255,.08) 25%,
+    transparent 25%,
+    transparent 75%,
+    rgba(255,255,255,.08) 75%);
+    background-size: 80px 80px;
+    z-index: -2;
+}
+
+.blook{
+    position: fixed;
+    top: -150px;
+    opacity: .25;
+    animation: fall linear infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes fall{
+    from{ transform: translateY(0) rotate(0deg); }
+    to{ transform: translateY(120vh) rotate(360deg); }
+}
+
+h1{
+    text-align: center;
+    color: white;
+    font-family: 'Titan One', cursive;
+    font-size: 3.5rem;
+    margin-top: 25px;
+    text-shadow: 4px 4px 0 #222, 8px 8px 12px rgba(0,0,0,.2);
+    padding: 0 15px;
+    letter-spacing: 2px;
+}
+
+.subtitle{
+    text-align: center;
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 0 #222;
+}
+
+.live-status {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    color: white;
+    text-shadow: 1px 1px 0 #222;
+    min-height: 22px;
+}
+
+.live-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4ade80;
+    margin-right: 6px;
+    animation: pulse 1.5s infinite;
+    vertical-align: middle;
+}
+
+.live-dot.loading {
+    background: #fbbf24;
+    animation: pulse 0.7s infinite;
+}
+
+.live-dot.error {
+    background: #f87171;
+    animation: none;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.container{
+    width: 90%;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.search{
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 35px auto;
+    padding: 15px;
+    border: none;
+    border-radius: 15px;
+    font-size: 18px;
+    border: 4px solid #333;
+    box-shadow: 0 5px 0 #333;
+    outline: none;
+    transition: 0.2s;
+}
+
+.search:focus {
+    transform: translateY(2px);
+    box-shadow: 0 3px 0 #333;
+}
+
+.podium{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.podium-card{
+    width: 180px;
+    text-align: center;
+    color: black;
+    border: 4px solid #333;
+    border-radius: 20px 20px 0 0;
+    font-size: 22px;
+    padding-top: 15px;
+    box-shadow: 0 8px 0 #333;
+    transition: 0.3s;
+}
+
+.podium-name {
+    font-family: 'Titan One', cursive;
+    font-size: 26px;
+    letter-spacing: 1px;
+}
+
+.podium-subs {
+    font-size: 20px;
+    font-weight: 900;
+}
+
+a.podium-link {
+    text-decoration: none;
+    color: inherit;
+    transition: 0.2s;
+    display: block;
+    height: 100%;
+    padding-bottom: 15px;
+}
+
+a.podium-link:hover .podium-name {
+    text-decoration: underline;
+}
+
+.first{
+    background: gold;
+    height: 220px;
+    order: 2;
+}
+
+.second{
+    background: silver;
+    height: 180px;
+    order: 1;
+}
+
+.third{
+    background: #cd7f32;
+    height: 150px;
+    order: 3;
+}
+
+.leaderboard{
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    border: 4px solid #333;
+    box-shadow: 0 8px 0 #333;
+}
+
+a.row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    border: 3px solid #333;
+    background: #f5f5f5;
+    transition: .2s;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+a.row:hover{
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 4px 0 #333;
+}
+
+.rank{
+    width: 60px;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.name{
+    width: 220px;
+    font-family: 'Titan One', cursive;
+    font-size: 22px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    padding-top: 3px;
+}
+
+.subs{
+    width: 100px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.bar-bg{
+    flex: 1;
+    height: 20px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #eee;
+}
+
+.bar{
+    height: 100%;
+    background: #4ade80;
+    transition: width 0.8s ease-out;
+}
+
+.fastyjay{
+    background: #ffe066 !important;
+    border: 4px solid #333;
+    box-shadow: 0 0 15px gold;
+}
+
+.inactive {
+    background: #ffe0e0 !important;
+    border: 4px solid #333;
+    box-shadow: 0 0 15px red;
+}
+
+/* Loading skeleton */
+.skeleton {
+    background: linear-gradient(90deg, #eee 25%, #ddd 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite;
+    border-radius: 8px;
+    height: 20px;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.refresh-btn {
+    display: block;
+    margin: 0 auto 20px auto;
+    padding: 10px 25px;
+    background: white;
+    border: 3px solid #333;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #333;
+    transition: 0.2s;
+}
+
+.refresh-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #333;
+}
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Underrated Section */
+.section-header {
+    margin-top: 40px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.section-header h2 {
+    font-family: 'Titan One', cursive;
+    font-size: 2.2rem;
+    color: white;
+    text-shadow: 3px 3px 0 #222;
+    letter-spacing: 2px;
+}
+
+.section-header p {
+    color: white;
+    font-size: 1rem;
+    text-shadow: 1px 1px 0 #222;
+    margin-bottom: 15px;
+}
+
+.leaderboard.underrated {
+    background: #f3e8ff;
+    border-color: #7c3aed;
+    box-shadow: 0 8px 0 #7c3aed;
+}
+
+.leaderboard.underrated a.row {
+    background: #ede9fe;
+    border-color: #7c3aed;
+}
+
+.leaderboard.underrated a.row:hover {
+    box-shadow: 0 4px 0 #7c3aed;
+}
+
+.leaderboard.underrated .bar {
+    background: #a78bfa;
+}
+
+.leaderboard.underrated .bar-bg {
+    border-color: #7c3aed;
+}
+
+@media (max-width: 768px) {
+    .podium { flex-wrap: wrap; }
+    .podium-card { width: 100px; font-size: 16px; }
+    .podium-name { font-size: 18px; }
+    .podium-subs { font-size: 14px; }
+    .first { height: 180px; }
+    .second { height: 140px; }
+    .third { height: 120px; }
+    a.row { flex-wrap: wrap; }
+    .name { width: auto; flex: 1; }
+    .bar-bg { width: 100%; flex: none; }
+}
+</style>
+</head>
+<body>
+
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/chick.svg" alt="" aria-hidden="true" style="left:5%; width:80px; animation-duration:16s; animation-delay:-2s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/dragon.svg" alt="" aria-hidden="true" style="left:75%; width:100px; animation-duration:20s; animation-delay:-8s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/cow.svg" alt="" aria-hidden="true" style="left:45%; width:90px; animation-duration:18s; animation-delay:-12s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/dog.svg" alt="" aria-hidden="true" style="left:20%; width:70px; animation-duration:14s; animation-delay:-5s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/cat.svg" alt="" aria-hidden="true" style="left:85%; width:75px; animation-duration:17s; animation-delay:-1s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/pig.svg" alt="" aria-hidden="true" style="left:35%; width:85px; animation-duration:19s; animation-delay:-10s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/bear.svg" alt="" aria-hidden="true" style="left:60%; width:95px; animation-duration:15s; animation-delay:-14s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/penguin.svg" alt="" aria-hidden="true" style="left:12%; width:65px; animation-duration:13s; animation-delay:-7s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/frog.svg" alt="" aria-hidden="true" style="left:90%; width:80px; animation-duration:21s; animation-delay:-4s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/alien.svg" alt="" aria-hidden="true" style="left:50%; width:110px; animation-duration:22s; animation-delay:-18s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/unicorn.svg" alt="" aria-hidden="true" style="left:30%; width:90px; animation-duration:16s; animation-delay:-9s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/mouse.svg" alt="" aria-hidden="true" style="left:68%; width:60px; animation-duration:14s; animation-delay:-15s;">
+
+<h1>Blooktuber Tracker</h1>
+<div class="subtitle">Now uses Live Subscriber Counts! 🔥</div>
+
+<div class="live-status" id="liveStatus">
+    <span class="live-dot loading" id="liveDot"></span>
+    <span id="liveText">Fetching live counts...</span>
+</div>
+
+<div class="container">
+    <button class="refresh-btn" id="refreshBtn" onclick="fetchAllSubs()" disabled>Update Subscribe Counts</button>
+
+    <input type="text" id="search" class="search" placeholder="Search Blooktubers...">
+
+    <div class="podium" id="podium"></div>
+
+    <div class="leaderboard" id="leaderboard">
+        <div style="text-align:center; padding:30px; font-size:18px;">Loading live counts... 🔄</div>
+    </div>
+
+    <div class="section-header" id="underratedHeader" style="display:none;">
+        <h2>Up and Coming Blooktubers</h2>
+        <p>Blooktubers with under 100 subscribers</p>
+    </div>
+
+    <div class="leaderboard underrated" id="underratedBoard" style="display:none;"></div>
+</div>
+
+<script>
+const API_KEY = "AIzaSyBUj3qxFbI2-IWeRU1EEa4w_ChFoZgSjUE";
+
+const inactiveCreators = ["kinkade", "blooket elite", "bil"];
+
+const creatorList = [
+    ["Waymore",         "WaymoreYT",              "https://www.youtube.com/@WaymoreYT"],
+    ["LeonBlox",        "LeonBloxOfficial",        "https://www.youtube.com/@LeonBloxOfficial"],
+    ["iBlooket",        "iBlooket",                "https://www.youtube.com/@iBlooket"],
+    ["BIL",             "BILBRB",                  "https://www.youtube.com/@BILBRB"],
+    ["Blooket",         "PlayBlooket",             "https://www.youtube.com/@PlayBlooket"],
+    ["Mega Bot",        "MATHBOARDOM",             "https://www.youtube.com/MATHBOARDOM"],
+    ["Unblooked",       "unblooked",               "https://www.youtube.com/@unblooked"],
+    ["Monkey Master",   "MonkeyMasterYT",          "https://www.youtube.com/@MonkeyMasterYT"],
+    ["Lag0n",           "Lag0n4",                  "https://www.youtube.com/@Lag0n4"],
+    ["Blooket Ace",     "blooketace",              "https://www.youtube.com/@blooketace"],
+    ["FastyJay",        "FastyJay",                "https://www.youtube.com/@FastyJay"],
+    ["Blooket Gamer",   "theblooketgamer",         "https://www.youtube.com/@theblooketgamer"],
+    ["Blooket Gods",    "BlooketGodsYT",           "https://www.youtube.com/@BlooketGodsYT"],
+    ["Slade2",          "theslade2",               "https://www.youtube.com/@theslade2"],
+    ["Blooket Life",    "BlooketLifeYT",           "https://www.youtube.com/@BlooketLifeYT"],
+    ["JustaPanda",      "JustaPanda888",            "https://www.youtube.com/@JustaPanda888"],
+    ["Blooket Insane",  "blooketinsane",           "https://www.youtube.com/@blooketinsane"],
+    ["notRIC",          "playblacket",             "https://www.youtube.com/@playblacket"],
+    ["SRN Games",       "srngameslol",             "https://www.youtube.com/@srngameslol"],
+    ["BlooketBam",      "BlooketBAM",              "https://www.youtube.com/@BlooketBAM"],
+    ["Blook Master",    "BlookMasterYT",           "https://www.youtube.com/@BlookMasterYT"],
+    ["Twisted Bread",   "TwistedBread",            "https://www.youtube.com/@TwistedBread/"],
+    ["Pig55",           "Pig_55",                  "https://www.youtube.com/@Pig_55"],
+    ["Blooket Elite",   "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries"],
+    ["Turtelix",        "TurtelixYT",              "https://www.youtube.com/@TurtelixYT"],
+    ["Green astronaut", "ThegreenastronautYT",     "https://www.youtube.com/@ThegreenastronautYT"],
+    ["Blooket Warrior", "BlooketWarriorYT",        "https://www.youtube.com/@BlooketWarriorYT"],
+    ["Blookbread",      "Breadblook",              "https://www.youtube.com/@Breadblook"],
+    ["TOBP Blooket",    "ThatOneBlooketPlayer",    "https://www.youtube.com/@ThatOneBlooketPlayer"],
+    ["YouLostMan",      "YouLostMan",              "https://www.youtube.com/@YouLostMan"],
+    ["Kinkade",         "ItzKinkade",              "https://www.youtube.com/@ItzKinkade"],
+    ["Peetwick",        "PeetWickYT",              "https://www.youtube.com/@PeetWickYT"],
+    ["Freedo",          "TheRealFreedoBlox",       "https://www.youtube.com/@TheRealFreedoBlox"],
+    ["Cosmic Dragon",   "UCGkvZdya3AgXj7nAf54lTBw","https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"],
+    ["Blooket Galaxy",  "BlooketGalaxy",           "https://www.youtube.com/@BlooketGalaxy"],
+    ["TheBlooketBro",   "theblooketbro",           "https://www.youtube.com/@theblooketbro"],
+    ["XpBlooket32",     "XPgamer32Blooket",        "https://www.youtube.com/@XPgamer32Blooket"],
+    ["Blooket Gael",    "UCOhGtij6ftod4pJ6mhU-skQ","https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"],
+    ["c0mputerm4n",    "c0mputerm4n-yt","https://www.youtube.com/@c0mputerm4n-yt"],
+    ["BlookFun",    "blookfun","https://www.youtube.com/@blookfun"]
+];
+
+const fallbackSubs = {
+    "Waymore": 150000, "LeonBlox": 79400, "iBlooket": 35200,
+    "BIL": 31200, "Blooket": 31300, "Mega Bot": 27100,
+    "Unblooked": 26900, "Monkey Master": 24000, "Lag0n": 23800,
+    "Blooket Ace": 15400, "FastyJay": 12900, "Blooket Gamer": 6250,
+    "Blooket Gods": 4740, "Slade2": 3690, "Blooket Life": 3620,
+    "JustaPanda": 2990, "Blooket Insane": 2900, "notRIC": 2740,
+    "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2100,
+    "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500,
+    "Turtelix": 1420, "Green astronaut": 1100, "Blooket Warrior": 1020,
+    "Blookbread": 1010, "TOBP Blooket": 852, "YouLostMan": 660, "Kinkade": 525, "Peetwick": 396,
+    "Freedo": 289, "Cosmic Dragon": 69, "Blooket Galaxy": 66,
+    "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36, "c0mputerm4n": 27, "BlookFun": 6
+};
+
+let creators = [];
+let lastUpdated = null;
+
+function formatSubs(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return num.toLocaleString();
+}
+
+async function resolveHandle(handle) {
+    if (handle.startsWith("UC")) return handle;
+    const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${encodeURIComponent(handle)}&key=${API_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.items && data.items.length > 0) return data.items[0].id;
+    return null;
+}
+
+async function fetchSubsBatch(channelIds) {
+    const ids = channelIds.join(",");
+    const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${ids}&key=${API_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const map = {};
+    if (data.items) {
+        data.items.forEach(item => {
+            map[item.id] = parseInt(item.statistics.subscriberCount, 10);
+        });
+    }
+    return map;
+}
+
+async function fetchAllSubs() {
+    const dot = document.getElementById("liveDot");
+    const text = document.getElementById("liveText");
+    const btn = document.getElementById("refreshBtn");
+
+    dot.className = "live-dot loading";
+    text.textContent = "Fetching live counts...";
+    btn.disabled = true;
+
+    try {
+        text.textContent = "Resolving channels... (1/2)";
+        const resolvedIds = await Promise.all(
+            creatorList.map(([name, handle]) => resolveHandle(handle))
+        );
+
+        text.textContent = "Fetching subscriber counts... (2/2)";
+        const allIds = resolvedIds.filter(Boolean);
+        const subMap = {};
+
+        for (let i = 0; i < allIds.length; i += 50) {
+            const chunk = allIds.slice(i, i + 50);
+            const batch = await fetchSubsBatch(chunk);
+            Object.assign(subMap, batch);
+        }
+
+        creators = creatorList.map(([name, handle, url], idx) => {
+            const channelId = resolvedIds[idx];
+            const subs = (channelId && subMap[channelId] !== undefined)
+                ? subMap[channelId]
+                : (fallbackSubs[name] || 0);
+            return { name, url, subs };
+        });
+
+        creators.sort((a, b) => b.subs - a.subs);
+        creators.forEach((c, i) => c.rank = i + 1);
+
+        lastUpdated = new Date();
+        dot.className = "live-dot";
+        text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
+
+        renderPodium(creators);
+        renderBoard(creators);
+        renderUnderrated(creators);
+
+        setTimeout(fetchAllSubs, 5 * 60 * 1000);
+
+    } catch (err) {
+        console.error(err);
+        dot.className = "live-dot error";
+        text.textContent = "⚠️ API error — showing last known counts";
+
+        creators = creatorList.map(([name, handle, url]) => ({
+            name, url, subs: fallbackSubs[name] || 0
+        }));
+        creators.sort((a, b) => b.subs - a.subs);
+        creators.forEach((c, i) => c.rank = i + 1);
+        renderPodium(creators);
+        renderBoard(creators);
+        renderUnderrated(creators);
+    }
+
+    btn.disabled = false;
+}
+
+function renderPodium(data) {
+    if (data.length < 3) return;
+    const podium = document.getElementById("podium");
+    const medals = ["🥇", "🥈", "🥉"];
+    const classes = ["first", "second", "third"];
+
+    podium.innerHTML = [0, 1, 2].map(i => `
+        <div class="podium-card ${classes[i]}">
+            <a href="${data[i].url}" target="_blank" class="podium-link">
+                ${medals[i]}<br>
+                <span class="podium-name">${data[i].name}</span><br><br>
+                <span class="podium-subs">${formatSubs(data[i].subs)}</span>
+            </a>
+        </div>
+    `).join("");
+}
+
+function renderBoard(data) {
+    const board = document.getElementById("leaderboard");
+    board.innerHTML = "";
+
+    const mainData = data.filter(c => c.subs >= 100);
+
+    if (mainData.length === 0) {
+        board.innerHTML = "<div style='text-align:center; padding: 20px; font-size: 18px;'>No Blooktubers found! 😭</div>";
+        return;
+    }
+
+    const maxSubs = creators[0]?.subs || 1;
+
+    mainData.forEach(creator => {
+        const percent = (creator.subs / maxSubs) * 100;
+        const row = document.createElement("a");
+        row.href = creator.url;
+        row.target = "_blank";
+        row.className = "row";
+
+        if (creator.name.toLowerCase() === "fastyjay") row.classList.add("fastyjay");
+        const isInactive = inactiveCreators.includes(creator.name.toLowerCase());
+        if (isInactive) row.classList.add("inactive");
+
+        row.innerHTML = `
+            <div class="rank">#${creator.rank}</div>
+            <div class="name">${creator.name}${isInactive ? ' 🕊️' : ''}</div>
+            <div class="subs">${formatSubs(creator.subs)}</div>
+            <div class="bar-bg">
+                <div class="bar" style="width: ${percent}%"></div>
+            </div>
+        `;
+        board.appendChild(row);
+    });
+}
+
+function renderUnderrated(data) {
+    const header = document.getElementById("underratedHeader");
+    const board = document.getElementById("underratedBoard");
+
+    const underrated = data.filter(c => c.subs < 100);
+
+    if (underrated.length === 0) {
+        header.style.display = "none";
+        board.style.display = "none";
+        return;
+    }
+
+    header.style.display = "block";
+    board.style.display = "block";
+    board.innerHTML = "";
+
+    const maxSubs = underrated[0]?.subs || 1;
+
+    underrated.forEach(creator => {
+        const percent = (creator.subs / maxSubs) * 100;
+        const row = document.createElement("a");
+        row.href = creator.url;
+        row.target = "_blank";
+        row.className = "row";
+
+        const isInactiveU = inactiveCreators.includes(creator.name.toLowerCase());
+        if (isInactiveU) row.classList.add("inactive");
+
+        row.innerHTML = `
+            <div class="rank">#${creator.rank}</div>
+            <div class="name">${creator.name}${isInactiveU ? ' 🕊️' : ''}</div>
+            <div class="subs">${formatSubs(creator.subs)}</div>
+            <div class="bar-bg">
+                <div class="bar" style="width: ${percent}%"></div>
+            </div>
+        `;
+        board.appendChild(row);
+    });
+}
+
+document.getElementById("search").addEventListener("input", e => {
+    const value = e.target.value.toLowerCase();
+    const filtered = creators.filter(c => c.name.toLowerCase().includes(value));
+    renderBoard(filtered);
+    renderUnderrated(filtered);
+});
+
+fetchAllSubs();
+</script>
+
+</body>
+</html>
