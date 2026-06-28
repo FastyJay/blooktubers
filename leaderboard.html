@@ -31,25 +31,69 @@ h1{ text-align: center; color: white; font-family: 'Titan One', cursive; font-si
 .live-dot.error { background: #f87171; animation: none; }
 @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
 .container{ width: 90%; max-width: 1100px; margin: auto; }
-.search{ display: block; width: 100%; max-width: 600px; margin: 0 auto 35px auto; padding: 15px; border: none; border-radius: 15px; font-size: 18px; border: 4px solid #333; box-shadow: 0 5px 0 #333; outline: none; transition: 0.2s; }
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 600px;
+    margin: 0 auto 35px auto;
+    flex-wrap: wrap;
+}
+.search{
+    flex: 1; min-width: 0;
+    padding: 15px; border: none; border-radius: 15px; font-size: 18px;
+    border: 4px solid #333; box-shadow: 0 5px 0 #333; outline: none; transition: 0.2s;
+    font-family: 'Nunito', sans-serif;
+}
 .search:focus { transform: translateY(2px); box-shadow: 0 3px 0 #333; }
+
+.sort-toggle {
+    display: flex;
+    border: 4px solid #333;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 0 #333;
+    flex-shrink: 0;
+}
+.sort-btn {
+    padding: 12px 14px;
+    background: white;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.15s;
+    color: #555;
+    white-space: nowrap;
+}
+.sort-btn:first-child { border-right: 3px solid #333; }
+.sort-btn.active {
+    background: #333;
+    color: white;
+}
+.sort-btn:hover:not(.active) { background: #f0f0f0; }
+
 .podium{ display: flex; justify-content: center; align-items: flex-end; gap: 15px; margin-bottom: 40px; }
-.podium-card{ width: 180px; text-align: center; color: black; border: 4px solid #333; border-radius: 20px 20px 0 0; font-size: 22px; padding-top: 15px; box-shadow: 0 8px 0 #333; transition: 0.3s; }
-.podium-name { font-family: 'Titan One', cursive; font-size: 26px; letter-spacing: 1px; }
-.podium-subs { font-size: 20px; font-weight: 900; }
-a.podium-link { text-decoration: none; color: inherit; transition: 0.2s; display: block; height: 100%; padding-bottom: 15px; }
+.podium-card{ width: 180px; text-align: center; color: black; border: 4px solid #333; border-radius: 20px 20px 0 0; font-size: 22px; padding-top: 15px; box-shadow: 0 8px 0 #333; transition: 0.3s; display: flex; flex-direction: column; }
+.podium-name { font-family: 'Titan One', cursive; font-size: 22px; letter-spacing: 1px; line-height: 1.15; word-break: break-word; hyphens: auto; padding: 0 8px; }
+.podium-subs { font-size: 20px; font-weight: 900; margin-top: auto; }
+a.podium-link { text-decoration: none; color: inherit; transition: 0.2s; display: flex; flex-direction: column; align-items: center; height: 100%; padding: 0 0 15px 0; gap: 8px; }
 a.podium-link:hover .podium-name { text-decoration: underline; }
-.first{ background: gold; height: 220px; order: 2; }
-.second{ background: silver; height: 180px; order: 1; }
-.third{ background: #cd7f32; height: 150px; order: 3; }
+.first{ background: gold; min-height: 220px; order: 2; }
+.second{ background: silver; min-height: 180px; order: 1; }
+.third{ background: #cd7f32; min-height: 150px; order: 3; }
 .leaderboard{ background: white; border-radius: 20px; padding: 20px; border: 4px solid #333; box-shadow: 0 8px 0 #333; }
 a.row { display: flex; align-items: center; gap: 15px; padding: 12px; margin-bottom: 10px; border-radius: 15px; border: 3px solid #333; background: #f5f5f5; transition: .2s; text-decoration: none; color: inherit; cursor: pointer; }
 a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; }
 .rank{ width: 60px; font-size: 22px; font-weight: 900; }
 .name{ width: 220px; font-family: 'Titan One', cursive; font-size: 22px; font-weight: normal; letter-spacing: 1px; padding-top: 3px; display: flex; align-items: center; }
-.subs{ width: 100px; text-align: right; font-weight: bold; }
+.subs{ width: 120px; text-align: right; font-weight: bold; }
+
 .bar-bg{ flex: 1; height: 20px; border: 2px solid #333; border-radius: 10px; overflow: hidden; background: #eee; }
 .bar{ height: 100%; background: #4ade80; transition: width 0.8s ease-out; }
+.bar.views-bar { background: #60a5fa; }
 .fastyjay{ background: #ffe066 !important; border: 4px solid #333; box-shadow: 0 0 15px gold; }
 .inactive { background: #ffe0e0 !important; border: 4px solid #333; box-shadow: 0 0 15px red; }
 
@@ -74,9 +118,12 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
 .leaderboard.underrated a.row { background: #ede9fe; border-color: #7c3aed; }
 .leaderboard.underrated a.row:hover { box-shadow: 0 4px 0 #7c3aed; }
 .leaderboard.underrated .bar { background: #a78bfa; }
+.leaderboard.underrated .bar.views-bar { background: #818cf8; }
 .leaderboard.underrated .bar-bg { border-color: #7c3aed; }
 
 @media (max-width: 768px) {
+    .controls { flex-direction: column; align-items: stretch; }
+    .sort-toggle { justify-content: center; }
     .podium { flex-wrap: wrap; }
     .podium-card { width: 100px; font-size: 16px; }
     .podium-name { font-size: 18px; }
@@ -106,7 +153,7 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/mouse.svg" alt="" aria-hidden="true" style="left:68%; width:60px; animation-duration:14s; animation-delay:-15s;">
 
 <a href="https://blooket.mathuniverse.online" style="text-decoration: none; display: block;"><h1>BlookTools</h1></a>
-<div class="subtitle">Now uses Live Subscriber Counts! 🔥</div>
+<div class="subtitle">Blooktuber Leaderboard! 🏆</div>
 
 <div class="live-status" id="liveStatus">
     <span class="live-dot loading" id="liveDot"></span>
@@ -115,7 +162,15 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
 
 <div class="container">
     <button class="refresh-btn" id="refreshBtn" onclick="fetchAllSubs()" disabled>Update Subscribe Counts</button>
-    <input type="text" id="search" class="search" placeholder="Search Blooktubers...">
+
+    <div class="controls">
+        <input type="text" id="search" class="search" placeholder="Search Blooktubers...">
+        <div class="sort-toggle">
+            <button class="sort-btn active" id="sortSubs" onclick="setSort('subs')">📊 Subs</button>
+            <button class="sort-btn" id="sortViews" onclick="setSort('views')">👁️ Views</button>
+        </div>
+    </div>
+
     <div class="podium" id="podium"></div>
     <div class="leaderboard" id="leaderboard">
         <div style="text-align:center; padding:30px; font-size:18px;">Loading live counts... 🔄</div>
@@ -130,15 +185,34 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
 <script>
 const API_KEY = "AIzaSyCf7OcIbKPptJn3xL6IUT8ruZCFK6wjUX0";
 const inactiveCreators = ["kinkade", "blooket elite", "bil"];
-const creatorList = [["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT"], ["LeonBlox", "LeonBloxOfficial", "https://www.youtube.com/@LeonBloxOfficial"], ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket"], ["BIL", "BILBRB", "https://www.youtube.com/@BILBRB"], ["Blooket", "PlayBlooket", "https://www.youtube.com/@PlayBlooket"], ["Mega Bot", "MATHBOARDOM", "https://www.youtube.com/MATHBOARDOM"], ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked"], ["Monkey Master", "MonkeyMasterYT", "https://www.youtube.com/@MonkeyMasterYT"], ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4"], ["Blooket Ace", "blooketace", "https://www.youtube.com/@blooketace"], ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay"], ["Blooket Gamer", "theblooketgamer", "https://www.youtube.com/@theblooketgamer"], ["Blooket Gods", "BlooketGodsYT", "https://www.youtube.com/@BlooketGodsYT"], ["Slade2", "theslade2", "https://www.youtube.com/@theslade2"], ["Blooket Life", "BlooketLifeYT", "https://www.youtube.com/@BlooketLifeYT"], ["JustaPanda", "JustaPanda888", "https://www.youtube.com/@JustaPanda888"], ["Blooket Insane", "blooketinsane", "https://www.youtube.com/@blooketinsane"], ["notRIC", "playblacket", "https://www.youtube.com/@playblacket"], ["SRN Games", "srngameslol", "https://www.youtube.com/@srngameslol"], ["BlooketBam", "BlooketBAM", "https://www.youtube.com/@BlooketBAM"], ["Blook Master", "BlookMasterYT", "https://www.youtube.com/@BlookMasterYT"], ["Twisted Bread", "TwistedBread", "https://www.youtube.com/@TwistedBread/"], ["Pig55", "Pig_55", "https://www.youtube.com/@Pig_55"], ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries"], ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT"], ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT"], ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT"], ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook"], ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer"], ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan"], ["Kinkade", "ItzKinkade", "https://www.youtube.com/@ItzKinkade"], ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT"], ["Freedo", "TheRealFreedoBlox", "https://www.youtube.com/@TheRealFreedoBlox"], ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"], ["Blooket Galaxy", "BlooketGalaxy", "https://www.youtube.com/@BlooketGalaxy"], ["TheBlooketBro", "theblooketbro", "https://www.youtube.com/@theblooketbro"], ["XpBlooket32", "XPgamer32Blooket", "https://www.youtube.com/@XPgamer32Blooket"], ["Blooket Gael", "UCOhGtij6ftod4pJ6mhU-skQ", "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"], ["c0mputerm4n", "c0mputerm4n-yt", "https://www.youtube.com/@c0mputerm4n-yt"], ["BlookFun", "blookfun", "https://www.youtube.com/@blookfun"]];
+const creatorList = [["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT"], ["LeonBlox", "LeonBloxOfficial", "https://www.youtube.com/@LeonBloxOfficial"], ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket"], ["BIL", "BILBRB", "https://www.youtube.com/@BILBRB"], ["Blooket", "PlayBlooket", "https://www.youtube.com/@PlayBlooket"], ["Mega Bot", "MegaBot91", "https://www.youtube.com/@MegaBot91"], ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked"], ["Monkey Master", "MonkeyMasterYT", "https://www.youtube.com/@MonkeyMasterYT"], ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4"], ["Blooket Ace", "blooketace", "https://www.youtube.com/@blooketace"], ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay"], ["Blooket Gamer", "theblooketgamer", "https://www.youtube.com/@theblooketgamer"], ["Blooket Gods", "BlooketGodsYT", "https://www.youtube.com/@BlooketGodsYT"], ["Slade2", "theslade2", "https://www.youtube.com/@theslade2"], ["Blooket Life", "BlooketLifeYT", "https://www.youtube.com/@BlooketLifeYT"], ["JustaPanda", "JustaPanda888", "https://www.youtube.com/@JustaPanda888"], ["Blooket Insane", "blooketinsane", "https://www.youtube.com/@blooketinsane"], ["notRIC", "playblacket", "https://www.youtube.com/@playblacket"], ["SRN Games", "srngameslol", "https://www.youtube.com/@srngameslol"], ["BlooketBam", "BlooketBAM", "https://www.youtube.com/@BlooketBAM"], ["Blook Master", "BlookMasterYT", "https://www.youtube.com/@BlookMasterYT"], ["Twisted Bread", "TwistedBread", "https://www.youtube.com/@TwistedBread/"], ["Pig55", "Pig_55", "https://www.youtube.com/@Pig_55"], ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries"], ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT"], ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT"], ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT"], ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook"], ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer"], ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan"], ["Kinkade", "ItzKinkade", "https://www.youtube.com/@ItzKinkade"], ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT"], ["Freedo", "TheRealFreedoBlox", "https://www.youtube.com/@TheRealFreedoBlox"], ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"], ["Blooket Galaxy", "BlooketGalaxy", "https://www.youtube.com/@BlooketGalaxy"], ["TheBlooketBro", "theblooketbro", "https://www.youtube.com/@theblooketbro"], ["XpBlooket32", "XPgamer32Blooket", "https://www.youtube.com/@XPgamer32Blooket"], ["Blooket Gael", "UCOhGtij6ftod4pJ6mhU-skQ", "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"], ["c0mputerm4n", "c0mputerm4n-yt", "https://www.youtube.com/@c0mputerm4n-yt"], ["BlookFun", "blookfun", "https://www.youtube.com/@blookfun"]];
 const fallbackSubs = {"Waymore": 150000, "LeonBlox": 79400, "iBlooket": 35200, "BIL": 31200, "Blooket": 31300, "Mega Bot": 27100, "Unblooked": 26900, "Monkey Master": 24000, "Lag0n": 23800, "Blooket Ace": 15400, "FastyJay": 12900, "Blooket Gamer": 6250, "Blooket Gods": 4740, "Slade2": 3690, "Blooket Life": 3620, "JustaPanda": 2990, "Blooket Insane": 2900, "notRIC": 2740, "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2100, "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500, "Turtelix": 1420, "Green astronaut": 1100, "Blooket Warrior": 1020, "Blookbread": 1010, "TOBP Blooket": 852, "YouLostMan": 660, "Kinkade": 525, "Peetwick": 396, "Freedo": 289, "Cosmic Dragon": 69, "Blooket Galaxy": 66, "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36, "c0mputerm4n": 27, "BlookFun": 6};
 
-let creators = []; let lastUpdated = null;
+let creators = [];
+let lastUpdated = null;
+let sortMode = 'subs'; // 'subs' or 'views'
 
 function formatSubs(num) {
     if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
     if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
     return num.toLocaleString();
+}
+
+function setSort(mode) {
+    sortMode = mode;
+    document.getElementById('sortSubs').classList.toggle('active', mode === 'subs');
+    document.getElementById('sortViews').classList.toggle('active', mode === 'views');
+    if (creators.length > 0) {
+        const searchVal = document.getElementById('search').value.toLowerCase();
+        const filtered = creators.filter(c => c.name.toLowerCase().includes(searchVal));
+        renderBoard(filtered);
+        renderUnderrated(filtered);
+        renderPodium(getSorted(creators));
+    }
+}
+
+function getSorted(data) {
+    return [...data].sort((a, b) => sortMode === 'views' ? b.views - a.views : b.subs - a.subs);
 }
 
 async function resolveHandle(handle) {
@@ -156,31 +230,56 @@ async function fetchSubsBatch(channelIds) {
     const res = await fetch(url);
     const data = await res.json();
     const map = {};
-    if (data.items) { data.items.forEach(item => { map[item.id] = parseInt(item.statistics.subscriberCount, 10); }); }
+    if (data.items) {
+        data.items.forEach(item => {
+            map[item.id] = {
+                subs: parseInt(item.statistics.subscriberCount, 10) || 0,
+                views: parseInt(item.statistics.viewCount, 10) || 0
+            };
+        });
+    }
     return map;
 }
 
 async function fetchAllSubs() {
-    const dot = document.getElementById("liveDot"); const text = document.getElementById("liveText"); const btn = document.getElementById("refreshBtn");
+    const dot = document.getElementById("liveDot");
+    const text = document.getElementById("liveText");
+    const btn = document.getElementById("refreshBtn");
     dot.className = "live-dot loading"; text.textContent = "Fetching live counts..."; btn.disabled = true;
     try {
         const resolvedIds = await Promise.all(creatorList.map(([name, handle]) => resolveHandle(handle)));
         const allIds = resolvedIds.filter(Boolean);
-        const subMap = {};
-        for (let i = 0; i < allIds.length; i += 50) { Object.assign(subMap, await fetchSubsBatch(allIds.slice(i, i + 50))); }
+        const statMap = {};
+        for (let i = 0; i < allIds.length; i += 50) {
+            Object.assign(statMap, await fetchSubsBatch(allIds.slice(i, i + 50)));
+        }
         creators = creatorList.map(([name, handle, url], idx) => {
             const channelId = resolvedIds[idx];
-            return { name, url, subs: (channelId && subMap[channelId] !== undefined) ? subMap[channelId] : (fallbackSubs[name] || 0) };
+            const stats = channelId && statMap[channelId];
+            return {
+                name,
+                url,
+                subs: stats ? stats.subs : (fallbackSubs[name] || 0),
+                views: stats ? stats.views : 0
+            };
         });
         creators.sort((a, b) => b.subs - a.subs);
         creators.forEach((c, i) => c.rank = i + 1);
         lastUpdated = new Date();
-        dot.className = "live-dot"; text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
-        renderPodium(creators); renderBoard(creators); renderUnderrated(creators);
+        dot.className = "live-dot";
+        text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
+        const sorted = getSorted(creators);
+        renderPodium(sorted);
+        renderBoard(creators);
+        renderUnderrated(creators);
         setTimeout(fetchAllSubs, 5 * 60 * 1000);
     } catch (err) {
         dot.className = "live-dot error"; text.textContent = "⚠️ API error — showing last known counts";
-        creators = creatorList.map(([name, handle, url]) => ({ name, url, subs: fallbackSubs[name] || 0 }));
+        creators = creatorList.map(([name, handle, url]) => ({
+            name, url,
+            subs: fallbackSubs[name] || 0,
+            views: 0
+        }));
         creators.sort((a, b) => b.subs - a.subs);
         creators.forEach((c, i) => c.rank = i + 1);
         renderPodium(creators); renderBoard(creators); renderUnderrated(creators);
@@ -191,12 +290,15 @@ async function fetchAllSubs() {
 function renderPodium(data) {
     if (data.length < 3) return;
     const podium = document.getElementById("podium");
-    const medals = ["🥇", "🥈", "🥉"]; const classes = ["first", "second", "third"];
+    const medals = ["🥇", "🥈", "🥉"];
+    const classes = ["first", "second", "third"];
+    const isViews = sortMode === 'views';
     podium.innerHTML = [0, 1, 2].map(i => `
         <div class="podium-card ${classes[i]}">
             <a href="${data[i].url}" target="_blank" class="podium-link">
-                ${medals[i]}<br><span class="podium-name">${data[i].name}</span><br><br>
-                <span class="podium-subs">${formatSubs(data[i].subs)}</span>
+                <span>${medals[i]}</span>
+                <span class="podium-name">${data[i].name}</span>
+                <span class="podium-subs">${formatSubs(isViews ? data[i].views : data[i].subs)}</span>
             </a>
         </div>`).join("");
 }
@@ -213,32 +315,81 @@ function getFireEmojiHtml(name) {
 }
 
 function renderBoard(data) {
-    const board = document.getElementById("leaderboard"); board.innerHTML = "";
-    const mainData = data.filter(c => c.subs >= 100);
-    if (mainData.length === 0) { board.innerHTML = "<div style='text-align:center; padding: 20px; font-size: 18px;'>No Blooktubers found! 😭</div>"; return; }
-    const maxSubs = creators[0]?.subs || 1;
-    mainData.forEach(creator => {
+    const board = document.getElementById("leaderboard");
+    board.innerHTML = "";
+    const isViews = sortMode === 'views';
+
+    // Full sorted list for accurate global ranks
+    const allSorted = getSorted(creators);
+    // Assign global ranks based on full list
+    allSorted.forEach((c, i) => c.globalRank = i + 1);
+
+    // Threshold: subs mode = under 100 subs goes to underrated; views mode = under 20k views
+    const mainData = getSorted(data.filter(c => isViews ? c.views >= 20000 : c.subs >= 100));
+
+    if (mainData.length === 0) {
+        board.innerHTML = "<div style='text-align:center; padding: 20px; font-size: 18px;'>No Blooktubers found! 😭</div>";
+        return;
+    }
+    const maxVal = isViews
+        ? Math.max(...getSorted(creators.filter(c => c.views >= 20000)).map(c => c.views)) || 1
+        : (getSorted(creators.filter(c => c.subs >= 100))[0]?.subs || 1);
+
+    mainData.forEach((creator) => {
         const row = document.createElement("a");
         row.href = creator.url; row.target = "_blank"; row.className = "row";
         if (creator.name.toLowerCase() === "fastyjay") row.classList.add("fastyjay");
         const isInactive = inactiveCreators.includes(creator.name.toLowerCase());
         if (isInactive) row.classList.add("inactive");
-        row.innerHTML = `<div class="rank">#${creator.rank}</div><div class="name">${creator.name}${isInactive ? ' 🕊️' : ''}${getFireEmojiHtml(creator.name)}</div><div class="subs">${formatSubs(creator.subs)}</div><div class="bar-bg"><div class="bar" style="width: ${(creator.subs / maxSubs) * 100}%"></div></div>`;
+
+        const metricVal = isViews ? creator.views : creator.subs;
+        const barWidth = (metricVal / maxVal) * 100;
+        const barClass = isViews ? "bar views-bar" : "bar";
+
+        row.innerHTML = `
+            <div class="rank">#${creator.globalRank}</div>
+            <div class="name">${creator.name}${isInactive ? ' 🕊️' : ''}${getFireEmojiHtml(creator.name)}</div>
+            <div class="subs">${formatSubs(metricVal)}</div>
+            <div class="bar-bg"><div class="${barClass}" style="width: ${barWidth}%"></div></div>`;
         board.appendChild(row);
     });
 }
 
 function renderUnderrated(data) {
-    const header = document.getElementById("underratedHeader"); const board = document.getElementById("underratedBoard");
-    const underrated = data.filter(c => c.subs < 100);
+    const header = document.getElementById("underratedHeader");
+    const board = document.getElementById("underratedBoard");
+    const isViews = sortMode === 'views';
+
+    // Full sorted list for accurate global ranks
+    const allSorted = getSorted(creators);
+    allSorted.forEach((c, i) => c.globalRank = i + 1);
+
+    const underrated = getSorted(data.filter(c => isViews ? c.views < 20000 : c.subs < 100));
+
+    // Update section header text
+    document.querySelector("#underratedHeader h2").textContent = "Up and Coming Blooktubers";
+    document.querySelector("#underratedHeader p").textContent = isViews
+        ? "Blooktubers with under 20K views"
+        : "Blooktubers with under 100 subscribers";
+
     if (underrated.length === 0) { header.style.display = "none"; board.style.display = "none"; return; }
     header.style.display = "block"; board.style.display = "block"; board.innerHTML = "";
-    const maxSubs = underrated[0]?.subs || 1;
-    underrated.forEach(creator => {
+    const maxVal = isViews
+        ? Math.max(...underrated.map(c => c.views)) || 1
+        : underrated[0]?.subs || 1;
+
+    underrated.forEach((creator) => {
         const row = document.createElement("a");
         row.href = creator.url; row.target = "_blank"; row.className = "row";
         if (inactiveCreators.includes(creator.name.toLowerCase())) row.classList.add("inactive");
-        row.innerHTML = `<div class="rank">#${creator.rank}</div><div class="name">${creator.name}${getFireEmojiHtml(creator.name)}</div><div class="subs">${formatSubs(creator.subs)}</div><div class="bar-bg"><div class="bar" style="width: ${(creator.subs / maxSubs) * 100}%"></div></div>`;
+        const metricVal = isViews ? creator.views : creator.subs;
+        const barWidth = (metricVal / maxVal) * 100;
+        const barClass = isViews ? "bar views-bar" : "bar";
+        row.innerHTML = `
+            <div class="rank">#${creator.globalRank}</div>
+            <div class="name">${creator.name}${getFireEmojiHtml(creator.name)}</div>
+            <div class="subs">${formatSubs(metricVal)}</div>
+            <div class="bar-bg"><div class="${barClass}" style="width: ${barWidth}%"></div></div>`;
         board.appendChild(row);
     });
 }
@@ -246,7 +397,10 @@ function renderUnderrated(data) {
 document.getElementById("search").addEventListener("input", e => {
     const val = e.target.value.toLowerCase();
     const filtered = creators.filter(c => c.name.toLowerCase().includes(val));
-    renderBoard(filtered); renderUnderrated(filtered);
+    renderBoard(filtered);
+    renderUnderrated(filtered);
+    // Only update podium if showing full list (no search filter)
+    if (!val) renderPodium(getSorted(creators));
 });
 
 fetchAllSubs();
