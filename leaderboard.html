@@ -96,6 +96,52 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
 .bar.views-bar { background: #60a5fa; }
 .fastyjay{ background: #ffe066 !important; border: 4px solid #333; box-shadow: 0 0 15px gold; }
 .inactive { background: #ffe0e0 !important; border: 4px solid #333; box-shadow: 0 0 15px red; }
+.terminated { background: #ff6b6b !important; border: 4px solid #8b0000; box-shadow: 0 0 15px #ff0000; }
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+.modal.show { display: flex; }
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 4px solid #333;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+    box-shadow: 0 8px 0 #333;
+}
+.modal-content h2 { font-family: 'Titan One', cursive; margin-bottom: 15px; color: #ff0000; }
+.modal-content p { font-size: 16px; margin-bottom: 20px; color: #333; }
+.close-btn {
+    background: #333;
+    color: white;
+    border: 3px solid #333;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    box-shadow: 0 4px 0 #333;
+    transition: 0.2s;
+}
+.close-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #333;
+}
 
 /* CUSTOM TOOLTIP STYLES */
 .tooltip-container { position: relative; display: inline-flex; cursor: help; margin-left: 6px; }
@@ -135,6 +181,18 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
     .name { width: auto; flex: 1; }
     .bar-bg { width: 100%; flex: none; }
 }
+
+/* Enhanced terminated modal */
+.modal{backdrop-filter:blur(6px);}
+.terminated-card{
+background:linear-gradient(180deg,#fff,#ffeaea);
+max-width:460px;padding:0;overflow:hidden;animation:pop .25s ease;
+}
+.terminated-card h2{background:#d62828;color:#fff;padding:18px;margin:0;text-shadow:none}
+.terminated-card p{padding:24px;font-size:17px;line-height:1.5}
+.terminated-card .close-btn{margin-bottom:22px;background:#d62828;border-color:#8b0000;box-shadow:0 4px 0 #8b0000}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
 </style>
 </head>
 <body>
@@ -182,22 +240,35 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
     <div class="leaderboard underrated" id="underratedBoard" style="display:none;"></div>
 </div>
 
+<div id="terminatedModal" class="modal">
+    <div class="modal-content terminated-card">
+        <h2>⛔ Channel Terminated</h2>
+        <div style="display:flex;flex-direction:column;align-items:center;padding:24px;">
+            <div style="font-size:60px;margin-bottom:16px;">🚫</div>
+            <p style="margin:0 0 18px 0;">This Blooktuber's YouTube channel has been <b>terminated</b> or permanently removed by YouTube.</p>
+            <div style="margin:0 0 20px;background:#fff4f4;border:2px solid #ffb3b3;border-radius:12px;padding:12px;font-size:14px;max-width:340px;">
+               This Blooktuber’s channel is no longer available, so you can’t access it.
+            </div>
+            <button class="close-btn" onclick="closeTerminatedModal()">Close</button>
+        </div>
+    </div>
+</div>
+
 <script>
-// NOTE: There is no API key here anymore. Stats now come from our own
-// Cloudflare Worker (blooktools-api), which handles the YouTube API calls
-// server-side and caches them in KV. This means the page no longer hits
-// YouTube's quota directly — the Worker does, and it's cached for 30 min.
 const STATS_API_URL = "https://blooktools-api.fastyjayden.workers.dev/";
 
 const inactiveCreators = ["kinkade", "blooket elite", "bil"];
+const terminatedCreators = ["blook master"];
 const creatorList = [["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT"], ["LeonBlox", "LeonBloxOfficial", "https://www.youtube.com/@LeonBloxOfficial"], ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket"], ["BIL", "BILBRB", "https://www.youtube.com/@BILBRB"], ["Blooket", "PlayBlooket", "https://www.youtube.com/@PlayBlooket"], ["Mega Bot", "MegaBot91", "https://www.youtube.com/@MegaBot91"], ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked"], ["Monkey Master", "MonkeyMasterYT", "https://www.youtube.com/@MonkeyMasterYT"], ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4"], ["Blooket Ace", "blooketace", "https://www.youtube.com/@blooketace"], ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay"], ["Blooket Gamer", "theblooketgamer", "https://www.youtube.com/@theblooketgamer"], ["Blooket Gods", "BlooketGodsYT", "https://www.youtube.com/@BlooketGodsYT"], ["Slade2", "theslade2", "https://www.youtube.com/@theslade2"], ["Blooket Life", "BlooketLifeYT", "https://www.youtube.com/@BlooketLifeYT"], ["JustaPanda", "JustaPanda888", "https://www.youtube.com/@JustaPanda888"], ["Blooket Insane", "blooketinsane", "https://www.youtube.com/@blooketinsane"], ["notRIC", "playblacket", "https://www.youtube.com/@playblacket"], ["SRN Games", "srngameslol", "https://www.youtube.com/@srngameslol"], ["BlooketBam", "BlooketBAM", "https://www.youtube.com/@BlooketBAM"], ["Blook Master", "BlookMasterYT", "https://www.youtube.com/@BlookMasterYT"], ["Twisted Bread", "TwistedBread", "https://www.youtube.com/@TwistedBread/"], ["Pig55", "Pig_55", "https://www.youtube.com/@Pig_55"], ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries"], ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT"], ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT"], ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT"], ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook"], ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer"], ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan"], ["Kinkade", "ItzKinkade", "https://www.youtube.com/@ItzKinkade"], ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT"], ["Freedo", "TheRealFreedoBlox", "https://www.youtube.com/@TheRealFreedoBlox"], ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"], ["Blooket Galaxy", "BlooketGalaxy", "https://www.youtube.com/@BlooketGalaxy"], ["TheBlooketBro", "theblooketbro", "https://www.youtube.com/@theblooketbro"], ["XpBlooket32", "XPgamer32Blooket", "https://www.youtube.com/@XPgamer32Blooket"], ["Blooket Gael", "UCOhGtij6ftod4pJ6mhU-skQ", "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"], ["c0mputerm4n", "c0mputerm4n-yt", "https://www.youtube.com/@c0mputerm4n-yt"], ["BlookFun", "blookfun", "https://www.youtube.com/@blookfun"], ["TheBlooketDude", "TheBlooketDude", "https://www.youtube.com/@TheBlooketDude"]];
-const fallbackSubs = {"Waymore": 150000, "LeonBlox": 79400, "iBlooket": 35200, "BIL": 31200, "Blooket": 31300, "Mega Bot": 27100, "Unblooked": 26900, "Monkey Master": 24000, "Lag0n": 23800, "Blooket Ace": 15400, "FastyJay": 12900, "Blooket Gamer": 6250, "Blooket Gods": 4740, "Slade2": 3690, "Blooket Life": 3620, "JustaPanda": 2990, "Blooket Insane": 2900, "notRIC": 2740, "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2100, "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500, "Turtelix": 1420, "Green astronaut": 1100, "Blooket Warrior": 1020, "Blookbread": 1010, "TOBP Blooket": 852, "YouLostMan": 660, "Kinkade": 525, "Peetwick": 396, "Freedo": 289, "Cosmic Dragon": 69, "Blooket Galaxy": 66, "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36, "c0mputerm4n": 27, "BlookFun": 6, "TheBlooketDude": 1410};
+const fallbackSubs = {"Waymore": 150000, "LeonBlox": 79400, "iBlooket": 35200, "BIL": 31200, "Blooket": 31300, "Mega Bot": 27100, "Unblooked": 26900, "Monkey Master": 24000, "Lag0n": 23800, "Blooket Ace": 15400, "FastyJay": 12900, "Blooket Gamer": 6250, "Blooket Gods": 4740, "Slade2": 3690, "Blooket Life": 3620, "JustaPanda": 2990, "Blooket Insane": 2900, "notRIC": 2740, "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2200, "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500, "Turtelix": 1420, "Green astronaut": 1100, "Blooket Warrior": 1020, "Blookbread": 1010, "TOBP Blooket": 852, "YouLostMan": 660, "Kinkade": 525, "Peetwick": 396, "Freedo": 289, "Cosmic Dragon": 69, "Blooket Galaxy": 66, "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36, "c0mputerm4n": 27, "BlookFun": 6, "TheBlooketDude": 1410};
 
 let creators = [];
 let lastUpdated = null;
-let sortMode = 'subs'; // 'subs' or 'views'
+const terminatedSound = new Audio("https://mathuniverse.online/wrong.MP3");
+let sortMode = 'subs';
 
 function formatSubs(num) {
+    if (num === "-") return "-";
     if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
     if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
     return num.toLocaleString();
@@ -212,12 +283,47 @@ function setSort(mode) {
         const filtered = creators.filter(c => c.name.toLowerCase().includes(searchVal));
         renderBoard(filtered);
         renderUnderrated(filtered);
-        renderPodium(getSorted(creators));
+        renderPodium(getSorted(creators, false));
     }
 }
 
-function getSorted(data) {
-    return [...data].sort((a, b) => sortMode === 'views' ? b.views - a.views : b.subs - a.subs);
+function getSorted(data, includeTerminated = true) {
+    let filtered = data;
+    if (!includeTerminated) {
+        filtered = data.filter(c => !terminatedCreators.includes(c.name.toLowerCase()));
+    }
+    
+    // Split Blook Master away during sorting logic to force rank positioning
+    let bm = filtered.find(c => c.name.toLowerCase() === "blook master");
+    let rest = filtered.filter(c => c.name.toLowerCase() !== "blook master");
+
+    rest.sort((a, b) => {
+        if (a.terminated && !b.terminated) return 1;
+        if (!a.terminated && b.terminated) return -1;
+        return sortMode === 'views' ? b.views - a.views : b.subs - a.subs;
+    });
+
+    if (bm && includeTerminated) {
+        rest.splice(20, 0, bm); // Splice directly to position 21 (index 20)
+    }
+    return rest;
+}
+
+function showTerminatedModal() {
+    terminatedSound.currentTime = 0;
+    terminatedSound.play().catch(()=>{});
+    document.getElementById('terminatedModal').classList.add('show');
+}
+
+function closeTerminatedModal() {
+    document.getElementById('terminatedModal').classList.remove('show');
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('terminatedModal');
+    if (event.target == modal) {
+        modal.classList.remove('show');
+    }
 }
 
 async function fetchAllSubs() {
@@ -226,44 +332,47 @@ async function fetchAllSubs() {
     const btn = document.getElementById("refreshBtn");
     dot.className = "live-dot loading"; text.textContent = "Fetching live counts..."; btn.disabled = true;
     try {
-        // All YouTube API calls now happen inside the Worker, not here.
-        // The Worker caches results for 30 minutes in KV, so this is cheap
-        // no matter how many people load this page or how often.
         const res = await fetch(STATS_API_URL);
         const data = await res.json();
         if (data.error) throw new Error(data.error);
 
         creators = creatorList.map(([name, handle, url]) => {
             const stats = data.stats ? data.stats[name] : null;
+            const isTerminated = terminatedCreators.includes(name.toLowerCase());
             return {
                 name,
                 url,
-                subs: stats ? stats.subs : (fallbackSubs[name] || 0),
-                views: stats ? stats.views : 0
+                subs: isTerminated ? "-" : (stats ? stats.subs : (fallbackSubs[name] || 0)),
+                views: isTerminated ? "-" : (stats ? stats.views : 0),
+                terminated: isTerminated
             };
         });
-        creators.sort((a, b) => b.subs - a.subs);
+
+        creators = getSorted(creators, true);
         creators.forEach((c, i) => c.rank = i + 1);
+
         lastUpdated = new Date(data.updatedAt || Date.now());
         dot.className = "live-dot";
         text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
-        const sorted = getSorted(creators);
+        const sorted = getSorted(creators, false);
         renderPodium(sorted);
         renderBoard(creators);
         renderUnderrated(creators);
-        // Refresh every 5 minutes — cheap now, since the Worker's own cache
-        // (30 min) means most of these calls won't even reach YouTube.
         setTimeout(fetchAllSubs, 5 * 60 * 1000);
     } catch (err) {
         dot.className = "live-dot error"; text.textContent = "⚠️ API error — showing last known counts";
-        creators = creatorList.map(([name, handle, url]) => ({
-            name, url,
-            subs: fallbackSubs[name] || 0,
-            views: 0
-        }));
-        creators.sort((a, b) => b.subs - a.subs);
+        creators = creatorList.map(([name, handle, url]) => {
+            const isTerminated = terminatedCreators.includes(name.toLowerCase());
+            return {
+                name, url,
+                subs: isTerminated ? "-" : (fallbackSubs[name] || 0),
+                views: isTerminated ? "-" : 0,
+                terminated: isTerminated
+            };
+        });
+        creators = getSorted(creators, true);
         creators.forEach((c, i) => c.rank = i + 1);
-        renderPodium(creators); renderBoard(creators); renderUnderrated(creators);
+        renderPodium(getSorted(creators, false)); renderBoard(creators); renderUnderrated(creators);
     }
     btn.disabled = false;
 }
@@ -284,15 +393,19 @@ function renderPodium(data) {
         </div>`).join("");
 }
 
-function getFireEmojiHtml(name) {
+function getSpecialEmojisHtml(name) {
+    const htmlParts = [];
+    if (terminatedCreators.includes(name.toLowerCase())) {
+        htmlParts.push(" ⛔");
+    }
     if (name === "LeonBlox") {
-        return `
+        htmlParts.push(`
         <span class="tooltip-container">
             <img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/fire_1f525.gif" style="width: 20px; vertical-align: middle; cursor: help;">
             <span class="custom-tooltip">Rapidly growing Blooktuber!</span>
-        </span>`;
+        </span>`);
     }
-    return "";
+    return htmlParts.join("");
 }
 
 function renderBoard(data) {
@@ -300,37 +413,47 @@ function renderBoard(data) {
     board.innerHTML = "";
     const isViews = sortMode === 'views';
 
-    // Full sorted list for accurate global ranks
-    const allSorted = getSorted(creators);
-    // Assign global ranks based on full list
+    const allSorted = getSorted(creators, true);
     allSorted.forEach((c, i) => c.globalRank = i + 1);
 
-    // Threshold: subs mode = under 100 subs goes to underrated; views mode = under 20k views
-    const mainData = getSorted(data.filter(c => isViews ? c.views >= 20000 : c.subs >= 100));
+    const mainData = getSorted(data.filter(c => {
+        if (c.terminated) return true;
+        return isViews ? c.views >= 20000 : c.subs >= 100;
+    }), true);
 
     if (mainData.length === 0) {
         board.innerHTML = "<div style='text-align:center; padding: 20px; font-size: 18px;'>No Blooktubers found! 😭</div>";
         return;
     }
     const maxVal = isViews
-        ? Math.max(...getSorted(creators.filter(c => c.views >= 20000)).map(c => c.views)) || 1
-        : (getSorted(creators.filter(c => c.subs >= 100))[0]?.subs || 1);
+        ? Math.max(...getSorted(creators.filter(c => c.views !== "-" && c.views >= 20000)).map(c => c.views)) || 1
+        : (getSorted(creators.filter(c => c.subs !== "-" && c.subs >= 100))[0]?.subs || 1);
 
     mainData.forEach((creator) => {
         const row = document.createElement("a");
-        row.href = creator.url; row.target = "_blank"; row.className = "row";
+        
+        if (creator.terminated) {
+            row.href = "#";
+            row.onclick = (e) => { e.preventDefault(); showTerminatedModal(); };
+        } else {
+            row.href = creator.url;
+            row.target = "_blank";
+        }
+        
+        row.className = "row";
         if (creator.name.toLowerCase() === "fastyjay") row.classList.add("fastyjay");
+        if (creator.terminated) row.classList.add("terminated");
         const isInactive = inactiveCreators.includes(creator.name.toLowerCase());
-        if (isInactive) row.classList.add("inactive");
+        if (isInactive && !creator.terminated) row.classList.add("inactive");
 
-        const metricVal = isViews ? creator.views : creator.subs;
-        const barWidth = (metricVal / maxVal) * 100;
+        const metricVal = creator.terminated ? 0 : (isViews ? creator.views : creator.subs);
+        const barWidth = creator.terminated ? 0 : ((metricVal / maxVal) * 100);
         const barClass = isViews ? "bar views-bar" : "bar";
 
         row.innerHTML = `
             <div class="rank">#${creator.globalRank}</div>
-            <div class="name">${creator.name}${isInactive ? ' 🕊️' : ''}${getFireEmojiHtml(creator.name)}</div>
-            <div class="subs">${formatSubs(metricVal)}</div>
+            <div class="name">${creator.name}${isInactive && !creator.terminated ? ' 🕊️' : ''}${getSpecialEmojisHtml(creator.name)}</div>
+            <div class="subs">${formatSubs(creator.terminated ? "-" : metricVal)}</div>
             <div class="bar-bg"><div class="${barClass}" style="width: ${barWidth}%"></div></div>`;
         board.appendChild(row);
     });
@@ -341,13 +464,14 @@ function renderUnderrated(data) {
     const board = document.getElementById("underratedBoard");
     const isViews = sortMode === 'views';
 
-    // Full sorted list for accurate global ranks
-    const allSorted = getSorted(creators);
+    const allSorted = getSorted(creators, true);
     allSorted.forEach((c, i) => c.globalRank = i + 1);
 
-    const underrated = getSorted(data.filter(c => isViews ? c.views < 20000 : c.subs < 100));
+    const underrated = getSorted(data.filter(c => {
+        if (c.terminated) return false;
+        return isViews ? c.views < 20000 : c.subs < 100;
+    }), true);
 
-    // Update section header text
     document.querySelector("#underratedHeader h2").textContent = "Up and Coming Blooktubers";
     document.querySelector("#underratedHeader p").textContent = isViews
         ? "Blooktubers with under 20K views"
@@ -368,7 +492,7 @@ function renderUnderrated(data) {
         const barClass = isViews ? "bar views-bar" : "bar";
         row.innerHTML = `
             <div class="rank">#${creator.globalRank}</div>
-            <div class="name">${creator.name}${getFireEmojiHtml(creator.name)}</div>
+            <div class="name">${creator.name}${getSpecialEmojisHtml(creator.name)}</div>
             <div class="subs">${formatSubs(metricVal)}</div>
             <div class="bar-bg"><div class="${barClass}" style="width: ${barWidth}%"></div></div>`;
         board.appendChild(row);
@@ -380,8 +504,7 @@ document.getElementById("search").addEventListener("input", e => {
     const filtered = creators.filter(c => c.name.toLowerCase().includes(val));
     renderBoard(filtered);
     renderUnderrated(filtered);
-    // Only update podium if showing full list (no search filter)
-    if (!val) renderPodium(getSorted(creators));
+    if (!val) renderPodium(getSorted(creators, false));
 });
 
 fetchAllSubs();
