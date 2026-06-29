@@ -274,7 +274,6 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 }
 .wordle-row.shake { animation: wordleShake .42s ease-in-out; }
 
-/* Base tile — size is overridden by JS via --tile-sz on the board */
 .wordle-tile {
   width: var(--tile-sz, 42px);
   height: var(--tile-sz, 42px);
@@ -432,8 +431,8 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
     </div>
 
     <div id="welcome-message" style="display:none; text-align:center; padding:20px 0;">
-      <div class="menu-title" style="margin-bottom:12px;">Ready to Play!</div>
-      <p style="font-weight:800; color:#444; margin-bottom:20px;">Live subscriber counts loaded! Pick a mode below.</p>
+      <div class="menu-title" style="margin-bottom:12px;">Welcome to Guess the Blook!</div>
+      <p style="font-weight:800; color:#444; margin-bottom:20px;">Select many gamemodes and try to guess the blooktuber! Start playing by clicking the button below!</p>
       <button class="btn btn-yellow" onclick="openModePopup()">Choose Game Mode</button>
     </div>
 
@@ -543,7 +542,9 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 </div>
 
 <script>
-const API_KEY = "AIzaSyCf7OcIbKPptJn3xL6IUT8ruZCFK6wjUX0";
+// All YouTube stats now come from the Cloudflare Worker, which caches
+// results in KV for 30 minutes — no API key needed on the client side.
+const STATS_API_URL = "https://blooktools-api.fastyjayden.workers.dev/";
 
 const creatorList = [
   ["Waymore",          "WaymoreYT",                    "https://www.youtube.com/@WaymoreYT",                    "https://yt3.googleusercontent.com/fpVQ5VoYlN-UptRogESSqHnxEX61T-7YW1YNGObVrFX2w_1jBO-njl76kt-6vkPF_2cC9x66kQ=s800-c-k-c0x00ffffff-no-rj"],
@@ -571,7 +572,7 @@ const creatorList = [
   ["Pig55",            "Pig_55",                       "https://www.youtube.com/@Pig_55",                       null],
   ["Blooket Elite",    "BlooketEliteIsEatingYourFries","https://www.youtube.com/@BlooketEliteIsEatingYourFries",null],
   ["Turtelix",         "TurtelixYT",                   "https://www.youtube.com/@TurtelixYT",                   null],
-  ["The green astronaut",  "ThegreenastronautYT",          "https://www.youtube.com/@ThegreenastronautYT",          "https://yt3.googleusercontent.com/jqSEQqOe03q2My36l3Khz09hh8qmrhDGkbD-VsLGrW-ESIbSneCIfSeYVravW7BwhlKfiaUPpg=s800-c-k-c0x00ffffff-no-rj"],
+  ["The green astronaut",  "ThegreenastronautYT",      "https://www.youtube.com/@ThegreenastronautYT",          "https://yt3.googleusercontent.com/jqSEQqOe03q2My36l3Khz09hh8qmrhDGkbD-VsLGrW-ESIbSneCIfSeYVravW7BwhlKfiaUPpg=s800-c-k-c0x00ffffff-no-rj"],
   ["Blooket Warrior",  "BlooketWarriorYT",             "https://www.youtube.com/@BlooketWarriorYT",             null],
   ["Blookbread",       "Breadblook",                   "https://www.youtube.com/@Breadblook",                   null],
   ["TOBP Blooket",     "ThatOneBlooketPlayer",         "https://www.youtube.com/@ThatOneBlooketPlayer",         null],
@@ -616,13 +617,10 @@ let wordleToastTimeout = null, wordleCurrentGuess = '';
 let confettiParticles = [], confettiRAF = null;
 
 // ── Tile size calculator ───────────────────────────────────────────────────────
-// Computes the largest square tile that fits in the card without overflow.
-// cardPadding: 26px each side = 52px; gap between tiles: 5px
 function calcTileSize(wordLen) {
-  const cardWidth = Math.min(600, window.innerWidth) - 40 - 52; // viewport - container padding - card padding
+  const cardWidth = Math.min(600, window.innerWidth) - 40 - 52;
   const totalGap = (wordLen - 1) * 5;
   const raw = Math.floor((cardWidth - totalGap) / wordLen);
-  // clamp: never larger than 42px, never smaller than 20px
   return Math.max(20, Math.min(42, raw));
 }
 
@@ -727,53 +725,47 @@ function timerExpired() {
 }
 function getTimerBonus() { return Math.floor((timerRemaining/TIMER_SECONDS)*20); }
 
-// ── YouTube API ───────────────────────────────────────────────────────────────
-async function resolveHandle(handle) {
-  if (handle.startsWith("UC")) return handle;
-  const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${encodeURIComponent(handle)}&key=${API_KEY}`);
-  const data = await res.json();
-  return data.items?.[0]?.id || null;
-}
-async function fetchSubsBatch(ids) {
-  const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${ids.join(',')}&key=${API_KEY}`);
-  const data = await res.json();
-  const map = {};
-  data.items?.forEach(item => { map[item.id] = parseInt(item.statistics.subscriberCount, 10); });
-  return map;
-}
-
+// ── Live data via Cloudflare Worker ───────────────────────────────────────────
+// Replaces the old direct YouTube API calls. The Worker handles YouTube API
+// requests server-side and caches results in KV for 30 minutes, so this
+// fetch is cheap and never exposes an API key to the client.
 async function loadLiveData() {
   const dot = document.getElementById('live-dot'), text = document.getElementById('live-text');
   dot.className = 'live-dot loading';
   text.textContent = 'Fetching live subscriber counts…';
   try {
-    const resolvedIds = await Promise.all(creatorList.map(([,h]) => resolveHandle(h)));
-    const subMap = {};
-    const validIds = resolvedIds.filter(Boolean);
-    for (let i = 0; i < validIds.length; i += 50)
-      Object.assign(subMap, await fetchSubsBatch(validIds.slice(i, i+50)));
+    const res = await fetch(STATS_API_URL);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
 
-    loadedCreators = creatorList.map(([name,,url,img], idx) => {
-      const cid = resolvedIds[idx];
-      const subs = (cid && subMap[cid] !== undefined) ? subMap[cid] : (fallbackSubs[name] || 0);
-      return { name, url, subs, status: inactiveCreators.includes(name.toLowerCase()) ? 'Inactive' : 'Active', image: img || defaultImage };
+    loadedCreators = creatorList.map(([name,,url,img]) => {
+      const stats = data.stats ? data.stats[name] : null;
+      const subs = stats ? stats.subs : (fallbackSubs[name] || 0);
+      return {
+        name, url,
+        subs,
+        status: inactiveCreators.includes(name.toLowerCase()) ? 'Inactive' : 'Active',
+        image: img || defaultImage
+      };
     });
     loadedCreators.sort((a,b) => b.subs - a.subs);
-    lastUpdated = new Date();
+    lastUpdated = new Date(data.updatedAt || Date.now());
     dot.className = 'live-dot';
-    text.textContent = `Last updated ${lastUpdated.toLocaleTimeString()}`;
+    text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
     document.getElementById('loading-view').style.display = 'none';
     if (!gameStarted) {
       document.getElementById('welcome-message').style.display = 'block';
     }
-    setTimeout(loadLiveData, 5*60*1000);
+    // Refresh every 5 minutes — cheap since the Worker caches for 30 min
+    setTimeout(loadLiveData, 5 * 60 * 1000);
   } catch(e) {
     dot.className = 'live-dot error';
     text.textContent = '⚠️ API error — using last known counts';
     loadedCreators = creatorList.map(([name,,url,img]) => ({
-      name, url, subs: fallbackSubs[name]||0,
+      name, url,
+      subs: fallbackSubs[name] || 0,
       status: inactiveCreators.includes(name.toLowerCase()) ? 'Inactive' : 'Active',
-      image: img||defaultImage
+      image: img || defaultImage
     }));
     loadedCreators.sort((a,b) => b.subs - a.subs);
     document.getElementById('loading-view').style.display = 'none';
@@ -1006,10 +998,7 @@ function startWordleRound() {
   document.getElementById('wordle-hint').textContent = 'Type a guess, then press Enter or hit Guess';
   document.getElementById('feedback').textContent = '';
   document.getElementById('feedback').className = 'feedback';
-
-  // Apply dynamic tile sizing BEFORE rendering the board
   applyTileSize(wordleAnswer.length);
-
   renderWordleBoard();
   renderWordleKeyboard();
 }
@@ -1023,10 +1012,7 @@ function renderWordleBoard() {
   const board = document.getElementById('wordle-board');
   board.innerHTML = '';
   const len = wordleAnswer.length;
-
-  // Re-apply tile size on every render (handles resize)
   applyTileSize(len);
-
   for (let r = 0; r < WORDLE_MAX; r++) {
     const rowEl = document.createElement('div');
     rowEl.className = 'wordle-row'; rowEl.id = `wordle-row-${r}`;
@@ -1199,7 +1185,6 @@ document.addEventListener('keydown', (e) => {
   else if (/^[a-zA-Z0-9]$/.test(e.key)) handleWordleKey(e.key);
 });
 
-// Re-calc tile sizes on window resize
 window.addEventListener('resize', () => {
   if (currentGameMode === 'wordle' && wordleAnswer) {
     applyTileSize(wordleAnswer.length);
