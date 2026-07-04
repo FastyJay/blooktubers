@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BlookTools | Home</title>
+<title>BlookTools | Home 🎆</title>
 <link rel="icon" type="image/png" href="https://blooket.mathuniverse.online/blooktools.png">
 
 <style>
@@ -18,40 +18,65 @@
 }
 
 body {
-    background: #0bc2cf;
+    background: linear-gradient(180deg, #070f26 0%, #0e2050 45%, #1a3a72 100%);
     min-height: 100vh;
     overflow-x: hidden;
     padding-bottom: 60px;
 }
 
-/* */
+/* faint flag-stripe texture across the night sky */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background:
-        linear-gradient(45deg,
-        rgba(255,255,255,.08) 25%,
-        transparent 25%,
-        transparent 75%,
-        rgba(255,255,255,.08) 75%);
-    background-size: 80px 80px;
-    z-index: -2;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,.035) 0px,
+        rgba(255,255,255,.035) 40px,
+        transparent 40px,
+        transparent 80px
+    );
+    z-index: -4;
+}
+
+/* Twinkling stars */
+.star {
+    position: fixed;
+    background: #fff;
+    border-radius: 50%;
+    z-index: -3;
+    animation-name: twinkle;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    pointer-events: none;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: .15; }
+    50%      { opacity: 1; }
 }
 
 /* Falling blooks */
 .blook {
     position: fixed;
     top: -150px;
-    opacity: .22;
+    opacity: .15;
     animation: fall linear infinite;
     pointer-events: none;
-    z-index: -1;
+    z-index: -2;
 }
 
 @keyframes fall {
     from { transform: translateY(0) rotate(0deg); }
     to   { transform: translateY(120vh) rotate(360deg); }
+}
+
+/* Fireworks canvas sits above the ambient decoration, behind real content */
+#fw-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
 }
 
 /* ── NAV ── */
@@ -89,13 +114,28 @@ nav a.active {
 .hero {
     text-align: center;
     padding: 40px 20px 10px;
+    position: relative;
+}
+
+.event-badge {
+    display: inline-block;
+    background: #fff;
+    color: #b22234;
+    font-family: 'Titan One', cursive;
+    font-size: .9rem;
+    letter-spacing: .5px;
+    padding: 8px 22px;
+    border-radius: 999px;
+    border: 3px solid #132242;
+    box-shadow: 0 4px 0 #132242;
+    margin-bottom: 16px;
 }
 
 .hero h1 {
     font-family: 'Titan One', cursive;
     font-size: clamp(2.4rem, 6vw, 4rem);
     color: white;
-    text-shadow: 4px 4px 0 #222, 8px 8px 14px rgba(0,0,0,.2);
+    text-shadow: 3px 3px 0 #b22234, 6px 6px 0 #3c3b6e, 0 10px 22px rgba(0,0,0,.35);
     letter-spacing: 2px;
     line-height: 1.1;
 }
@@ -104,8 +144,8 @@ nav a.active {
     color: white;
     font-size: 1.15rem;
     font-weight: 800;
-    text-shadow: 2px 2px 0 #333;
-    margin-top: 10px;
+    text-shadow: 2px 2px 0 #132242;
+    margin-top: 12px;
 }
 
 /* ── CARDS GRID ── */
@@ -131,7 +171,7 @@ nav a.active {
 
 .card-featured-icon {
     flex-shrink: 0;
-    background: #e0f7ff;
+    background: #fff6df;
     border: 3px solid #333;
     border-radius: 18px;
     width: 90px;
@@ -256,7 +296,7 @@ nav a.active {
     font-family: 'Titan One', cursive;
     font-size: 2rem;
     color: white;
-    text-shadow: 3px 3px 0 #222;
+    text-shadow: 3px 3px 0 #132242;
     letter-spacing: 2px;
 }
 
@@ -270,6 +310,22 @@ nav a.active {
 </head>
 <body>
 
+<!-- Twinkling stars -->
+<div class="star" style="top:8%;  left:10%; width:3px; height:3px; animation-duration:2.6s; animation-delay:-1s;"></div>
+<div class="star" style="top:14%; left:80%; width:2px; height:2px; animation-duration:3.2s; animation-delay:-2.1s;"></div>
+<div class="star" style="top:22%; left:30%; width:3px; height:3px; animation-duration:2.8s; animation-delay:-.4s;"></div>
+<div class="star" style="top:6%;  left:55%; width:2px; height:2px; animation-duration:3.6s; animation-delay:-3s;"></div>
+<div class="star" style="top:34%; left:90%; width:3px; height:3px; animation-duration:2.4s; animation-delay:-1.6s;"></div>
+<div class="star" style="top:40%; left:5%;  width:2px; height:2px; animation-duration:3s;   animation-delay:-.8s;"></div>
+<div class="star" style="top:18%; left:65%; width:2px; height:2px; animation-duration:2.9s; animation-delay:-2.4s;"></div>
+<div class="star" style="top:50%; left:45%; width:3px; height:3px; animation-duration:3.4s; animation-delay:-1.2s;"></div>
+<div class="star" style="top:60%; left:15%; width:2px; height:2px; animation-duration:2.7s; animation-delay:-2.8s;"></div>
+<div class="star" style="top:65%; left:75%; width:3px; height:3px; animation-duration:3.1s; animation-delay:-.2s;"></div>
+
+<!-- Fireworks (canvas-driven particle system, see script at bottom) -->
+<canvas id="fw-canvas"></canvas>
+
+<!-- Falling blooks -->
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/blueastronaut.svg"    alt="" aria-hidden="true" style="left:5%;  width:80px;  animation-duration:16s; animation-delay:-2s;">
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/springdragon.svg"   alt="" aria-hidden="true" style="left:75%; width:100px; animation-duration:20s; animation-delay:-8s;">
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/partypig.svg"       alt="" aria-hidden="true" style="left:45%; width:90px;  animation-duration:18s; animation-delay:-12s;">
@@ -330,5 +386,166 @@ nav a.active {
 
 </div>
 
+<script>
+(function () {
+    var canvas = document.getElementById('fw-canvas');
+    var ctx = canvas.getContext('2d');
+    var w, h;
+
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    var COLORS = ['#ff4d4d', '#ffffff', '#5c8bff', '#ffd700'];
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+    function pick(arr) { return arr[Math.floor(rand(0, arr.length))]; }
+
+    var rockets = [];
+    var sparks = [];
+    var flashes = [];
+
+    function Rocket() {
+        this.x = rand(w * 0.12, w * 0.88);
+        this.y = h + 10;
+        this.targetY = rand(h * 0.14, h * 0.42);
+        this.vx = rand(-0.5, 0.5);
+        this.vy = rand(-9.5, -7.5);
+        this.color = pick(COLORS);
+        this.trail = [];
+    }
+    Rocket.prototype.update = function () {
+        this.trail.push({ x: this.x, y: this.y });
+        if (this.trail.length > 5) this.trail.shift();
+        this.vy += 0.09;
+        this.x += this.vx;
+        this.y += this.vy;
+    };
+    Rocket.prototype.draw = function () {
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        for (var i = 0; i < this.trail.length; i++) {
+            var p = this.trail[i];
+            if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+        }
+        ctx.lineTo(this.x, this.y);
+        ctx.stroke();
+    };
+    Rocket.prototype.spent = function () { return this.vy >= -0.6 || this.y <= this.targetY; };
+
+    function Spark(x, y, color) {
+        this.x = x; this.y = y;
+        var angle = rand(0, Math.PI * 2);
+        var speed = rand(1.2, 6.2);
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.color = color;
+        this.life = 1;
+        this.decay = rand(0.012, 0.02);
+        this.size = rand(1.4, 2.8);
+    }
+    Spark.prototype.update = function () {
+        this.vy += 0.045;
+        this.vx *= 0.98;
+        this.vy *= 0.98;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.life -= this.decay;
+    };
+    Spark.prototype.draw = function () {
+        if (this.life <= 0) return;
+        ctx.globalAlpha = Math.max(this.life, 0);
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    };
+    Spark.prototype.dead = function () { return this.life <= 0; };
+
+    function Flash(x, y, color) {
+        this.x = x; this.y = y;
+        this.color = color;
+        this.life = 1;
+    }
+    Flash.prototype.update = function () { this.life -= 0.09; };
+    Flash.prototype.draw = function () {
+        if (this.life <= 0) return;
+        var r = (1 - this.life) * 46 + 6;
+        var grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r);
+        grad.addColorStop(0, this.color);
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.globalAlpha = Math.max(this.life, 0) * 0.8;
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    };
+    Flash.prototype.dead = function () { return this.life <= 0; };
+
+    function explode(x, y, color) {
+        flashes.push(new Flash(x, y, color));
+        var count = Math.floor(rand(45, 65));
+        for (var i = 0; i < count; i++) sparks.push(new Spark(x, y, color));
+        if (Math.random() < 0.5) {
+            var color2 = pick(COLORS);
+            var count2 = Math.floor(count * 0.4);
+            for (var j = 0; j < count2; j++) sparks.push(new Spark(x, y, color2));
+        }
+    }
+
+    var lastSpawn = 0;
+    var nextGap = rand(700, 1500);
+
+    function loop(ts) {
+        // fade previous frame without ever painting an opaque layer,
+        // so the page background stays visible through the canvas
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.fillStyle = 'rgba(0,0,0,0.18)';
+        ctx.fillRect(0, 0, w, h);
+        ctx.globalCompositeOperation = 'source-over';
+
+        if (ts - lastSpawn > nextGap) {
+            rockets.push(new Rocket());
+            lastSpawn = ts;
+            nextGap = rand(700, 1500);
+        }
+
+        for (var i = rockets.length - 1; i >= 0; i--) {
+            var r = rockets[i];
+            r.update();
+            r.draw();
+            if (r.spent()) {
+                explode(r.x, r.y, r.color);
+                rockets.splice(i, 1);
+            }
+        }
+
+        for (var j = flashes.length - 1; j >= 0; j--) {
+            flashes[j].update();
+            flashes[j].draw();
+            if (flashes[j].dead()) flashes.splice(j, 1);
+        }
+
+        for (var k = sparks.length - 1; k >= 0; k--) {
+            sparks[k].update();
+            sparks[k].draw();
+            if (sparks[k].dead()) sparks.splice(k, 1);
+        }
+
+        requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+})();
+</script>
 </body>
 </html>
