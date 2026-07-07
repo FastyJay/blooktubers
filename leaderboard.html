@@ -7,10 +7,17 @@
 <link rel="icon" type="image/png" href="https://blooket.mathuniverse.online/blooktools.png">
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
 
-*{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
+/* Forced global bolding across the entire layout */
+*{ 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Nunito', sans-serif; 
+    font-weight: 800; 
+}
 
 body{ background: #0bc2cf; min-height: 100vh; overflow-x: hidden; padding-bottom: 40px; }
 
@@ -45,6 +52,7 @@ h1{ text-align: center; color: white; font-family: 'Titan One', cursive; font-si
     padding: 15px; border: none; border-radius: 15px; font-size: 18px;
     border: 4px solid #333; box-shadow: 0 5px 0 #333; outline: none; transition: 0.2s;
     font-family: 'Nunito', sans-serif;
+    font-weight: 800;
 }
 .search:focus { transform: translateY(2px); box-shadow: 0 3px 0 #333; }
 
@@ -62,10 +70,10 @@ h1{ text-align: center; color: white; font-family: 'Titan One', cursive; font-si
     border: none;
     font-family: 'Nunito', sans-serif;
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 900;
     cursor: pointer;
     transition: 0.15s;
-    color: #555;
+    color: #333;
     white-space: nowrap;
 }
 .sort-btn:first-child { border-right: 3px solid #333; }
@@ -77,19 +85,25 @@ h1{ text-align: center; color: white; font-family: 'Titan One', cursive; font-si
 
 .podium{ display: flex; justify-content: center; align-items: flex-end; gap: 15px; margin-bottom: 40px; }
 .podium-card{ width: 180px; text-align: center; color: black; border: 4px solid #333; border-radius: 20px 20px 0 0; font-size: 22px; padding-top: 15px; box-shadow: 0 8px 0 #333; transition: 0.3s; display: flex; flex-direction: column; }
-.podium-name { font-family: 'Titan One', cursive; font-size: 22px; letter-spacing: 1px; line-height: 1.15; word-break: break-word; hyphens: auto; padding: 0 8px; }
+.podium-name { font-family: 'Titan One', cursive; font-size: 22px; letter-spacing: 1px; line-height: 1.15; word-break: break-word; hyphens: auto; padding: 0 8px; font-weight: normal; }
 .podium-subs { font-size: 20px; font-weight: 900; margin-top: auto; }
 a.podium-link { text-decoration: none; color: inherit; transition: 0.2s; display: flex; flex-direction: column; align-items: center; height: 100%; padding: 0 0 15px 0; gap: 8px; }
 a.podium-link:hover .podium-name { text-decoration: underline; }
-.first{ background: gold; min-height: 220px; order: 2; }
-.second{ background: silver; min-height: 180px; order: 1; }
-.third{ background: #cd7f32; min-height: 150px; order: 3; }
+.first{ background: gold; min-height: 250px; order: 2; }
+.second{ background: silver; min-height: 210px; order: 1; }
+.third{ background: #cd7f32; min-height: 180px; order: 3; }
+
+/* PROFILE PICTURE STYLES */
+.row-pfp { width: 44px; height: 44px; border-radius: 50%; border: 3px solid #333; object-fit: cover; background: #fff; flex-shrink: 0; }
+.podium-pfp { width: 64px; height: 64px; border-radius: 50%; border: 3px solid #333; object-fit: cover; background: #fff; margin: 2px auto; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+.modal-pfp { width: 84px; height: 84px; border-radius: 50%; border: 4px solid #333; object-fit: cover; background: #fff; margin: 0 auto 12px auto; display: block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+
 .leaderboard{ background: white; border-radius: 20px; padding: 20px; border: 4px solid #333; box-shadow: 0 8px 0 #333; }
 a.row { display: flex; align-items: center; gap: 15px; padding: 12px; margin-bottom: 10px; border-radius: 15px; border: 3px solid #333; background: #f5f5f5; transition: .2s; text-decoration: none; color: inherit; cursor: pointer; }
 a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; }
-.rank{ width: 60px; font-size: 22px; font-weight: 900; }
+.rank{ width: 55px; font-size: 22px; font-weight: 900; }
 .name{ width: 220px; font-family: 'Titan One', cursive; font-size: 22px; font-weight: normal; letter-spacing: 1px; padding-top: 3px; display: flex; align-items: center; }
-.subs{ width: 120px; text-align: right; font-weight: bold; }
+.subs{ width: 120px; text-align: right; font-weight: 900; }
 
 .bar-bg{ flex: 1; height: 20px; border: 2px solid #333; border-radius: 10px; overflow: hidden; background: #eee; }
 .bar{ height: 100%; background: #4ade80; transition: width 0.8s ease-out; }
@@ -110,6 +124,7 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
     background-color: rgba(0,0,0,0.4);
     justify-content: center;
     align-items: center;
+    backdrop-filter:blur(6px);
 }
 .modal.show { display: flex; }
 .modal-content {
@@ -117,14 +132,14 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
     padding: 20px;
     border: 4px solid #333;
     border-radius: 15px;
-    width: 80%;
+    width: 90%;
     max-width: 400px;
     text-align: center;
     font-family: 'Nunito', sans-serif;
     box-shadow: 0 8px 0 #333;
 }
-.modal-content h2 { font-family: 'Titan One', cursive; margin-bottom: 15px; color: #ff0000; }
-.modal-content p { font-size: 16px; margin-bottom: 20px; color: #333; }
+.modal-content h2 { font-family: 'Titan One', cursive; font-weight: normal; margin-bottom: 15px; color: #ff0000; }
+.modal-content p { font-size: 16px; margin-bottom: 20px; color: #333; font-weight: 800; }
 .close-btn {
     background: #333;
     color: white;
@@ -132,7 +147,7 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
     border-radius: 10px;
     padding: 10px 20px;
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 900;
     cursor: pointer;
     font-family: 'Nunito', sans-serif;
     box-shadow: 0 4px 0 #333;
@@ -150,16 +165,16 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
     padding: 8px; border-radius: 6px; position: absolute; z-index: 100;
     bottom: 140%; left: 50%; transform: translateX(-50%);
     font-family: 'Nunito', sans-serif; font-size: 13px; opacity: 0; transition: opacity 0.2s;
-    border: 1px solid #444; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    border: 1px solid #444; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-weight: 700;
 }
 .tooltip-container:hover .custom-tooltip { visibility: visible; opacity: 1; }
 
-.refresh-btn { display: block; margin: 0 auto 20px auto; padding: 10px 25px; background: white; border: 3px solid #333; border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 #333; transition: 0.2s; }
+.refresh-btn { display: block; margin: 0 auto 20px auto; padding: 10px 25px; background: white; border: 3px solid #333; border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 0 #333; transition: 0.2s; }
 .refresh-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
 .refresh-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 .section-header { margin-top: 40px; margin-bottom: 8px; text-align: center; }
-.section-header h2 { font-family: 'Titan One', cursive; font-size: 2.2rem; color: white; text-shadow: 3px 3px 0 #222; letter-spacing: 2px; }
-.section-header p { color: white; font-size: 1rem; text-shadow: 1px 1px 0 #222; margin-bottom: 15px; }
+.section-header h2 { font-family: 'Titan One', cursive; font-weight: normal; font-size: 2.2rem; color: white; text-shadow: 3px 3px 0 #222; letter-spacing: 2px; }
+.section-header p { color: white; font-size: 1rem; text-shadow: 1px 1px 0 #222; margin-bottom: 15px; font-weight: 800; }
 .leaderboard.underrated { background: #f3e8ff; border-color: #7c3aed; box-shadow: 0 8px 0 #7c3aed; }
 .leaderboard.underrated a.row { background: #ede9fe; border-color: #7c3aed; }
 .leaderboard.underrated a.row:hover { box-shadow: 0 4px 0 #7c3aed; }
@@ -171,19 +186,18 @@ a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; 
     .controls { flex-direction: column; align-items: stretch; }
     .sort-toggle { justify-content: center; }
     .podium { flex-wrap: wrap; }
-    .podium-card { width: 100px; font-size: 16px; }
-    .podium-name { font-size: 18px; }
+    .podium-card { width: 110px; font-size: 16px; }
+    .podium-name { font-size: 16px; }
     .podium-subs { font-size: 14px; }
-    .first { height: 180px; }
-    .second { height: 140px; }
-    .third { height: 120px; }
+    .first { height: 210px; }
+    .second { height: 170px; }
+    .third { height: 150px; }
     a.row { flex-wrap: wrap; }
     .name { width: auto; flex: 1; }
     .bar-bg { width: 100%; flex: none; }
 }
 
 /* Enhanced terminated modal */
-.modal{backdrop-filter:blur(6px);}
 .terminated-card{
 background:linear-gradient(180deg,#fff,#ffeaea);
 max-width:460px;padding:0;overflow:hidden;animation:pop .25s ease;
@@ -193,6 +207,21 @@ max-width:460px;padding:0;overflow:hidden;animation:pop .25s ease;
 .terminated-card .close-btn{margin-bottom:22px;background:#d62828;border-color:#8b0000;box-shadow:0 4px 0 #8b0000}
 @keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
 
+/* Stats Modal Styles */
+.stats-card { background: #fff; text-align: center; }
+.stats-card h2 { color: #333; font-size: 32px; font-family: 'Titan One', cursive; font-weight: normal; margin-bottom: 5px; }
+.stats-container { display: flex; gap: 15px; justify-content: center; margin: 20px 0; }
+.stat-box { background: #f8fafc; border: 3px solid #333; border-radius: 12px; padding: 15px; flex: 1; box-shadow: 0 4px 0 #e2e8f0; }
+.stat-label { font-size: 14px; font-weight: 900; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+.stat-value { font-family: 'Titan One', cursive; font-weight: normal; font-size: 26px; color: #4ade80; margin-top: 5px; }
+.stat-box:nth-child(2) .stat-value { color: #60a5fa; } /* Blue for views */
+.modal-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+.visit-btn { 
+    background: #ef4444; color: white; text-decoration: none; 
+    border: 3px solid #991b1b; border-radius: 10px; padding: 10px 20px; 
+    font-size: 16px; font-weight: 900; box-shadow: 0 4px 0 #991b1b; transition: 0.2s; 
+}
+.visit-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #991b1b; }
 </style>
 </head>
 <body>
@@ -254,23 +283,116 @@ max-width:460px;padding:0;overflow:hidden;animation:pop .25s ease;
     </div>
 </div>
 
+<div id="statsModal" class="modal">
+    <div class="modal-content stats-card">
+        <img src="" id="modalPfp" class="modal-pfp" alt="Creator Profile Picture">
+        <h2 id="modalName">Creator Name</h2>
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-label">Subscribers</div>
+                <div class="stat-value" id="modalSubs">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Views</div>
+                <div class="stat-value" id="modalViews">0</div>
+            </div>
+        </div>
+        <div class="modal-buttons">
+            <a href="#" id="modalLink" target="_blank" class="visit-btn">📺 Visit Channel</a>
+            <button class="close-btn" onclick="closeStatsModal()">Close</button>
+        </div>
+    </div>
+</div>
+
 <script>
 const STATS_API_URL = "https://blooktools-api.fastyjayden.workers.dev/";
 
 const inactiveCreators = ["kinkade", "blooket elite", "bil"];
 const terminatedCreators = ["blook master"];
-const creatorList = [["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT"], ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket"], ["BIL", "BILBRB", "https://www.youtube.com/@BILBRB"], ["Blooket", "PlayBlooket", "https://www.youtube.com/@PlayBlooket"], ["Mega Bot", "MegaBot91", "https://www.youtube.com/@MegaBot91"], ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked"], ["Monkey Master", "MonkeyMasterYT", "https://www.youtube.com/@MonkeyMasterYT"], ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4"], ["Blooket Ace", "blooketace", "https://www.youtube.com/@blooketace"], ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay"], ["Blooket Gamer", "theblooketgamer", "https://www.youtube.com/@theblooketgamer"], ["Blooket Gods", "BlooketGodsYT", "https://www.youtube.com/@BlooketGodsYT"], ["Slade2", "theslade2", "https://www.youtube.com/@theslade2"], ["Blooket Life", "BlooketLifeYT", "https://www.youtube.com/@BlooketLifeYT"], ["JustaPanda", "JustaPanda888", "https://www.youtube.com/@JustaPanda888"], ["Blooket Insane", "blooketinsane", "https://www.youtube.com/@blooketinsane"], ["notRIC", "playblacket", "https://www.youtube.com/@playblacket"], ["SRN Games", "srngameslol", "https://www.youtube.com/@srngameslol"], ["BlooketBam", "BlooketBAM", "https://www.youtube.com/@BlooketBAM"], ["Blook Master", "BlookMasterYT", "https://www.youtube.com/@BlookMasterYT"], ["Twisted Bread", "TwistedBread", "https://www.youtube.com/@TwistedBread/"], ["Pig55", "Pig_55", "https://www.youtube.com/@Pig_55"], ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries"], ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT"], ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT"], ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT"], ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook"], ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer"], ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan"], ["Kinkade", "ItzKinkade", "https://www.youtube.com/@ItzKinkade"], ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT"], ["Freedo", "TheRealFreedoBlox", "https://www.youtube.com/@TheRealFreedoBlox"], ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"], ["Blooket Galaxy", "BlooketGalaxy", "https://www.youtube.com/@BlooketGalaxy"], ["TheBlooketBro", "theblooketbro", "https://www.youtube.com/@theblooketbro"], ["XpBlooket32", "XPgamer32Blooket", "https://www.youtube.com/@XPgamer32Blooket"], ["Blooket Gael", "UCOhGtij6ftod4pJ6mhU-skQ", "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"], ["c0mputerm4n", "c0mputerm4n-yt", "https://www.youtube.com/@c0mputerm4n-yt"], ["BlookFun", "blookfun", "https://www.youtube.com/@blookfun"], ["TheBlooketDude", "TheBlooketDude", "https://www.youtube.com/@TheBlooketDude"], ["Blooket Blitz", "BlooketBiltzYT", "https://www.youtube.com/@BlooketBiltzYT"], ["KoolKid", "ImAwesome0703", "https://www.youtube.com/@ImAwesome0703"]];
-const fallbackSubs = {"Waymore": 150000, "LeonBlox": 79400, "iBlooket": 35200, "BIL": 31200, "Blooket": 31300, "Mega Bot": 27100, "Unblooked": 26900, "Monkey Master": 24000, "Lag0n": 23800, "Blooket Ace": 15400, "FastyJay": 12900, "Blooket Gamer": 6250, "Blooket Gods": 4740, "Slade2": 3690, "Blooket Life": 3620, "JustaPanda": 2990, "Blooket Insane": 2900, "notRIC": 2740, "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2200, "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500, "Turtelix": 1420, "Green astronaut": 1100, "Blooket Warrior": 1020, "Blookbread": 1010, "TOBP Blooket": 852, "YouLostMan": 660, "Kinkade": 525, "Peetwick": 396, "Freedo": 289, "Cosmic Dragon": 69, "Blooket Galaxy": 66, "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36, "c0mputerm4n": 27, "BlookFun": 6, "TheBlooketDude": 1410, "Blooket Blitz": 18, "KoolKid": 2800};
+
+const defaultImage = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fyt3.googleusercontent.com%2Fytc%2FAIdro_l1w6Mc5WEokWWYbrNNP_5BEshKUO25cIZVOqiU6AojVw%3Ds900-c-k-c0x00ffffff-no-rj&f=1&nofb=1&ipt=9e9827da110a3ddd46c8388025131ce04094fdaa5ea06308022c4c6612b4d6ff";
+
+const creatorList = [
+    ["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT", "https://yt3.googleusercontent.com/fpVQ5VoYlN-UptRogESSqHnxEX61T-7YW1YNGObVrFX2w_1jBO-njl76kt-6vkPF_2cC9x66kQ=s800-c-k-c0x00ffffff-no-rj"],
+    ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket", "https://yt3.googleusercontent.com/OmDwNKSgt4mxydmndADjlva5mWYKLVpm2BGLrzMlU7GWIRTgE3eReMX40s147P31K4Z1k51Phg=s800-c-k-c0x00ffffff-no-rj"],
+    ["BIL", "BILBRB", "https://www.youtube.com/@BILBRB", "https://yt3.googleusercontent.com/vWuC0e00QIpkpWhkt30Vfc8ogrOL2ego-TH_B55U-EC4Xf-WmiInutIW7gLvtrLmUs6yt4eZPNg=s800-c-k-c0x00ffffff-no-rj"],
+    ["Blooket", "PlayBlooket", "https://www.youtube.com/@PlayBlooket", "https://yt3.googleusercontent.com/ytc/AIdro_n9MuS8YZrvKTzvVPJhLaRlgDjUouMy9flhM8rbKox6epI=s800-c-k-c0x00ffffff-no-rj"],
+    ["Mega Bot", "MegaBot91", "https://www.youtube.com/@MegaBot91", "https://yt3.googleusercontent.com/FNAGuNPpY_GZyYDCck-3L_Zd31u90SBJuzcc4hXG9N94_D7vt7PM9iU2GZ43ndU01jUygXjn=s800-c-k-c0x00ffffff-no-rj"],
+    ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked", "https://yt3.googleusercontent.com/w_Hs7-L_VL_uZGxhSfncFe7aZfhRjkP5O1BF2NjukAKYbGfSeFcLeCYTDfyfNnRH95l32Aj6DA=s800-c-k-c0x00ffffff-no-rj"],
+    ["Monkey Master", "MonkeyMasterYT", "https://www.youtube.com/@MonkeyMasterYT", "https://yt3.ggpht.com/vHPdt2TV8_lN5eYY6ODGprTOb2rLt9Z0PHCA8I5n0vwvcvzrFCo-0ZC3B9MR7M16hyZMcIgT4miW-w=s400-c-fcrop64=1,38000000c7ffffff-rw-nd-v1"],
+    ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4", "https://yt3.googleusercontent.com/sGMDSWtF1ljfF1LvdvSfWvvHUaDFY7xiqhNZHawJ-Kz-pLvMcd2sf3HkX3ojPe7XIAOHxgAzkm4=s800-c-k-c0x00ffffff-no-rj"],
+    ["Blooket Ace", "blooketace", "https://www.youtube.com/@blooketace", "https://yt3.googleusercontent.com/qfQMmUYa3shmyhWigiZwO0T-shBfKTJ09Nv1L9W3dUQWuIhlNGk6ZGGC14Yqz1uaMmLmrm25=s800-c-k-c0x00ffffff-no-rj"],
+    ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay", "https://yt3.googleusercontent.com/VuM8z5VYXi_TIw7dr0z5mg9O6fwzy8lzOGUFTR63zmciyPMVzB8ORpnSAwdcs_AUISyBHH0K=s800-c-k-c0x00ffffff-no-rj"],
+    ["Blooket Gamer", "theblooketgamer", "https://www.youtube.com/@theblooketgamer", "https://yt3.googleusercontent.com/IbwGyfwHd4-lH4gA69Uns3iHqwO9VnyM4azJEca1sjiRn2yEzZf5vDBbs0zC4hjvEzK4en3L=s800-c-k-c0x00ffffff-no-rj"],
+    ["Blooket Gods", "BlooketGodsYT", "https://www.youtube.com/@BlooketGodsYT", "https://yt3.googleusercontent.com/qfQMmUYa3shmyhWigiZwO0T-shBfKTJ09Nv1L9W3dUQWuIhlNGk6ZGGC14Yqz1uaMmLmrm25=s800-c-k-c0x00ffffff-no-rj"],
+    ["Slade2", "theslade2", "https://www.youtube.com/@theslade2", "https://yt3.googleusercontent.com/xcACNowE58NcX9Cvp7bHHhnOwJdmPMYgm1KnWD1I4UKARwl7hQw_QJYWOHRpIkdtLNjVVaRexg=s120-c-k-c0x00ffffff-no-rj"],
+    ["Blooket Life", "BlooketLifeYT", "https://www.youtube.com/@BlooketLifeYT", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FzhmX3SBS3f4iUC6gp7nn2ZGGAoN38KQzcaE4yZ0DHiG89Kng5N1cys0HkvsC9nHY4xM_7zU3cg%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+    ["JustaPanda", "JustaPanda888", "https://www.youtube.com/@JustaPanda888", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2Fkkz1dMJi7Lbnv4QbrCOEOlGGwjslE8emd3jHpNpT4JayVESMM1CMM0LvzC2L_Iw2R457266n%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+    ["Blooket Insane", "blooketinsane", "https://www.youtube.com/@blooketinsane", "https://ac.blooket.com/marketassets/blooks/timthealien.svg"],
+    ["notRIC", "playblacket", "https://www.youtube.com/@playblacket", null],
+    ["SRN Games", "srngameslol", "https://www.youtube.com/@srngameslol", null],
+    ["BlooketBam", "BlooketBAM", "https://www.youtube.com/@BlooketBAM", null],
+    ["Blook Master", "BlookMasterYT", "https://www.youtube.com/@BlookMasterYT", null],
+    ["Twisted Bread", "TwistedBread", "https://www.youtube.com/@TwistedBread/", null],
+    ["Pig55", "Pig_55", "https://www.youtube.com/@Pig_55", null],
+    ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries", null],
+    ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT", null],
+    ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT", "https://yt3.googleusercontent.com/jqSEQqOe03q2My36l3Khz09hh8qmrhDGkbD-VsLGrW-ESIbSneCIfSeYVravW7BwhlKfiaUPpg=s800-c-k-c0x00ffffff-no-rj"],
+    ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT", null],
+    ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook", null],
+    ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer", null],
+    ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan", null],
+    ["Kinkade", "ItzKinkade", "https://www.youtube.com/@ItzKinkade", null],
+    ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT", null],
+    ["Freedo", "TheRealFreedoBlox", "https://www.youtube.com/@TheRealFreedoBlox", null],
+    ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw", null],
+    ["Blooket Galaxy", "BlooketGalaxy", "https://www.youtube.com/@BlooketGalaxy", null],
+    ["TheBlooketBro", "theblooketbro", "https://www.youtube.com/@theblooketbro", null],
+    ["XpBlooket32", "XPgamer32Blooket", "https://www.youtube.com/@XPgamer32Blooket", null],
+    ["Blooket Gael", "UCOhGtij6ftod4pJ6mhU-skQ", "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ", null],
+    ["c0mputerm4n", "c0mputerm4n-yt", "https://www.youtube.com/@c0mputerm4n-yt", null],
+    ["BlookFun", "blookfun", "https://www.youtube.com/@blookfun", null],
+    ["TheBlooketDude", "TheBlooketDude", "https://www.youtube.com/@TheBlooketDude", null],
+    ["Blooket Blitz", "BlooketBiltzYT", "https://www.youtube.com/@BlooketBiltzYT", null],
+    ["KoolKid", "ImAwesome0703", "https://www.youtube.com/@ImAwesome0703", null]
+];
+
+const fallbackSubs = {"Waymore": 150000, "LeonBlox": 79400, "iBlooket": 35200, "BIL": 31200, "Blooket": 31300, "Mega Bot": 27100, "Unblooked": 26900, "Monkey Master": 24000, "Lag0n": 23800, "Blooket Ace": 15400, "FastyJay": 12900, "Blooket Gamer": 6250, "Blooket Gods": 4740, "Slade2": 3690, "Blooket Life": 3630, "JustaPanda": 2990, "Blooket Insane": 2900, "notRIC": 2740, "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2200, "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500, "Turtelix": 1420, "Green astronaut": 1100, "Blooket Warrior": 1020, "Blookbread": 1010, "TOBP Blooket": 852, "YouLostMan": 660, "Kinkade": 525, "Peetwick": 396, "Freedo": 289, "Cosmic Dragon": 69, "Blooket Galaxy": 66, "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36, "c0mputerm4n": 27, "BlookFun": 6, "TheBlooketDude": 1410, "Blooket Blitz": 18, "KoolKid": 2800};
 
 let creators = [];
 let lastUpdated = null;
 const terminatedSound = new Audio("https://mathuniverse.online/wrong.MP3");
 let sortMode = 'subs';
 
+function updateURLParams(creatorName) {
+    const url = new URL(window.location.href);
+    if (creatorName) {
+        url.searchParams.set('creator', creatorName);
+    } else {
+        url.searchParams.delete('creator');
+    }
+    window.history.replaceState({}, '', url);
+}
+
+function checkURLForModal() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetCreator = urlParams.get('creator');
+    if (targetCreator && creators.length > 0) {
+        const creator = creators.find(c => c.name.toLowerCase() === targetCreator.toLowerCase());
+        if (creator) {
+            if (creator.terminated) {
+                showTerminatedModal(creator.name);
+            } else {
+                showStatsModal(creator.name, creator.subs, creator.views, creator.url, creator.pfp);
+            }
+        }
+    }
+}
+
 function formatSubs(num) {
     if (num === "-") return "-";
-    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    if (num >= 1000000) return parseFloat((num / 1000000).toFixed(2)) + 'M';
+    if (num >= 1000) return parseFloat((num / 1000).toFixed(2)) + 'K';
     return num.toLocaleString();
 }
 
@@ -283,7 +405,13 @@ function setSort(mode) {
         const filtered = creators.filter(c => c.name.toLowerCase().includes(searchVal));
         renderBoard(filtered);
         renderUnderrated(filtered);
-        renderPodium(getSorted(creators, false));
+        
+        const sortedFiltered = getSorted(filtered, false);
+        if (sortedFiltered.length >= 3) {
+            renderPodium(sortedFiltered);
+        } else {
+            document.getElementById("podium").innerHTML = ""; 
+        }
     }
 }
 
@@ -293,7 +421,6 @@ function getSorted(data, includeTerminated = true) {
         filtered = data.filter(c => !terminatedCreators.includes(c.name.toLowerCase()));
     }
     
-    // Split Blook Master away during sorting logic to force rank positioning
     let bm = filtered.find(c => c.name.toLowerCase() === "blook master");
     let rest = filtered.filter(c => c.name.toLowerCase() !== "blook master");
 
@@ -304,25 +431,50 @@ function getSorted(data, includeTerminated = true) {
     });
 
     if (bm && includeTerminated) {
-        rest.splice(20, 0, bm); // Splice directly to position 21 (index 20)
+        if (rest.length >= 20) {
+            rest.splice(20, 0, bm); 
+        } else {
+            rest.push(bm);
+        }
     }
     return rest;
 }
 
-function showTerminatedModal() {
+function showTerminatedModal(name) {
+    updateURLParams(name);
     terminatedSound.currentTime = 0;
     terminatedSound.play().catch(()=>{});
     document.getElementById('terminatedModal').classList.add('show');
 }
 
 function closeTerminatedModal() {
+    updateURLParams(null);
     document.getElementById('terminatedModal').classList.remove('show');
 }
 
+function showStatsModal(name, subs, views, url, pfp) {
+    updateURLParams(name);
+    document.getElementById('modalName').textContent = name;
+    document.getElementById('modalSubs').textContent = formatSubs(subs);
+    document.getElementById('modalViews').textContent = formatSubs(views);
+    document.getElementById('modalLink').href = url;
+    document.getElementById('modalPfp').src = pfp || defaultImage;
+    document.getElementById('statsModal').classList.add('show');
+}
+
+function closeStatsModal() {
+    updateURLParams(null);
+    document.getElementById('statsModal').classList.remove('show');
+}
+
 window.onclick = function(event) {
-    const modal = document.getElementById('terminatedModal');
-    if (event.target == modal) {
-        modal.classList.remove('show');
+    const termModal = document.getElementById('terminatedModal');
+    const statsModal = document.getElementById('statsModal');
+    if (event.target == termModal) {
+        closeTerminatedModal();
+    }
+    if (event.target == statsModal) {
+        closeStatsModal();
     }
 }
 
@@ -336,12 +488,13 @@ async function fetchAllSubs() {
         const data = await res.json();
         if (data.error) throw new Error(data.error);
 
-        creators = creatorList.map(([name, handle, url]) => {
+        creators = creatorList.map(([name, handle, url, pfpUrl]) => {
             const stats = data.stats ? data.stats[name] : null;
             const isTerminated = terminatedCreators.includes(name.toLowerCase());
             return {
                 name,
                 url,
+                pfp: pfpUrl || defaultImage,
                 subs: isTerminated ? "-" : (stats ? stats.subs : (fallbackSubs[name] || 0)),
                 views: isTerminated ? "-" : (stats ? stats.views : 0),
                 terminated: isTerminated
@@ -358,13 +511,15 @@ async function fetchAllSubs() {
         renderPodium(sorted);
         renderBoard(creators);
         renderUnderrated(creators);
-        setTimeout(fetchAllSubs, 5 * 60 * 1000);
+        checkURLForModal(); 
+        setTimeout(fetchAllSubs, 30000); 
     } catch (err) {
         dot.className = "live-dot error"; text.textContent = "⚠️ API error — showing last known counts";
-        creators = creatorList.map(([name, handle, url]) => {
+        creators = creatorList.map(([name, handle, url, pfpUrl]) => {
             const isTerminated = terminatedCreators.includes(name.toLowerCase());
             return {
                 name, url,
+                pfp: pfpUrl || defaultImage,
                 subs: isTerminated ? "-" : (fallbackSubs[name] || 0),
                 views: isTerminated ? "-" : 0,
                 terminated: isTerminated
@@ -373,6 +528,7 @@ async function fetchAllSubs() {
         creators = getSorted(creators, true);
         creators.forEach((c, i) => c.rank = i + 1);
         renderPodium(getSorted(creators, false)); renderBoard(creators); renderUnderrated(creators);
+        checkURLForModal(); 
     }
     btn.disabled = false;
 }
@@ -383,14 +539,19 @@ function renderPodium(data) {
     const medals = ["🥇", "🥈", "🥉"];
     const classes = ["first", "second", "third"];
     const isViews = sortMode === 'views';
-    podium.innerHTML = [0, 1, 2].map(i => `
+    podium.innerHTML = [0, 1, 2].map(i => {
+        const creator = data[i];
+        const metric = isViews ? creator.views : creator.subs;
+        return `
         <div class="podium-card ${classes[i]}">
-            <a href="${data[i].url}" target="_blank" class="podium-link">
+            <a href="#" class="podium-link" onclick="event.preventDefault(); showStatsModal('${creator.name.replace(/'/g, "\\'")}', ${creator.subs}, ${creator.views}, '${creator.url}', '${creator.pfp}')">
                 <span>${medals[i]}</span>
-                <span class="podium-name">${data[i].name}</span>
-                <span class="podium-subs">${formatSubs(isViews ? data[i].views : data[i].subs)}</span>
+                <img src="${creator.pfp}" class="podium-pfp" alt="${creator.name}">
+                <span class="podium-name">${creator.name}</span>
+                <span class="podium-subs">${formatSubs(metric)}</span>
             </a>
-        </div>`).join("");
+        </div>`;
+    }).join("");
 }
 
 function getSpecialEmojisHtml(name) {
@@ -432,13 +593,15 @@ function renderBoard(data) {
     mainData.forEach((creator) => {
         const row = document.createElement("a");
         
-        if (creator.terminated) {
-            row.href = "#";
-            row.onclick = (e) => { e.preventDefault(); showTerminatedModal(); };
-        } else {
-            row.href = creator.url;
-            row.target = "_blank";
-        }
+        row.href = "#";
+        row.onclick = (e) => {
+            e.preventDefault();
+            if (creator.terminated) {
+                showTerminatedModal(creator.name);
+            } else {
+                showStatsModal(creator.name, creator.subs, creator.views, creator.url, creator.pfp);
+            }
+        };
         
         row.className = "row";
         if (creator.name.toLowerCase() === "fastyjay") row.classList.add("fastyjay");
@@ -452,6 +615,7 @@ function renderBoard(data) {
 
         row.innerHTML = `
             <div class="rank">#${creator.globalRank}</div>
+            <img src="${creator.pfp}" class="row-pfp" alt="${creator.name}">
             <div class="name">${creator.name}${isInactive && !creator.terminated ? ' 🕊️' : ''}${getSpecialEmojisHtml(creator.name)}</div>
             <div class="subs">${formatSubs(creator.terminated ? "-" : metricVal)}</div>
             <div class="bar-bg"><div class="${barClass}" style="width: ${barWidth}%"></div></div>`;
@@ -485,13 +649,25 @@ function renderUnderrated(data) {
 
     underrated.forEach((creator) => {
         const row = document.createElement("a");
-        row.href = creator.url; row.target = "_blank"; row.className = "row";
+        row.href = "#";
+        row.className = "row";
+        
+        row.onclick = (e) => {
+            e.preventDefault();
+            if (creator.terminated) {
+                showTerminatedModal(creator.name);
+            } else {
+                showStatsModal(creator.name, creator.subs, creator.views, creator.url, creator.pfp);
+            }
+        };
+        
         if (inactiveCreators.includes(creator.name.toLowerCase())) row.classList.add("inactive");
         const metricVal = isViews ? creator.views : creator.subs;
         const barWidth = (metricVal / maxVal) * 100;
         const barClass = isViews ? "bar views-bar" : "bar";
         row.innerHTML = `
             <div class="rank">#${creator.globalRank}</div>
+            <img src="${creator.pfp}" class="row-pfp" alt="${creator.name}">
             <div class="name">${creator.name}${getSpecialEmojisHtml(creator.name)}</div>
             <div class="subs">${formatSubs(metricVal)}</div>
             <div class="bar-bg"><div class="${barClass}" style="width: ${barWidth}%"></div></div>`;
@@ -504,7 +680,13 @@ document.getElementById("search").addEventListener("input", e => {
     const filtered = creators.filter(c => c.name.toLowerCase().includes(val));
     renderBoard(filtered);
     renderUnderrated(filtered);
-    if (!val) renderPodium(getSorted(creators, false));
+    
+    const sortedFiltered = getSorted(filtered, false);
+    if (sortedFiltered.length >= 3) {
+        renderPodium(sortedFiltered);
+    } else {
+        document.getElementById("podium").innerHTML = ""; 
+    }
 });
 
 fetchAllSubs();
