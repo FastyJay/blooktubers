@@ -7,7 +7,8 @@
 <link rel="icon" type="image/png" href="https://blooket.mathuniverse.online/blooktools.png">
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght=800;900&display=swap');
+/* FIXED: Changed wght=800;900 to wght@800;900 to successfully load the font */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
 
 * {
@@ -383,7 +384,8 @@ nav a.active {
                 <div class="card-inner-icon">⚙️</div>
                 <p>This is basically the Blooktuber Leaderboard, but you can actually add or remove people! This is new, so all the features might not work.</p>
             </div>
-            <a href="custom" class="btn btn-blook" onclick="return false;">Try it Out!</a>
+            <!-- FIXED: Removed onclick="return false;" so that navigation functions normally -->
+            <a href="custom" class="btn btn-blook">Try it Out!</a>
         </div>
 
         <div class="card card-coming-soon">
@@ -521,8 +523,6 @@ nav a.active {
     var nextGap = rand(700, 1500);
 
     function loop(ts) {
-        // fade previous frame without ever painting an opaque layer,
-        // so the page background stays visible through the canvas
         ctx.globalCompositeOperation = 'destination-out';
         ctx.fillStyle = 'rgba(0,0,0,0.18)';
         ctx.fillRect(0, 0, w, h);
@@ -565,7 +565,7 @@ nav a.active {
 const common=["🎮 Your #1 hub for Blooket content creator info & games!","📈 Tracking the biggest Blooktubers!","⭐ Made for upcoming Blooktubers, made by a Blooktuber!","🏆 Home of the Blooktuber Leaderboard.","🎥 Supporting your favorite Blooktubers!","🌟 Welcome to BlookTools!"];
 const tips=["💡 Did you know? Guess the Blooktubers has dozens of creators!","💡 Did you know? You can create your own custom leaderboard.","💡 Did you know? Subscriber counts update every 5 minutes!"];
 const rare=['😜 Type "crazy chicken" in Guess the Blooktuber!',"🤫 You're one of the lucky visitors today!","👀 You found a rare subtitle!","🍀 Lucky! This appears only 1% of the time."];
-(()=>{const p=document.getElementById('hero-subtitle');let a=Math.random()<0.01?rare:(Math.random()<0.19?tips:common);p.textContent=a[Math.floor(Math.random()*a.length)];})();
+(()=> {const p=document.getElementById('hero-subtitle');let a=Math.random()<0.01?rare:(Math.random()<0.19?tips:common);p.textContent=a[Math.floor(Math.random()*a.length)];})();
 </script>
 </body>
 </html>
