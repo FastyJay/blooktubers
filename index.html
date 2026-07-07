@@ -282,6 +282,7 @@ nav a.active {
 }
 
 .btn-green  { background: #3cb529; }
+.btn-blook  { background: #0bc2cf; }
 .btn-red    { background: #e53935; }
 .btn-blue   { background: #1565c0; }
 .btn-gray   { background: #757575; }
@@ -301,7 +302,10 @@ nav a.active {
 }
 
 /* ── RESPONSIVE ── */
+.card-coming-soon{grid-column:1/-1;}
+
 @media (max-width: 640px) {
+    .card-coming-soon{grid-column:auto;}
     .card-featured { flex-direction: column; text-align: center; }
     .card-row { grid-template-columns: 1fr; }
     .card-inner { flex-direction: column; align-items: center; text-align: center; }
@@ -341,7 +345,7 @@ nav a.active {
 
 <div class="hero">
     <h1>BlookTools</h1>
-    <p>Your #1 hub for Blooket content creator info &amp; games! 🎮</p>
+    <p id="hero-subtitle">Your #1 hub for Blooket content creator info &amp; games! 🎮</p>
 </div>
 
 <div class="container">
@@ -352,7 +356,7 @@ nav a.active {
             <h2>Blooktuber Leaderboard</h2>
             <hr>
             <p>See which blooktubers have the most subscribers! Subscriber counts update every 5 minutes.</p>
-            <a href="leaderboard.html" class="btn btn-green">View Leaderboard!</a>
+            <a href="leaderboard" class="btn btn-green">View Leaderboard!</a>
         </div>
     </div>
 
@@ -373,6 +377,16 @@ nav a.active {
         </div>
 
         <div class="card">
+            <h2>Custom Leaderboard (BETA)</h2>
+            <hr>
+            <div class="card-inner">
+                <div class="card-inner-icon">⚙️</div>
+                <p>This is basically the Blooktuber Leaderboard, but you can actually add or remove people! This is new, so all the features might not work.</p>
+            </div>
+            <a href="custom" class="btn btn-blook" onclick="return false;">Try it Out!</a>
+        </div>
+
+        <div class="card card-coming-soon">
             <h2>Coming Soon</h2>
             <hr>
             <div class="card-inner">
@@ -546,6 +560,12 @@ nav a.active {
     }
     requestAnimationFrame(loop);
 })();
+</script>
+<script>
+const common=["🎮 Your #1 hub for Blooket content creator info & games!","📈 Tracking the biggest Blooktubers!","⭐ Made for upcoming Blooktubers, made by a Blooktuber!","🏆 Home of the Blooktuber Leaderboard.","🎥 Supporting your favorite Blooktubers!","🌟 Welcome to BlookTools!"];
+const tips=["💡 Did you know? Guess the Blooktubers has dozens of creators!","💡 Did you know? You can create your own custom leaderboard.","💡 Did you know? Subscriber counts update every 5 minutes!"];
+const rare=['😜 Type "crazy chicken" in Guess the Blooktuber!',"🤫 You're one of the lucky visitors today!","👀 You found a rare subtitle!","🍀 Lucky! This appears only 1% of the time."];
+(()=>{const p=document.getElementById('hero-subtitle');let a=Math.random()<0.01?rare:(Math.random()<0.19?tips:common);p.textContent=a[Math.floor(Math.random()*a.length)];})();
 </script>
 </body>
 </html>
