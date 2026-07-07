@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Leaderboard</title>
+<link rel="icon" type="image/png" href="https://blooket.mathuniverse.online/blooktools.png">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
+
+*{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
+
+body{ background: #0bc2cf; min-height: 100vh; overflow-x: hidden; padding-bottom: 40px; }
+
+body::before{
+    content: ""; position: fixed; inset: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%);
+    background-size: 80px 80px; z-index: -2;
+}
+
+.blook{ position: fixed; top: -150px; opacity: .25; animation: fall linear infinite; pointer-events: none; z-index: -1; }
+@keyframes fall{ from{ transform: translateY(0) rotate(0deg); } to{ transform: translateY(120vh) rotate(360deg); } }
+
+h1{ text-align: center; color: white; font-family: 'Titan One', cursive; font-size: 3.5rem; margin-top: 25px; text-shadow: 4px 4px 0 #222, 8px 8px 12px rgba(0,0,0,.2); padding: 0 15px; letter-spacing: 2px; }
+.subtitle{ text-align: center; color: white; font-size: 1.2rem; margin-bottom: 10px; text-shadow: 2px 2px 0 #222; }
+.live-status { text-align: center; margin-bottom: 25px; font-size: 0.95rem; color: white; text-shadow: 1px 1px 0 #222; min-height: 22px; }
+.live-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #4ade80; margin-right: 6px; animation: pulse 1.5s infinite; vertical-align: middle; }
+.live-dot.loading { background: #fbbf24; animation: pulse 0.7s infinite; }
+.live-dot.error { background: #f87171; animation: none; }
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+.container{ width: 90%; max-width: 1100px; margin: auto; }
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 600px;
+    margin: 0 auto 35px auto;
+    flex-wrap: wrap;
+}
+.search{
+    flex: 1; min-width: 0;
+    padding: 15px; border: none; border-radius: 15px; font-size: 18px;
+    border: 4px solid #333; box-shadow: 0 5px 0 #333; outline: none; transition: 0.2s;
+    font-family: 'Nunito', sans-serif;
+}
+.search:focus { transform: translateY(2px); box-shadow: 0 3px 0 #333; }
+
+.sort-toggle {
+    display: flex;
+    border: 4px solid #333;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 0 #333;
+    flex-shrink: 0;
+}
+.sort-btn {
+    padding: 12px 14px;
+    background: white;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.15s;
+    color: #555;
+    white-space: nowrap;
+}
+.sort-btn:first-child { border-right: 3px solid #333; }
+.sort-btn.active {
+    background: #333;
+    color: white;
+}
+.sort-btn:hover:not(.active) { background: #f0f0f0; }
+
+.podium{ display: flex; justify-content: center; align-items: flex-end; gap: 15px; margin-bottom: 40px; }
+.podium-card{ width: 180px; text-align: center; color: black; border: 4px solid #333; border-radius: 20px 20px 0 0; font-size: 22px; padding-top: 15px; box-shadow: 0 8px 0 #333; transition: 0.3s; display: flex; flex-direction: column; }
+.podium-name { font-family: 'Titan One', cursive; font-size: 22px; letter-spacing: 1px; line-height: 1.15; word-break: break-word; hyphens: auto; padding: 0 8px; }
+.podium-subs { font-size: 20px; font-weight: 900; margin-top: auto; }
+a.podium-link { text-decoration: none; color: inherit; transition: 0.2s; display: flex; flex-direction: column; align-items: center; height: 100%; padding: 0 0 15px 0; gap: 8px; }
+a.podium-link:hover .podium-name { text-decoration: underline; }
+.first{ background: gold; min-height: 220px; order: 2; }
+.second{ background: silver; min-height: 180px; order: 1; }
+.third{ background: #cd7f32; min-height: 150px; order: 3; }
+.leaderboard{ background: white; border-radius: 20px; padding: 20px; border: 4px solid #333; box-shadow: 0 8px 0 #333; }
+a.row { display: flex; align-items: center; gap: 15px; padding: 12px; margin-bottom: 10px; border-radius: 15px; border: 3px solid #333; background: #f5f5f5; transition: .2s; text-decoration: none; color: inherit; cursor: pointer; }
+a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; }
+.rank{ width: 60px; font-size: 22px; font-weight: 900; }
+.name{ width: 220px; font-family: 'Titan One', cursive; font-size: 22px; font-weight: normal; letter-spacing: 1px; padding-top: 3px; display: flex; align-items: center; }
+.subs{ width: 120px; text-align: right; font-weight: bold; }
+
+.bar-bg{ flex: 1; height: 20px; border: 2px solid #333; border-radius: 10px; overflow: hidden; background: #eee; }
+.bar{ height: 100%; background: #4ade80; transition: width 0.8s ease-out; }
+.bar.views-bar { background: #60a5fa; }
+.fastyjay{ background: #ffe066 !important; border: 4px solid #333; box-shadow: 0 0 15px gold; }
+.inactive { background: #ffe0e0 !important; border: 4px solid #333; box-shadow: 0 0 15px red; }
+.terminated { background: #ff6b6b !important; border: 4px solid #8b0000; box-shadow: 0 0 15px #ff0000; }
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+.modal.show { display: flex; }
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 4px solid #333;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+    box-shadow: 0 8px 0 #333;
+}
+.modal-content h2 { font-family: 'Titan One', cursive; margin-bottom: 15px; color: #ff0000; }
+.modal-content p { font-size: 16px; margin-bottom: 20px; color: #333; }
+.close-btn {
+    background: #333;
+    color: white;
+    border: 3px solid #333;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    box-shadow: 0 4px 0 #333;
+    transition: 0.2s;
+}
+.close-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #333;
+}
+
+/* CUSTOM TOOLTIP STYLES */
+.tooltip-container { position: relative; display: inline-flex; cursor: help; margin-left: 6px; }
+.custom-tooltip {
+    visibility: hidden; width: 180px; background-color: #222; color: #fff; text-align: center;
+    padding: 8px; border-radius: 6px; position: absolute; z-index: 100;
+    bottom: 140%; left: 50%; transform: translateX(-50%);
+    font-family: 'Nunito', sans-serif; font-size: 13px; opacity: 0; transition: opacity 0.2s;
+    border: 1px solid #444; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.tooltip-container:hover .custom-tooltip { visibility: visible; opacity: 1; }
+
+.refresh-btn { display: block; margin: 0 auto 20px auto; padding: 10px 25px; background: white; border: 3px solid #333; border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 #333; transition: 0.2s; }
+.refresh-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
+.refresh-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.section-header { margin-top: 40px; margin-bottom: 8px; text-align: center; }
+.section-header h2 { font-family: 'Titan One', cursive; font-size: 2.2rem; color: white; text-shadow: 3px 3px 0 #222; letter-spacing: 2px; }
+.section-header p { color: white; font-size: 1rem; text-shadow: 1px 1px 0 #222; margin-bottom: 15px; }
+.leaderboard.underrated { background: #f3e8ff; border-color: #7c3aed; box-shadow: 0 8px 0 #7c3aed; }
+.leaderboard.underrated a.row { background: #ede9fe; border-color: #7c3aed; }
+.leaderboard.underrated a.row:hover { box-shadow: 0 4px 0 #7c3aed; }
+.leaderboard.underrated .bar { background: #a78bfa; }
+.leaderboard.underrated .bar.views-bar { background: #818cf8; }
+.leaderboard.underrated .bar-bg { border-color: #7c3aed; }
+
+@media (max-width: 768px) {
+    .controls { flex-direction: column; align-items: stretch; }
+    .sort-toggle { justify-content: center; }
+    .podium { flex-wrap: wrap; }
+    .podium-card { width: 100px; font-size: 16px; }
+    .podium-name { font-size: 18px; }
+    .podium-subs { font-size: 14px; }
+    .first { height: 180px; }
+    .second { height: 140px; }
+    .third { height: 120px; }
+    a.row { flex-wrap: wrap; }
+    .name { width: auto; flex: 1; }
+    .bar-bg { width: 100%; flex: none; }
+}
+
+/* Enhanced terminated modal */
+.modal{backdrop-filter:blur(6px);}
+.terminated-card{
+background:linear-gradient(180deg,#fff,#ffeaea);
+max-width:460px;padding:0;overflow:hidden;animation:pop .25s ease;
+}
+.terminated-card h2{background:#d62828;color:#fff;padding:18px;margin:0;text-shadow:none}
+.terminated-card p{padding:24px;font-size:17px;line-height:1.5}
+.terminated-card .close-btn{margin-bottom:22px;background:#d62828;border-color:#8b0000;box-shadow:0 4px 0 #8b0000}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ==================== CUSTOM LEADERBOARD (gear button + full page) ==================== */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes toastIn { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
+.gear-btn {
+    position: fixed; bottom: 22px; right: 22px; z-index: 900;
+    width: 54px; height: 54px; border-radius: 50%;
+    background: white; border: 4px solid #333; box-shadow: 0 5px 0 #333;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: 0.2s;
+}
+.gear-btn:hover { transform: translateY(2px) rotate(35deg); box-shadow: 0 3px 0 #333; }
+.gear-icon { width: 26px; height: 26px; fill: #333; }
+
+.custom-page {
+    display: none; position: fixed; inset: 0; z-index: 950;
+    background: #0bc2cf; overflow-y: auto; animation: fadeIn 0.15s ease;
+}
+.custom-page.show { display: block; }
+.custom-page::before {
+    content: ""; position: fixed; inset: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%);
+    background-size: 80px 80px; z-index: 0; pointer-events: none;
+}
+.custom-page-inner { position: relative; z-index: 1; width: 90%; max-width: 1100px; margin: auto; padding: 28px 0 70px 0; }
+
+.custom-back-btn {
+    background: white; border: 3px solid #333; border-radius: 12px; padding: 9px 16px;
+    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer;
+    box-shadow: 0 4px 0 #333; transition: 0.15s; margin-bottom: 20px;
+}
+.custom-back-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
+
+.custom-page-header { text-align: center; margin-bottom: 24px; }
+.custom-page-header h1 { font-family: 'Titan One', cursive; font-size: 2.6rem; color: white; text-shadow: 3px 3px 0 #222, 6px 6px 10px rgba(0,0,0,.2); letter-spacing: 1px; }
+.custom-page-header p { color: white; text-shadow: 1px 1px 0 #222; margin-top: 8px; font-size: 1rem; }
+.custom-page-header .note {
+    display: inline-block; margin-top: 12px; font-size: 12.5px; color: #4c1d95;
+    background: #f3e8ff; border: 2px dashed #a78bfa; border-radius: 10px; padding: 8px 14px;
+}
+
+.custom-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 22px; }
+.custom-toolbar .search { flex: 1; min-width: 180px; }
+.custom-toolbar-btn {
+    padding: 13px 18px; border: 3px solid #333; border-radius: 12px; font-weight: 800; cursor: pointer;
+    box-shadow: 0 4px 0 #333; transition: 0.15s; background: white; font-family: 'Nunito', sans-serif; font-size: 14px;
+    white-space: nowrap;
+}
+.custom-toolbar-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
+.custom-toolbar-btn.add { background: linear-gradient(135deg, #4ade80, #22c55e); color: #063; }
+.custom-toolbar-btn.export { background: linear-gradient(135deg, #60a5fa, #7c3aed); color: white; }
+.custom-toolbar-btn.reset { background: #fff; color: #7c3aed; }
+
+.custom-add-form {
+    background: white; border: 4px solid #333; border-radius: 18px; box-shadow: 0 6px 0 #333;
+    padding: 20px; margin-bottom: 22px; display: none;
+}
+.custom-add-form.show { display: block; }
+.custom-add-form h4 { font-family: 'Titan One', cursive; margin-bottom: 12px; font-size: 1.1rem; }
+.custom-add-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.custom-add-grid input, .custom-add-grid select {
+    padding: 11px; border: 3px solid #333; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 14px; width: 100%;
+}
+.custom-add-grid input:focus, .custom-add-grid select:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.2); }
+.custom-add-submit { margin-top: 14px; }
+
+.custom-leaderboard { background: #f3e8ff; border: 4px solid #7c3aed; border-radius: 20px; padding: 20px; box-shadow: 0 8px 0 #7c3aed; display: flex; flex-direction: column; gap: 10px; }
+.custom-empty { text-align: center; padding: 30px; font-size: 16px; color: #555; }
+
+.custom-card {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    background: #ede9fe; border: 3px solid #7c3aed; border-radius: 15px; padding: 12px 14px;
+    transition: 0.15s;
+}
+.custom-card:hover { transform: translateY(-2px); box-shadow: 0 4px 0 #7c3aed; }
+.custom-card.inactive { background: #ffe6d5; border-color: #d97706; }
+.custom-card.terminated { background: #ffdada; border-color: #8b0000; }
+
+.custom-card-name { font-family: 'Titan One', cursive; font-size: 17px; min-width: 140px; flex: 1 1 140px; }
+.custom-card-bar-wrap { flex: 2 1 160px; display: flex; align-items: center; gap: 8px; min-width: 140px; }
+.custom-card-bar-wrap .bar-bg { border-color: #7c3aed; }
+.custom-card-bar-wrap .bar { background: #a78bfa; }
+.custom-card-metric { font-size: 13px; font-weight: 800; min-width: 46px; text-align: right; }
+
+.custom-card-fields { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.custom-card-fields input, .custom-card-fields select {
+    font-size: 12px; padding: 6px 7px; border: 2px solid #7c3aed; border-radius: 8px; width: 78px; font-family: 'Nunito', sans-serif;
+}
+.custom-card-fields select { width: 100px; }
+
+.custom-remove-btn {
+    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+    background: #ff6b6b; border: 3px solid #8b0000; color: white; font-weight: 900; font-size: 15px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.15s;
+}
+.custom-remove-btn:hover { background: #ff4747; transform: scale(1.12) rotate(90deg); }
+
+.custom-drag-handle {
+    cursor: grab; color: #7c3aed; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; width: 26px; height: 34px; touch-action: none; -webkit-user-drag: element;
+}
+.custom-drag-handle:active { cursor: grabbing; }
+.custom-drag-handle svg circle { fill: currentColor; }
+
+.custom-card.dragging { opacity: 0.35; }
+.custom-card.drag-over { box-shadow: 0 0 0 3px #7c3aed inset, 0 4px 0 #7c3aed; }
+
+.custom-removed-section { margin-top: 26px; }
+.custom-removed-section summary { cursor: pointer; color: white; text-shadow: 1px 1px 0 #222; font-weight: 800; margin-bottom: 10px; list-style: none; }
+.custom-removed-section summary::-webkit-details-marker { display: none; }
+.custom-removed-section summary::before { content: '▶ '; }
+.custom-removed-section[open] summary::before { content: '▼ '; }
+.custom-removed-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.custom-removed-row { display: flex; align-items: center; justify-content: space-between; background: #ffe0e0; border: 3px solid #333; border-radius: 12px; padding: 10px 14px; }
+.custom-restore-btn { background: #fbbf24; border: 3px solid #333; border-radius: 10px; padding: 6px 12px; font-weight: 800; cursor: pointer; box-shadow: 0 3px 0 #333; transition: 0.15s; }
+.custom-restore-btn:hover { transform: translateY(1px); box-shadow: 0 2px 0 #333; }
+
+.export-output { width: 100%; height: 170px; margin-top: 14px; font-family: monospace; font-size: 11px; padding: 10px; border: 3px solid #333; border-radius: 12px; resize: vertical; }
+
+.custom-toast {
+    position: fixed; bottom: 92px; left: 50%; transform: translateX(-50%);
+    background: #333; color: white; padding: 12px 18px; border-radius: 12px; font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; gap: 14px; z-index: 1100; animation: toastIn 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,.3);
+}
+.custom-toast button { background: #7c3aed; border: none; color: white; padding: 6px 12px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+
+/* Custom popup (used instead of native alert/confirm for Custom panel actions) */
+.custom-popup-card {
+    background: linear-gradient(180deg, #fff, #f3e8ff);
+    max-width: 420px; padding: 0; overflow: hidden; animation: pop .25s ease;
+}
+.custom-popup-icon { font-size: 46px; margin: 24px 0 6px 0; }
+.custom-popup-card p { padding: 0 24px 20px 24px; font-size: 16px; line-height: 1.5; color: #333; }
+.custom-popup-buttons { display: flex; gap: 10px; justify-content: center; padding-bottom: 24px; }
+.close-btn.confirm { background: #7c3aed; border-color: #4c1d95; box-shadow: 0 4px 0 #4c1d95; }
+.close-btn.cancel { background: #e5e5e5; color: #333; border-color: #999; box-shadow: 0 4px 0 #999; }
+
+@media (max-width: 500px) {
+    .custom-card-name { min-width: 100%; }
+    .custom-card-fields input, .custom-card-fields select { width: 70px; }
+}
+</style>
+</head>
+<body>
+
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/chick.svg" alt="" aria-hidden="true" style="left:5%; width:80px; animation-duration:16s; animation-delay:-2s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/dragon.svg" alt="" aria-hidden="true" style="left:75%; width:100px; animation-duration:20s; animation-delay:-8s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/cow.svg" alt="" aria-hidden="true" style="left:45%; width:90px; animation-duration:18s; animation-delay:-12s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/dog.svg" alt="" aria-hidden="true" style="left:20%; width:70px; animation-duration:14s; animation-delay:-5s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/cat.svg" alt="" aria-hidden="true" style="left:85%; width:75px; animation-duration:17s; animation-delay:-1s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/pig.svg" alt="" aria-hidden="true" style="left:35%; width:85px; animation-duration:19s; animation-delay:-10s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/bear.svg" alt="" aria-hidden="true" style="left:60%; width:95px; animation-duration:15s; animation-delay:-14s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/penguin.svg" alt="" aria-hidden="true" style="left:12%; width:65px; animation-duration:13s; animation-delay:-7s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/frog.svg" alt="" aria-hidden="true" style="left:90%; width:80px; animation-duration:21s; animation-delay:-4s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/alien.svg" alt="" aria-hidden="true" style="left:50%; width:110px; animation-duration:22s; animation-delay:-18s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/unicorn.svg" alt="" aria-hidden="true" style="left:30%; width:90px; animation-duration:16s; animation-delay:-9s;">
+<img class="blook" src="https://ac.blooket.com/marketassets/blooks/mouse.svg" alt="" aria-hidden="true" style="left:68%; width:60px; animation-duration:14s; animation-delay:-15s;">
+
+<a href="https://blooket.mathuniverse.online" style="text-decoration: none; display: block;"><h1>BlookTools</h1></a>
+<div class="subtitle">Custom Leaderboard!</div>
+
+<div class="live-status" id="liveStatus">
+    <span class="live-dot loading" id="liveDot"></span>
+    <span id="liveText">Fetching live counts...</span>
+</div>
+
+<div class="container">
+    <button class="refresh-btn" id="refreshBtn" onclick="fetchAllSubs()" disabled>Update Subscribe Counts</button>
+
+    <div class="controls">
+        <input type="text" id="search" class="search" placeholder="Search Blooktubers...">
+        <div class="sort-toggle">
+            <button class="sort-btn active" id="sortSubs" onclick="setSort('subs')">📊 Subs</button>
+            <button class="sort-btn" id="sortViews" onclick="setSort('views')">👁️ Views</button>
+        </div>
+    </div>
+
+    <div class="podium" id="podium"></div>
+    <div class="leaderboard" id="leaderboard">
+        <div style="text-align:center; padding:30px; font-size:18px;">Loading live counts... 🔄</div>
+    </div>
+    <div class="section-header" id="underratedHeader" style="display:none;">
+        <h2>Up and Coming Blooktubers</h2>
+        <p>Blooktubers with under 100 subscribers</p>
+    </div>
+    <div class="leaderboard underrated" id="underratedBoard" style="display:none;"></div>
+</div>
+
+<!-- ==================== CUSTOM LEADERBOARD PAGE ==================== -->
+<button id="adminToggleBtn" class="gear-btn" onclick="toggleAdminPanel()" title="Customize your leaderboard" aria-label="Customize your leaderboard">
+    <svg class="gear-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.04-.7-1.63-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.44.17-.48.41l-.36 2.54c-.59.24-1.13.57-1.63.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+    </svg>
+</button>
+
+<div id="customPage" class="custom-page">
+    <div class="custom-page-inner">
+        <button class="custom-back-btn" onclick="toggleAdminPanel()">← Back to Live Leaderboard</button>
+
+        <div class="custom-page-header">
+            <h1>🛠 Custom Leaderboard 🛠</h1>
+            <p>Add, remove, and tweak anyone.</p>
+            <div><span class="note">👀 Only you can see this</span></div>
+        </div>
+
+        <div class="custom-toolbar">
+            <input type="text" id="customSearch" class="search" placeholder="Search your leaderboard..." oninput="renderAdminList()">
+            <button class="custom-toolbar-btn add" onclick="toggleAddForm()">⭐ Add Blooktuber</button>
+            <button class="custom-toolbar-btn reset" onclick="resetMyRemix()">🔄 Reset</button>
+            <button class="custom-toolbar-btn export" onclick="exportConfig()">📋 Save (copy code)</button>
+        </div>
+
+        <div id="customAddForm" class="custom-add-form">
+            <h4>⭐ Add Your Own Blooktuber</h4>
+            <div class="custom-add-grid">
+                <input type="text" id="newName" placeholder="Name (e.g. New Guy)">
+                <input type="text" id="newHandle" placeholder="YouTube handle (just for reference)">
+                <input type="text" id="newUrl" placeholder="Channel URL (https://youtube.com/@...)">
+                <input type="number" id="newSubs" placeholder="Subscriber count (e.g. 500)">
+                <input type="number" id="newViews" placeholder="View count (optional)">
+                <select id="newStatus">
+                    <option value="normal">🟢 Normal</option>
+                    <option value="inactive">🕊️ Inactive</option>
+                    <option value="terminated">⛔ Terminated</option>
+                </select>
+            </div>
+            <button class="custom-toolbar-btn add custom-add-submit" onclick="addCustomCreator()">Add to my board</button>
+        </div>
+
+        <div id="adminList" class="custom-leaderboard"></div>
+
+        <details class="custom-removed-section" id="removedSection">
+            <summary><span id="adminCount">0</span> shown &middot; <span id="removedCount">0</span> removed</summary>
+            <div id="removedList" class="custom-removed-list"></div>
+        </details>
+
+        <textarea id="exportOutput" class="export-output" readonly style="display:none;"></textarea>
+    </div>
+</div>
+
+<div id="customToastContainer"></div>
+
+<div id="customPopupModal" class="modal">
+    <div class="modal-content custom-popup-card">
+        <div class="custom-popup-icon">⚠</div>
+        <p id="customPopupMessage"></p>
+        <div class="custom-popup-buttons">
+            <button class="close-btn cancel" id="customPopupCancelBtn" style="display:none;">Cancel</button>
+            <button class="close-btn confirm" id="customPopupConfirmBtn">OK</button>
+        </div>
+    </div>
+</div>
+
+<div id="terminatedModal" class="modal">
+    <div class="modal-content terminated-card">
+        <h2>⛔ Channel Terminated</h2>
+        <div style="display:flex;flex-direction:column;align-items:center;padding:24px;">
+            <div style="font-size:60px;margin-bottom:16px;">🚫</div>
+            <p style="margin:0 0 18px 0;">This Blooktuber's YouTube channel has been <b>terminated</b> or permanently removed by YouTube.</p>
+            <div style="margin:0 0 20px;background:#fff4f4;border:2px solid #ffb3b3;border-radius:12px;padding:12px;font-size:14px;max-width:340px;">
+               This Blooktuber's channel is no longer available, so you can't access it.
+            </div>
+            <button class="close-btn" onclick="closeTerminatedModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const STATS_API_URL = "https://blooktools-api.fastyjayden.workers.dev/";
+
+let inactiveCreators = ["kinkade", "blooket elite", "bil"];
+let terminatedCreators = ["blook master"];
+let creatorList = [["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT"], ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket"], ["BIL", "BILBRB", "https://www.youtube.com/@BILBRB"], ["Blooket", "PlayBlooket", "https://www.youtube.com/@PlayBlooket"], ["Mega Bot", "MegaBot91", "https://www.youtube.com/@MegaBot91"], ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked"], ["Monkey Master", "MonkeyMasterYT", "https://www.youtube.com/@MonkeyMasterYT"], ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4"], ["Blooket Ace", "blooketace", "https://www.youtube.com/@blooketace"], ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay"], ["Blooket Gamer", "theblooketgamer", "https://www.youtube.com/@theblooketgamer"], ["Blooket Gods", "BlooketGodsYT", "https://www.youtube.com/@BlooketGodsYT"], ["Slade2", "theslade2", "https://www.youtube.com/@theslade2"], ["Blooket Life", "BlooketLifeYT", "https://www.youtube.com/@BlooketLifeYT"], ["JustaPanda", "JustaPanda888", "https://www.youtube.com/@JustaPanda888"], ["Blooket Insane", "blooketinsane", "https://www.youtube.com/@blooketinsane"], ["notRIC", "playblacket", "https://www.youtube.com/@playblacket"], ["SRN Games", "srngameslol", "https://www.youtube.com/@srngameslol"], ["BlooketBam", "BlooketBAM", "https://www.youtube.com/@BlooketBAM"], ["Blook Master", "BlookMasterYT", "https://www.youtube.com/@BlookMasterYT"], ["Twisted Bread", "TwistedBread", "https://www.youtube.com/@TwistedBread/"], ["Pig55", "Pig_55", "https://www.youtube.com/@Pig_55"], ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries"], ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT"], ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT"], ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT"], ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook"], ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer"], ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan"], ["Kinkade", "ItzKinkade", "https://www.youtube.com/@ItzKinkade"], ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT"], ["Freedo", "TheRealFreedoBlox", "https://www.youtube.com/@TheRealFreedoBlox"], ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"], ["Blooket Galaxy", "BlooketGalaxy", "https://www.youtube.com/@BlooketGalaxy"], ["TheBlooketBro", "theblooketbro", "https://www.youtube.com/@theblooketbro"], ["XpBlooket32", "XPgamer32Blooket", "https://www.youtube.com/@XPgamer32Blooket"], ["Blooket Gael", "UCOhGtij6ftod4pJ6mhU-skQ", "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"], ["c0mputerm4n", "c0mputerm4n-yt", "https://www.youtube.com/@c0mputerm4n-yt"], ["BlookFun", "blookfun", "https://www.youtube.com/@blookfun"], ["TheBlooketDude", "TheBlooketDude", "https://www.youtube.com/@TheBlooketDude"], ["Blooket Blitz", "BlooketBiltzYT", "https://www.youtube.com/@BlooketBiltzYT"], ["KoolKid", "ImAwesome0703", "https://www.youtube.com/@ImAwesome0703"]];
+const fallbackSubs = {"Waymore": 150000, "LeonBlox": 79400, "iBlooket": 35200, "BIL": 31200, "Blooket": 31300, "Mega Bot": 27100, "Unblooked": 26900, "Monkey Master": 24000, "Lag0n": 23800, "Blooket Ace": 15400, "FastyJay": 12900, "Blooket Gamer": 6250, "Blooket Gods": 4740, "Slade2": 3690, "Blooket Life": 3620, "JustaPanda": 2990, "Blooket Insane": 2900, "notRIC": 2740, "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2200, "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500, "Turtelix": 1420, "Green astronaut": 1100, "Blooket Warrior": 1020, "Blookbread": 1010, "TOBP Blooket": 852, "YouLostMan": 660, "Kinkade": 525, "Peetwick": 396, "Freedo": 289, "Cosmic Dragon": 69, "Blooket Galaxy": 66, "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36, "c0mputerm4n": 27, "BlookFun": 6, "TheBlooketDude": 1410, "Blooket Blitz": 18, "KoolKid": 2800};
+
+let creators = [];
+let lastUpdated = null;
+const terminatedSound = new Audio("https://mathuniverse.online/wrong.MP3");
+let sortMode = 'subs';
+
+/* ---------- Remix state (session-only in this browser; "Save My Remix" copies exportable code) ---------- */
+const ORIGINAL_CREATOR_LIST = JSON.parse(JSON.stringify(creatorList));
+let removedCreators = new Set();
+let customStatus = {};      // key(name) -> 'inactive' | 'terminated'
+let subsOverrides = {};     // key(name) -> number
+let viewsOverrides = {};    // key(name) -> number
+let lastStatsData = null;   // last successful API stats payload
+
+function keyOf(name) { return name.toLowerCase(); }
+
+function isInactiveCreator(name) {
+    const k = keyOf(name);
+    if (customStatus[k]) return customStatus[k] === 'inactive';
+    return inactiveCreators.includes(k);
+}
+
+function buildCreators(statsData) {
+    return creatorList
+        .filter(([name]) => !removedCreators.has(keyOf(name)))
+        .map(([name, handle, url]) => {
+            const stats = statsData ? statsData[name] : null;
+            const k = keyOf(name);
+            const override = customStatus[k];
+            const isTerminated = override === 'terminated' || (!override && terminatedCreators.includes(k));
+            const subsOv = subsOverrides[k];
+            const viewsOv = viewsOverrides[k];
+            return {
+                name,
+                url,
+                subs: isTerminated ? "-" : (subsOv !== undefined ? subsOv : (stats ? stats.subs : (fallbackSubs[name] || 0))),
+                views: isTerminated ? "-" : (viewsOv !== undefined ? viewsOv : (stats ? stats.views : 0)),
+                terminated: isTerminated
+            };
+        });
+}
+
+function formatSubs(num) {
+    if (num === "-") return "-";
+    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return num.toLocaleString();
+}
+
+function setSort(mode) {
+    sortMode = mode;
+    document.getElementById('sortSubs').classList.toggle('active', mode === 'subs');
+    document.getElementById('sortViews').classList.toggle('active', mode === 'views');
+    if (creators.length > 0) {
+        const searchVal = document.getElementById('search').value.toLowerCase();
+        const filtered = creators.filter(c => c.name.toLowerCase().includes(searchVal));
+        renderBoard(filtered);
+        renderUnderrated(filtered);
+        renderPodium(getSorted(creators, false));
+    }
+}
+
+function getSorted(data, includeTerminated = true) {
+    let filtered = data;
+    if (!includeTerminated) {
+        filtered = data.filter(c => !terminatedCreators.includes(c.name.toLowerCase()) && c.terminated !== true);
+    }
+    
+    // Split Blook Master away during sorting logic to force rank positioning
+    let bm = filtered.find(c => c.name.toLowerCase() === "blook master");
+    let rest = filtered.filter(c => c.name.toLowerCase() !== "blook master");
+
+    rest.sort((a, b) => {
+        if (a.terminated && !b.terminated) return 1;
+        if (!a.terminated && b.terminated) return -1;
+        return sortMode === 'views' ? b.views - a.views : b.subs - a.subs;
+    });
+
+    if (bm && includeTerminated) {
+        rest.splice(20, 0, bm); // Splice directly to position 21 (index 20)
+    }
+    return rest;
+}
+
+function showTerminatedModal() {
+    terminatedSound.currentTime = 0;
+    terminatedSound.play().catch(()=>{});
+    document.getElementById('terminatedModal').classList.add('show');
+}
+
+function closeTerminatedModal() {
+    document.getElementById('terminatedModal').classList.remove('show');
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('terminatedModal');
+    if (event.target == modal) {
+        modal.classList.remove('show');
+    }
+}
+
+async function fetchAllSubs() {
+    const dot = document.getElementById("liveDot");
+    const text = document.getElementById("liveText");
+    const btn = document.getElementById("refreshBtn");
+    dot.className = "live-dot loading"; text.textContent = "Fetching live counts..."; btn.disabled = true;
+    try {
+        const res = await fetch(STATS_API_URL);
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        lastStatsData = data.stats || null;
+
+        creators = buildCreators(lastStatsData);
+        creators = getSorted(creators, true);
+        creators.forEach((c, i) => c.rank = i + 1);
+
+        lastUpdated = new Date(data.updatedAt || Date.now());
+        dot.className = "live-dot";
+        text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
+        const sorted = getSorted(creators, false);
+        renderPodium(sorted);
+        renderBoard(creators);
+        renderUnderrated(creators);
+        renderAdminList();
+        setTimeout(fetchAllSubs, 5 * 60 * 1000);
+    } catch (err) {
+        dot.className = "live-dot error"; text.textContent = "⚠️ API error — showing last known counts";
+        lastStatsData = null;
+        creators = buildCreators(null);
+        creators = getSorted(creators, true);
+        creators.forEach((c, i) => c.rank = i + 1);
+        renderPodium(getSorted(creators, false)); renderBoard(creators); renderUnderrated(creators);
+        renderAdminList();
+    }
+    btn.disabled = false;
+}
+
+function renderPodium(data) {
+    if (data.length < 3) return;
+    const podium = document.getElementById("podium");
+    const medals = ["🥇", "🥈", "🥉"];
+    const classes = ["first", "second", "third"];
+    const isViews = sortMode === 'views';
+    podium.innerHTML = [0, 1, 2].map(i => `
+        <div class="podium-card ${classes[i]}">
+            <a href="${data[i].url}" target="_blank" class="podium-link">
+                <span>${medals[i]}</span>
+                <span class="podium-name">${data[i].name}</span>
+                <span class="podium-subs">${formatSubs(isViews ? data[i].views : data[i].subs)}</span>
+            </a>
+        </div>`).join("");
+}
+
+function getSpecialEmojisHtml(name) {
+    const htmlParts = [];
+    if (terminatedCreators.includes(name.toLowerCase()) && !customStatus[keyOf(name)]) {
+        htmlParts.push(" ⛔");
+    }
+    if (customStatus[keyOf(name)] === 'terminated') {
+        htmlParts.push(" ⛔");
+    }
+    if (name === "LeonBlox") {
+        htmlParts.push(`
+        <span class="tooltip-container">
+            <img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/fire_1f525.gif" style="width: 20px; vertical-align: middle; cursor: help;">
+            <span class="custom-tooltip">Rapidly growing Blooktuber!</span>
+        </span>`);
+    }
+    return htmlParts.join("");
+}
+
+function renderBoard(data) {
+    const board = document.getElementById("leaderboard");
+    board.innerHTML = "";
+    const isViews = sortMode === 'views';
+
+    const allSorted = getSorted(creators, true);
+    allSorted.forEach((c, i) => c.globalRank = i + 1);
+
+    const mainData = getSorted(data.filter(c => {
+        if (c.terminated) return true;
+        return isViews ? c.views >= 20000 : c.subs >= 100;
+    }), true);
+
+    if (mainData.length === 0) {
+        board.innerHTML = "<div style='text-align:center; padding: 20px; font-size: 18px;'>No Blooktubers found! 😭</div>";
+        return;
+    }
+    const maxVal = isViews
+        ? Math.max(...getSorted(creators.filter(c => c.views !== "-" && c.views >= 20000)).map(c => c.views)) || 1
+        : (getSorted(creators.filter(c => c.subs !== "-" && c.subs >= 100))[0]?.subs || 1);
+
+    mainData.forEach((creator) => {
+        const row = document.createElement("a");
+        
+        if (creator.terminated) {
+            row.href = "#";
+            row.onclick = (e) => { e.preventDefault(); showTerminatedModal(); };
+        } else {
+            row.href = creator.url;
+            row.target = "_blank";
+        }
+        
+        row.className = "row";
+        if (creator.name.toLowerCase() === "fastyjay") row.classList.add("fastyjay");
+        if (creator.terminated) row.classList.add("terminated");
+        const isInactive = isInactiveCreator(creator.name);
+        if (isInactive && !creator.terminated) row.classList.add("inactive");
+
+        const metricVal = creator.terminated ? 0 : (isViews ? creator.views : creator.subs);
+        const barWidth = creator.terminated ? 0 : ((metricVal / maxVal) * 100);
+        const barClass = isViews ? "bar views-bar" : "bar";
+
+        row.innerHTML = `
+            <div class="rank">#${creator.globalRank}</div>
+            <div class="name">${creator.name}${isInactive && !creator.terminated ? ' 🕊️' : ''}${getSpecialEmojisHtml(creator.name)}</div>
+            <div class="subs">${formatSubs(creator.terminated ? "-" : metricVal)}</div>
+            <div class="bar-bg"><div class="${barClass}" style="width: ${barWidth}%"></div></div>`;
+        board.appendChild(row);
+    });
+}
+
+function renderUnderrated(data) {
+    const header = document.getElementById("underratedHeader");
+    const board = document.getElementById("underratedBoard");
+    const isViews = sortMode === 'views';
+
+    const allSorted = getSorted(creators, true);
+    allSorted.forEach((c, i) => c.globalRank = i + 1);
+
+    const underrated = getSorted(data.filter(c => {
+        if (c.terminated) return false;
+        return isViews ? c.views < 20000 : c.subs < 100;
+    }), true);
+
+    document.querySelector("#underratedHeader h2").textContent = "Up and Coming Blooktubers";
+    document.querySelector("#underratedHeader p").textContent = isViews
+        ? "Blooktubers with under 20K views"
+        : "Blooktubers with under 100 subscribers";
+
+    if (underrated.length === 0) { header.style.display = "none"; board.style.display = "none"; return; }
+    header.style.display = "block"; board.style.display = "block"; board.innerHTML = "";
+    const maxVal = isViews
+        ? Math.max(...underrated.map(c => c.views)) || 1
+        : underrated[0]?.subs || 1;
+
+    underrated.forEach((creator) => {
+        const row = document.createElement("a");
+        row.href = creator.url; row.target = "_blank"; row.className = "row";
+        if (isInactiveCreator(creator.name)) row.classList.add("inactive");
+        const metricVal = isViews ? creator.views : creator.subs;
+        const barWidth = (metricVal / maxVal) * 100;
+        const barClass = isViews ? "bar views-bar" : "bar";
+        row.innerHTML = `
+            <div class="rank">#${creator.globalRank}</div>
+            <div class="name">${creator.name}${getSpecialEmojisHtml(creator.name)}</div>
+            <div class="subs">${formatSubs(metricVal)}</div>
+            <div class="bar-bg"><div class="${barClass}" style="width: ${barWidth}%"></div></div>`;
+        board.appendChild(row);
+    });
+}
+
+document.getElementById("search").addEventListener("input", e => {
+    const val = e.target.value.toLowerCase();
+    const filtered = creators.filter(c => c.name.toLowerCase().includes(val));
+    renderBoard(filtered);
+    renderUnderrated(filtered);
+    if (!val) renderPodium(getSorted(creators, false));
+});
+
+/* ==================== ADMIN PANEL LOGIC ==================== */
+
+function showCustomPopup(message, opts = {}) {
+    const { isConfirm = false } = opts;
+    return new Promise(resolve => {
+        document.getElementById('customPopupMessage').textContent = message;
+        const cancelBtn = document.getElementById('customPopupCancelBtn');
+        const confirmBtn = document.getElementById('customPopupConfirmBtn');
+        cancelBtn.style.display = isConfirm ? 'inline-block' : 'none';
+        confirmBtn.textContent = isConfirm ? 'Yes, do it' : 'OK';
+
+        terminatedSound.currentTime = 0;
+        terminatedSound.play().catch(() => {});
+        document.getElementById('customPopupModal').classList.add('show');
+
+        const cleanup = (result) => {
+            document.getElementById('customPopupModal').classList.remove('show');
+            confirmBtn.onclick = null;
+            cancelBtn.onclick = null;
+            resolve(result);
+        };
+        confirmBtn.onclick = () => cleanup(true);
+        cancelBtn.onclick = () => cleanup(false);
+    });
+}
+
+function toggleAdminPanel() {
+    const page = document.getElementById('customPage');
+    page.classList.toggle('show');
+    if (page.classList.contains('show')) {
+        document.body.style.overflow = 'hidden';
+        renderAdminList();
+    } else {
+        document.body.style.overflow = '';
+    }
+}
+
+function toggleAddForm() {
+    document.getElementById('customAddForm').classList.toggle('show');
+}
+
+function showUndoToast(message, onUndo) {
+    const container = document.getElementById('customToastContainer');
+    container.innerHTML = '';
+    const toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.innerHTML = `<span>${message}</span><button type="button">Undo</button>`;
+    toast.querySelector('button').onclick = () => { onUndo(); toast.remove(); };
+    container.appendChild(toast);
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4500);
+}
+
+function refreshAfterAdminChange() {
+    creators = buildCreators(lastStatsData);
+    creators = getSorted(creators, true);
+    creators.forEach((c, i) => c.rank = i + 1);
+    const searchVal = document.getElementById('search').value.toLowerCase();
+    const filtered = creators.filter(c => c.name.toLowerCase().includes(searchVal));
+    renderPodium(getSorted(creators, false));
+    renderBoard(filtered);
+    renderUnderrated(filtered);
+    renderAdminList();
+}
+
+function resetMyRemix() {
+    showCustomPopup("Reset your customizations? This clears everything you've added, removed, or tweaked.", { isConfirm: true }).then(ok => {
+        if (!ok) return;
+        creatorList = JSON.parse(JSON.stringify(ORIGINAL_CREATOR_LIST));
+        removedCreators = new Set();
+        customStatus = {};
+        subsOverrides = {};
+        viewsOverrides = {};
+        refreshAfterAdminChange();
+    });
+}
+
+function addCustomCreator() {
+    const name = document.getElementById('newName').value.trim();
+    const handle = document.getElementById('newHandle').value.trim() || name;
+    const url = document.getElementById('newUrl').value.trim();
+    const subsVal = document.getElementById('newSubs').value;
+    const viewsVal = document.getElementById('newViews').value;
+    const status = document.getElementById('newStatus').value;
+
+    if (!name || !url) { showCustomPopup("Failed to add blooktuber!"); return; }
+    if (creatorList.some(([n]) => keyOf(n) === keyOf(name))) { showCustomPopup("Someone's already on the board with that name!"); return; }
+
+    creatorList.push([name, handle, url]);
+    if (subsVal !== '') subsOverrides[keyOf(name)] = Number(subsVal);
+    if (viewsVal !== '') viewsOverrides[keyOf(name)] = Number(viewsVal);
+    if (status !== 'normal') customStatus[keyOf(name)] = status;
+    removedCreators.delete(keyOf(name));
+
+    document.getElementById('newName').value = '';
+    document.getElementById('newHandle').value = '';
+    document.getElementById('newUrl').value = '';
+    document.getElementById('newSubs').value = '';
+    document.getElementById('newViews').value = '';
+    document.getElementById('newStatus').value = 'normal';
+    document.getElementById('customAddForm').classList.remove('show');
+
+    refreshAfterAdminChange();
+    showUndoToast(`Added ${name} to your board`, () => {
+        removedCreators.add(keyOf(name));
+        refreshAfterAdminChange();
+    });
+}
+
+function removeCreator(name) {
+    removedCreators.add(keyOf(name));
+    refreshAfterAdminChange();
+    showUndoToast(`Removed ${name}`, () => {
+        removedCreators.delete(keyOf(name));
+        refreshAfterAdminChange();
+    });
+}
+
+function restoreCreator(name) {
+    removedCreators.delete(keyOf(name));
+    refreshAfterAdminChange();
+}
+
+function setStatus(name, status) {
+    if (status === 'normal') delete customStatus[keyOf(name)];
+    else customStatus[keyOf(name)] = status;
+    refreshAfterAdminChange();
+}
+
+function setSubsOverride(name, value) {
+    if (value === '' || value === null) delete subsOverrides[keyOf(name)];
+    else subsOverrides[keyOf(name)] = Number(value);
+    refreshAfterAdminChange();
+}
+
+function setViewsOverride(name, value) {
+    if (value === '' || value === null) delete viewsOverrides[keyOf(name)];
+    else viewsOverrides[keyOf(name)] = Number(value);
+    refreshAfterAdminChange();
+}
+
+function statusOf(name) {
+    const k = keyOf(name);
+    return customStatus[k] || (terminatedCreators.includes(k) ? 'terminated' : (inactiveCreators.includes(k) ? 'inactive' : 'normal'));
+}
+
+function displaySubsFor(name) {
+    const k = keyOf(name);
+    if (statusOf(name) === 'terminated') return 0;
+    if (subsOverrides[k] !== undefined) return subsOverrides[k];
+    const stats = lastStatsData ? lastStatsData[name] : null;
+    return stats ? stats.subs : (fallbackSubs[name] || 0);
+}
+
+function renderAdminList() {
+    const listEl = document.getElementById('adminList');
+    const removedListEl = document.getElementById('removedList');
+    const searchVal = (document.getElementById('customSearch')?.value || '').toLowerCase();
+    const activeList = creatorList.filter(([n]) => !removedCreators.has(keyOf(n)));
+    const removedList = creatorList.filter(([n]) => removedCreators.has(keyOf(n)));
+
+    document.getElementById('adminCount').textContent = activeList.length;
+    document.getElementById('removedCount').textContent = removedList.length;
+
+    const esc = (s) => s.replace(/'/g, "\\'");
+    const maxSubs = Math.max(1, ...activeList.map(([n]) => displaySubsFor(n)));
+
+    const filteredActive = activeList.filter(([n]) => n.toLowerCase().includes(searchVal));
+
+    if (filteredActive.length === 0) {
+        listEl.innerHTML = "<div class='custom-empty'>No Blooktubers match your search 😭</div>";
+    } else {
+        listEl.innerHTML = filteredActive.map(([name]) => {
+            const k = keyOf(name);
+            const status = statusOf(name);
+            const subsOv = subsOverrides[k] !== undefined ? subsOverrides[k] : '';
+            const viewsOv = viewsOverrides[k] !== undefined ? viewsOverrides[k] : '';
+            const displaySubs = displaySubsFor(name);
+            const barWidth = (displaySubs / maxSubs) * 100;
+            const esc2 = esc(name);
+            return `
+            <div class="custom-card ${status !== 'normal' ? status : ''}" data-name="${esc2}"
+                 ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                <span class="custom-drag-handle" draggable="true" title="Drag to reorder"
+                      ondragstart="handleDragStart(event, '${esc2}')" ondragend="handleDragEnd(event)"
+                      ontouchstart="handleTouchStart(event, '${esc2}')" ontouchmove="handleTouchMove(event)" ontouchend="handleTouchEnd(event)">
+                    <svg viewBox="0 0 20 20" width="16" height="16"><circle cx="6" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg>
+                </span>
+                <div class="custom-card-name" title="${name}">${name}</div>
+                <div class="custom-card-bar-wrap">
+                    <div class="bar-bg"><div class="bar" style="width:${barWidth}%"></div></div>
+                    <span class="custom-card-metric">${formatSubs(displaySubs)}</span>
+                </div>
+                <div class="custom-card-fields">
+                    <select onchange="setStatus('${esc2}', this.value)" title="Status">
+                        <option value="normal" ${status==='normal'?'selected':''}>🟢 Normal</option>
+                        <option value="inactive" ${status==='inactive'?'selected':''}>🕊️ Inactive</option>
+                        <option value="terminated" ${status==='terminated'?'selected':''}>⛔ Terminated</option>
+                    </select>
+                    <input type="number" placeholder="Subs" value="${subsOv}" title="Subscriber override" onchange="setSubsOverride('${esc2}', this.value)">
+                    <input type="number" placeholder="Views" value="${viewsOv}" title="View override" onchange="setViewsOverride('${esc2}', this.value)">
+                </div>
+                <button class="custom-remove-btn" title="Remove ${esc2}" aria-label="Remove ${esc2}" onclick="removeCreator('${esc2}')">✕</button>
+            </div>`;
+        }).join('');
+    }
+
+    removedListEl.innerHTML = removedList.length
+        ? removedList.map(([name]) => `
+            <div class="custom-removed-row">
+                <span>${name}</span>
+                <button class="custom-restore-btn" onclick="restoreCreator('${esc(name)}')">↩️ Restore</button>
+            </div>`).join('')
+        : "<div style='font-size:13px;color:#777;'>Nothing removed yet.</div>";
+}
+
+function reorderCreator(draggedNameVal, targetName) {
+    const draggedIdx = creatorList.findIndex(([n]) => keyOf(n) === keyOf(draggedNameVal));
+    if (draggedIdx === -1) return;
+    const [item] = creatorList.splice(draggedIdx, 1);
+    const targetIdx = creatorList.findIndex(([n]) => keyOf(n) === keyOf(targetName));
+    const insertAt = targetIdx === -1 ? creatorList.length : targetIdx;
+    creatorList.splice(insertAt, 0, item);
+    refreshAfterAdminChange();
+}
+
+/* ---- Mouse drag (desktop) ---- */
+let draggedName = null;
+
+function handleDragStart(e, name) {
+    draggedName = name;
+    e.dataTransfer.effectAllowed = 'move';
+    try { e.dataTransfer.setData('text/plain', name); } catch (err) {}
+    const card = e.target.closest('.custom-card');
+    if (card) card.classList.add('dragging');
+}
+
+function handleDragEnd() {
+    document.querySelectorAll('.custom-card.dragging').forEach(el => el.classList.remove('dragging'));
+    document.querySelectorAll('.custom-card.drag-over').forEach(el => el.classList.remove('drag-over'));
+    draggedName = null;
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const card = e.currentTarget;
+    if (draggedName && keyOf(card.dataset.name) !== keyOf(draggedName)) card.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    const card = e.currentTarget;
+    card.classList.remove('drag-over');
+    if (!draggedName) return;
+    const targetName = card.dataset.name;
+    if (keyOf(targetName) === keyOf(draggedName)) return;
+    reorderCreator(draggedName, targetName);
+}
+
+/* ---- Touch drag (mobile) ---- */
+let touchDraggedName = null;
+
+function handleTouchStart(e, name) {
+    touchDraggedName = name;
+    const card = e.target.closest('.custom-card');
+    if (card) card.classList.add('dragging');
+}
+
+function handleTouchMove(e) {
+    if (!touchDraggedName) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const card = el ? el.closest('.custom-card') : null;
+    document.querySelectorAll('.custom-card.drag-over').forEach(c => { if (c !== card) c.classList.remove('drag-over'); });
+    if (card && keyOf(card.dataset.name) !== keyOf(touchDraggedName)) card.classList.add('drag-over');
+}
+
+function handleTouchEnd(e) {
+    if (!touchDraggedName) return;
+    const touch = e.changedTouches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const card = el ? el.closest('.custom-card') : null;
+    document.querySelectorAll('.custom-card.dragging, .custom-card.drag-over').forEach(c => c.classList.remove('dragging', 'drag-over'));
+    if (card) {
+        const targetName = card.dataset.name;
+        if (keyOf(targetName) !== keyOf(touchDraggedName)) reorderCreator(touchDraggedName, targetName);
+    }
+    touchDraggedName = null;
+}
+
+function exportConfig() {
+    const remaining = creatorList.filter(([n]) => !removedCreators.has(keyOf(n)));
+
+    const inactiveOut = [...new Set(remaining
+        .map(([n]) => keyOf(n))
+        .filter(k => (customStatus[k] || (inactiveCreators.includes(k) ? 'inactive' : (terminatedCreators.includes(k) ? 'terminated' : 'normal'))) === 'inactive')
+    )];
+    const terminatedOut = [...new Set(remaining
+        .map(([n]) => keyOf(n))
+        .filter(k => (customStatus[k] || (inactiveCreators.includes(k) ? 'inactive' : (terminatedCreators.includes(k) ? 'terminated' : 'normal'))) === 'terminated')
+    )];
+
+    const fallbackObj = {};
+    remaining.forEach(([name]) => {
+        const k = keyOf(name);
+        fallbackObj[name] = subsOverrides[k] !== undefined ? subsOverrides[k] : (fallbackSubs[name] || 0);
+    });
+
+    const viewsOut = {};
+    remaining.forEach(([name]) => {
+        const k = keyOf(name);
+        if (viewsOverrides[k] !== undefined) viewsOut[k] = viewsOverrides[k];
+    });
+
+    const lines = [
+        '// ---- Your customizations, ready to share! Paste over the matching declarations near the top of the <script> ----',
+        '',
+        'let inactiveCreators = ' + JSON.stringify(inactiveOut) + ';',
+        'let terminatedCreators = ' + JSON.stringify(terminatedOut) + ';',
+        'let creatorList = ' + JSON.stringify(remaining) + ';',
+        'const fallbackSubs = ' + JSON.stringify(fallbackObj) + ';',
+        'let viewsOverrides = ' + JSON.stringify(viewsOut) + ';'
+    ];
+
+    const output = lines.join('\n');
+    const textarea = document.getElementById('exportOutput');
+    textarea.style.display = 'block';
+    textarea.value = output;
+    textarea.focus();
+    textarea.select();
+    try {
+        document.execCommand('copy');
+        showCustomPopup('Copied');
+    } catch (e) {
+        showCustomPopup("Couldn't auto-copy — but your code is right there in the box, just select and copy it!");
+    }
+}
+
+fetchAllSubs();
+</script>
+</body>
+</html>
