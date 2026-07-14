@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BlookTools | Home</title>
 <link rel="icon" type="image/png" href="https://blooket.mathuniverse.online/blooktools.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
-/* FIXED: Changed wght=800;900 to wght@800;900 to successfully load the font */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
 
@@ -18,66 +18,103 @@
     font-family: 'Nunito', sans-serif;
 }
 
+:root {
+    --bg: #0bc2cf;
+    --bg-texture: linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%);
+    --bg-texture-size: 80px 80px;
+    --hero-text-shadow: 4px 4px 0 #222, 8px 8px 12px rgba(0,0,0,.2);
+    --subtitle-shadow: #222;
+    --card-bg: #ffffff;
+    --card-border: #333;
+    --card-text: #111;
+    --card-text-secondary: #444;
+    --hr-color: #ddd;
+}
+[data-theme="dark"] {
+    --bg: #14161f;
+    --bg-texture: linear-gradient(45deg, rgba(255,255,255,.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.05) 75%);
+    --bg-texture-size: 80px 80px;
+    --hero-text-shadow: 4px 4px 0 #000, 8px 8px 12px rgba(0,0,0,.4);
+    --subtitle-shadow: #000;
+    --card-bg: #23263a;
+    --card-border: #4a4d63;
+    --card-text: #f2f2f2;
+    --card-text-secondary: #c7c7c7;
+    --hr-color: #3a3d4d;
+}
+[data-theme="seasonal"] {
+    --bg: linear-gradient(180deg, #070f26 0%, #0e2050 45%, #1a3a72 100%);
+    --bg-texture: repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0px, rgba(255,255,255,.035) 40px, transparent 40px, transparent 80px);
+    --bg-texture-size: auto;
+    --hero-text-shadow: 3px 3px 0 #b22234, 6px 6px 0 #3c3b6e, 0 10px 22px rgba(0,0,0,.35);
+    --subtitle-shadow: #132242;
+    --card-bg: #ffffff;
+    --card-border: #132242;
+    --card-text: #111;
+    --card-text-secondary: #444;
+    --hr-color: #ddd;
+}
+
 body {
-    background: linear-gradient(180deg, #070f26 0%, #0e2050 45%, #1a3a72 100%);
+    background: var(--bg);
+    transition: background .3s ease;
     min-height: 100vh;
     overflow-x: hidden;
     padding-bottom: 60px;
 }
 
-/* faint flag-stripe texture across the night sky */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(255,255,255,.035) 0px,
-        rgba(255,255,255,.035) 40px,
-        transparent 40px,
-        transparent 80px
-    );
+    background: var(--bg-texture);
+    background-size: var(--bg-texture-size);
     z-index: -4;
 }
 
-/* Twinkling stars */
+/* Twinkling stars — only shown in the Seasonal theme */
 .star {
     position: fixed;
     background: #fff;
     border-radius: 50%;
     z-index: -3;
+    display: none;
     animation-name: twinkle;
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
     pointer-events: none;
 }
+[data-theme="seasonal"] .star { display: block; }
 
 @keyframes twinkle {
     0%, 100% { opacity: .15; }
     50%      { opacity: 1; }
 }
 
-/* Falling blooks */
-.blook {
-    position: fixed;
-    top: -150px;
-    opacity: .15;
-    animation: fall linear infinite;
-    pointer-events: none;
-    z-index: -2;
-}
-
-@keyframes fall {
-    from { transform: translateY(0) rotate(0deg); }
-    to   { transform: translateY(120vh) rotate(360deg); }
-}
-
-/* Fireworks canvas sits above the ambient decoration, behind real content */
+/* Fireworks canvas — only drawn to during the Seasonal theme */
 #fw-canvas {
     position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
+}
+
+/* Falling blooks */
+.blook {
+    position: fixed;
+    top: -150px;
+    opacity: .25;
+    animation: fall linear infinite;
+    pointer-events: none;
+    z-index: -2;
+}
+.blook-seasonal { display: none; opacity: .15; }
+[data-theme="seasonal"] .blook-seasonal { display: block; }
+[data-theme="seasonal"] .blook-normal { display: none; }
+
+@keyframes fall {
+    from { transform: translateY(0) rotate(0deg); }
+    to   { transform: translateY(120vh) rotate(360deg); }
 }
 
 /* ── NAV ── */
@@ -118,34 +155,25 @@ nav a.active {
     position: relative;
 }
 
-.event-badge {
-    display: inline-block;
-    background: #fff;
-    color: #b22234;
-    font-family: 'Titan One', cursive;
-    font-size: .9rem;
-    letter-spacing: .5px;
-    padding: 8px 22px;
-    border-radius: 999px;
-    border: 3px solid #132242;
-    box-shadow: 0 4px 0 #132242;
-    margin-bottom: 16px;
-}
-
 .hero h1 {
     font-family: 'Titan One', cursive;
     font-size: clamp(2.4rem, 6vw, 4rem);
     color: white;
-    text-shadow: 3px 3px 0 #b22234, 6px 6px 0 #3c3b6e, 0 10px 22px rgba(0,0,0,.35);
+    text-shadow: var(--hero-text-shadow);
     letter-spacing: 2px;
     line-height: 1.1;
+    cursor: pointer;
+    display: inline-block;
+    transition: transform .15s;
 }
+.hero h1:hover { transform: scale(1.03); }
+.hero h1:active { transform: scale(0.98); }
 
 .hero p {
     color: white;
     font-size: 1.15rem;
     font-weight: 800;
-    text-shadow: 2px 2px 0 #132242;
+    text-shadow: 2px 2px 0 var(--subtitle-shadow);
     margin-top: 12px;
 }
 
@@ -160,14 +188,15 @@ nav a.active {
 
 /* Featured main card */
 .card-featured {
-    background: white;
+    background: var(--card-bg);
     border-radius: 24px;
-    border: 4px solid #333;
-    box-shadow: 0 8px 0 #333;
+    border: 4px solid var(--card-border);
+    box-shadow: 0 8px 0 var(--card-border);
     padding: 32px 36px;
     display: flex;
     align-items: center;
     gap: 30px;
+    transition: background .3s ease, border-color .3s ease;
 }
 
 .card-featured-icon {
@@ -190,19 +219,19 @@ nav a.active {
 .card-featured-body h2 {
     font-family: 'Titan One', cursive;
     font-size: clamp(1.5rem, 3vw, 2rem);
-    color: #111;
+    color: var(--card-text);
     letter-spacing: 1px;
     line-height: 1.1;
 }
 
 .card-featured-body hr {
     border: none;
-    border-top: 3px solid #ddd;
+    border-top: 3px solid var(--hr-color);
     margin: 10px 0;
 }
 
 .card-featured-body p {
-    color: #444;
+    color: var(--card-text-secondary);
     font-size: 1rem;
     font-weight: 800;
     line-height: 1.5;
@@ -216,24 +245,25 @@ nav a.active {
 }
 
 .card {
-    background: white;
+    background: var(--card-bg);
     border-radius: 22px;
-    border: 4px solid #333;
-    box-shadow: 0 8px 0 #333;
+    border: 4px solid var(--card-border);
+    box-shadow: 0 8px 0 var(--card-border);
     padding: 26px 28px;
+    transition: background .3s ease, border-color .3s ease;
 }
 
 .card h2 {
     font-family: 'Titan One', cursive;
     font-size: clamp(1.2rem, 2.5vw, 1.6rem);
-    color: #111;
+    color: var(--card-text);
     letter-spacing: 1px;
     line-height: 1.15;
 }
 
 .card hr {
     border: none;
-    border-top: 3px solid #ddd;
+    border-top: 3px solid var(--hr-color);
     margin: 10px 0;
 }
 
@@ -252,7 +282,7 @@ nav a.active {
 }
 
 .card-inner p {
-    color: #444;
+    color: var(--card-text-secondary);
     font-size: 0.95rem;
     font-weight: 800;
     line-height: 1.5;
@@ -298,24 +328,84 @@ nav a.active {
     font-family: 'Titan One', cursive;
     font-size: 2rem;
     color: white;
-    text-shadow: 3px 3px 0 #132242;
+    text-shadow: 3px 3px 0 var(--subtitle-shadow);
     letter-spacing: 2px;
 }
 
 /* ── RESPONSIVE ── */
 .card-coming-soon{grid-column:1/-1;}
 
+/* ── SIDEBAR + THEMES ── */
+.sidebar-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1400;
+    opacity: 0; pointer-events: none; transition: opacity .25s ease;
+}
+.sidebar-overlay.show { opacity: 1; pointer-events: auto; }
+
+.sidebar {
+    --sb-purple: #a34bc7;
+    --sb-purple-dark: #7f3a9c;
+    --sb-teal: #22d3c5;
+    --sb-teal-dark: #17a89d;
+    position: fixed; top: 0; left: -300px; width: 245px; max-width: 85vw; height: 100vh;
+    background: var(--sb-purple); border-right: 4px solid var(--sb-purple-dark);
+    z-index: 1500; transition: left .3s ease; display: flex; flex-direction: column;
+    box-shadow: 6px 0 20px rgba(0,0,0,.3);
+}
+.sidebar.show { left: 0; }
+.sidebar-header {
+    display: flex; justify-content: center; align-items: center; position: relative;
+    padding: 22px 20px 14px;
+}
+.sidebar-header h3 {
+    font-family: 'Titan One', cursive; font-size: 1.6rem; color: white; letter-spacing: 1px;
+    text-shadow: 2px 2px 0 var(--sb-purple-dark);
+}
+.sidebar-home-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin: 4px 18px 16px; padding: 12px 0;
+    background: var(--sb-teal); border: none; border-radius: 14px;
+    box-shadow: 0 4px 0 var(--sb-teal-dark);
+    color: white; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px;
+    text-decoration: none; transition: .15s;
+}
+.sidebar-home-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 var(--sb-teal-dark); }
+.sidebar-home-btn .sb-icon { font-size: 18px; }
+
+.sidebar-links { flex: 1; overflow-y: auto; padding: 0 12px; display: flex; flex-direction: column; gap: 4px; }
+.sidebar-links a {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;
+    text-decoration: none; color: rgba(255,255,255,.9); font-weight: 800; font-size: 15px; transition: .15s;
+}
+.sidebar-links a:hover { background: rgba(255,255,255,.12); }
+.sidebar-links a.active { background: white; color: var(--sb-purple); box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+.sidebar-links a .sb-icon { font-size: 20px; width: 24px; text-align: center; }
+.sidebar-divider { height: 1px; background: rgba(255,255,255,.25); margin: 10px 8px; }
+
+.sidebar-themes { padding: 16px 18px 20px; border-top: 1px solid rgba(255,255,255,.25); margin-top: auto; }
+.sidebar-themes h4 {
+    font-family: 'Titan One', cursive; font-size: .85rem; margin-bottom: 10px; color: white;
+    letter-spacing: .5px; opacity: .9;
+}
+.theme-options { display: flex; gap: 8px; }
+.theme-swatch {
+    flex: 1; padding: 10px 4px; border-radius: 12px; border: 3px solid rgba(0,0,0,.25); cursor: pointer;
+    text-align: center; font-weight: 900; font-size: 11px; transition: .15s; color: white;
+}
+.theme-swatch:hover { transform: translateY(-2px); }
+.theme-swatch.active { outline: 3px solid #ffd700; outline-offset: 2px; }
+.theme-swatch.normal { background: #0bc2cf; }
+.theme-swatch.dark { background: #23263a; }
+.theme-swatch.seasonal { background: linear-gradient(135deg, #14264f, #b22234); }
+
 @media (max-width: 640px) {
-    .card-coming-soon{grid-column:auto;}
-    .card-featured { flex-direction: column; text-align: center; }
-    .card-row { grid-template-columns: 1fr; }
-    .card-inner { flex-direction: column; align-items: center; text-align: center; }
+    .sidebar { width: 250px; }
 }
 </style>
 </head>
 <body>
 
-<!-- Twinkling stars -->
+<!-- Twinkling stars (Seasonal theme only) -->
 <div class="star" style="top:8%;  left:10%; width:3px; height:3px; animation-duration:2.6s; animation-delay:-1s;"></div>
 <div class="star" style="top:14%; left:80%; width:2px; height:2px; animation-duration:3.2s; animation-delay:-2.1s;"></div>
 <div class="star" style="top:22%; left:30%; width:3px; height:3px; animation-duration:2.8s; animation-delay:-.4s;"></div>
@@ -327,25 +417,63 @@ nav a.active {
 <div class="star" style="top:60%; left:15%; width:2px; height:2px; animation-duration:2.7s; animation-delay:-2.8s;"></div>
 <div class="star" style="top:65%; left:75%; width:3px; height:3px; animation-duration:3.1s; animation-delay:-.2s;"></div>
 
-<!-- Fireworks (canvas-driven particle system, see script at bottom) -->
+<!-- Fireworks (canvas-driven particle system, only animated during the Seasonal theme) -->
 <canvas id="fw-canvas"></canvas>
 
-<!-- Falling blooks -->
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/blueastronaut.svg"    alt="" aria-hidden="true" style="left:5%;  width:80px;  animation-duration:16s; animation-delay:-2s;">
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/springdragon.svg"   alt="" aria-hidden="true" style="left:75%; width:100px; animation-duration:20s; animation-delay:-8s;">
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/partypig.svg"       alt="" aria-hidden="true" style="left:45%; width:90px;  animation-duration:18s; animation-delay:-12s;">
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/wisecaterpillar.svg"      alt="" aria-hidden="true" style="left:20%; width:70px;  animation-duration:14s; animation-delay:-5s;">
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/underconstruction.svg"      alt="" aria-hidden="true" style="left:85%; width:75px;  animation-duration:17s; animation-delay:-1s;">
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/placeholder.svg"      alt="" aria-hidden="true" style="left:35%; width:85px;  animation-duration:19s; animation-delay:-10s;">
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/rainbowastronaut.svg"    alt="" aria-hidden="true" style="left:60%; width:95px;  animation-duration:15s; animation-delay:-14s;">
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/phantomking.svg"  alt="" aria-hidden="true" style="left:12%; width:65px;  animation-duration:13s; animation-delay:-7s;">
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/hamstaclaus.svg"  alt="" aria-hidden="true" style="left:90%; width:80px;  animation-duration:21s; animation-delay:-4s;">
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/timthealien.svg"     alt="" aria-hidden="true" style="left:50%; width:110px; animation-duration:22s; animation-delay:-18s;">
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/spookyghost.svg"     alt="" aria-hidden="true" style="left:30%; width:90px;  animation-duration:16s; animation-delay:-9s;">
-<img class="blook" src="https://ac.blooket.com/marketassets/blooks/spookypumpkin.svg"    alt="" aria-hidden="true" style="left:68%; width:60px;  animation-duration:14s; animation-delay:-15s;">
+<!-- Falling blooks — Normal theme set -->
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/chick.svg" alt="" aria-hidden="true" style="left:5%; width:80px; animation-duration:16s; animation-delay:-2s;">
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/dragon.svg" alt="" aria-hidden="true" style="left:75%; width:100px; animation-duration:20s; animation-delay:-8s;">
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/cow.svg" alt="" aria-hidden="true" style="left:45%; width:90px; animation-duration:18s; animation-delay:-12s;">
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/dog.svg" alt="" aria-hidden="true" style="left:20%; width:70px; animation-duration:14s; animation-delay:-5s;">
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/cat.svg" alt="" aria-hidden="true" style="left:85%; width:75px; animation-duration:17s; animation-delay:-1s;">
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/pig.svg" alt="" aria-hidden="true" style="left:35%; width:85px; animation-duration:19s; animation-delay:-10s;">
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/bear.svg" alt="" aria-hidden="true" style="left:60%; width:95px; animation-duration:15s; animation-delay:-14s;">
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/penguin.svg" alt="" aria-hidden="true" style="left:12%; width:65px; animation-duration:13s; animation-delay:-7s;">
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/frog.svg" alt="" aria-hidden="true" style="left:90%; width:80px; animation-duration:21s; animation-delay:-4s;">
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/alien.svg" alt="" aria-hidden="true" style="left:50%; width:110px; animation-duration:22s; animation-delay:-18s;">
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/unicorn.svg" alt="" aria-hidden="true" style="left:30%; width:90px; animation-duration:16s; animation-delay:-9s;">
+<img class="blook blook-normal" src="https://ac.blooket.com/marketassets/blooks/mouse.svg" alt="" aria-hidden="true" style="left:68%; width:60px; animation-duration:14s; animation-delay:-15s;">
+
+<!-- Falling blooks — Seasonal (Independence Day) theme set -->
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/blueastronaut.svg" alt="" aria-hidden="true" style="left:5%; width:80px; animation-duration:16s; animation-delay:-2s;">
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/springdragon.svg" alt="" aria-hidden="true" style="left:75%; width:100px; animation-duration:20s; animation-delay:-8s;">
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/partypig.svg" alt="" aria-hidden="true" style="left:45%; width:90px; animation-duration:18s; animation-delay:-12s;">
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/wisecaterpillar.svg" alt="" aria-hidden="true" style="left:20%; width:70px; animation-duration:14s; animation-delay:-5s;">
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/underconstruction.svg" alt="" aria-hidden="true" style="left:85%; width:75px; animation-duration:17s; animation-delay:-1s;">
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/placeholder.svg" alt="" aria-hidden="true" style="left:35%; width:85px; animation-duration:19s; animation-delay:-10s;">
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/rainbowastronaut.svg" alt="" aria-hidden="true" style="left:60%; width:95px; animation-duration:15s; animation-delay:-14s;">
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/phantomking.svg" alt="" aria-hidden="true" style="left:12%; width:65px; animation-duration:13s; animation-delay:-7s;">
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/hamstaclaus.svg" alt="" aria-hidden="true" style="left:90%; width:80px; animation-duration:21s; animation-delay:-4s;">
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/timthealien.svg" alt="" aria-hidden="true" style="left:50%; width:110px; animation-duration:22s; animation-delay:-18s;">
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/spookyghost.svg" alt="" aria-hidden="true" style="left:30%; width:90px; animation-duration:16s; animation-delay:-9s;">
+<img class="blook blook-seasonal" src="https://ac.blooket.com/marketassets/blooks/spookypumpkin.svg" alt="" aria-hidden="true" style="left:68%; width:60px; animation-duration:14s; animation-delay:-15s;">
+
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div id="siteSidebar" class="sidebar">
+    <div class="sidebar-header">
+        <h3>BlookTools</h3>
+    </div>
+    <a href="/" class="sidebar-home-btn"><span class="sb-icon"><i class="fa-solid fa-house"></i></span> Home</a>
+    <div class="sidebar-links">
+        <a href="leaderboard" data-page="leaderboard"><span class="sb-icon"><i class="fa-solid fa-trophy"></i></span> Leaderboard</a>
+        <a href="guess" data-page="guess"><span class="sb-icon"><i class="fa-solid fa-question"></i></span> Guess the Blooktuber</a>
+        <a href="custom" data-page="custom"><span class="sb-icon"><i class="fa-solid fa-gear"></i></span> Custom</a>
+        <div class="sidebar-divider"></div>
+        <a href="https://forms.gle/UdtzPTVHsx26kqJS9" target="_blank" rel="noopener"><span class="sb-icon"><i class="fa-solid fa-circle-info"></i></span> Suggestions</a>
+        <a href="https://discord.gg/DkfmANQBzw" target="_blank" rel="noopener"><span class="sb-icon"><i class="fa-brands fa-discord"></i></span> Discord</a>
+    </div>
+    <div class="sidebar-themes">
+        <h4>THEME</h4>
+        <div class="theme-options">
+            <div class="theme-swatch normal" data-theme="normal">Normal</div>
+            <div class="theme-swatch dark" data-theme="dark">Dark</div>
+            <div class="theme-swatch seasonal" data-theme="seasonal">Seasonal</div>
+        </div>
+    </div>
+</div>
 
 <div class="hero">
-    <h1>BlookTools</h1>
+    <h1 id="siteTitleTrigger" role="button" tabindex="0" aria-label="Open menu">BlookTools</h1>
     <p id="hero-subtitle">Your #1 hub for Blooket content creator info &amp; games! 🎮</p>
 </div>
 
@@ -384,7 +512,6 @@ nav a.active {
                 <div class="card-inner-icon">⚙️</div>
                 <p>This is basically the Blooktuber Leaderboard, but you can actually add or remove people! This is new, so all the features might not work.</p>
             </div>
-            <!-- FIXED: Removed onclick="return false;" so that navigation functions normally -->
             <a href="custom" class="btn btn-blook">Try it Out!</a>
         </div>
 
@@ -393,9 +520,10 @@ nav a.active {
             <hr>
             <div class="card-inner">
                 <div class="card-inner-icon">🛠️</div>
-                <p>A brand new tool is coming soon. Stay tuned to find out and DM for ideas on discord! My Discord is @fastyjay :)</p>
+                <p>A brand new tool is on the way! Join the Discord to find out first, or drop your ideas in the suggestion form.</p>
             </div>
-            <a href="#" class="btn btn-gray" onclick="return false;">Stay Tuned!</a>
+            <a href="https://discord.gg/DkfmANQBzw" class="btn btn-blue" target="_blank" rel="noopener">Join the Discord!</a>
+            <a href="https://forms.gle/UdtzPTVHsx26kqJS9" class="btn btn-green" target="_blank" rel="noopener">Suggest an Idea!</a>
         </div>
 
     </div>
@@ -403,10 +531,62 @@ nav a.active {
 </div>
 
 <script>
+const THEME_KEY = 'blooktools_theme';
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.querySelectorAll('.theme-swatch').forEach(el => {
+        el.classList.toggle('active', el.dataset.theme === theme);
+    });
+    try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* storage unavailable, theme just won't persist */ }
+    if (theme === 'seasonal') startFireworks(); else stopFireworks();
+}
+
+function loadTheme() {
+    let theme = 'normal';
+    try { theme = localStorage.getItem(THEME_KEY) || 'normal'; } catch (e) { /* storage unavailable */ }
+    applyTheme(theme);
+}
+
+function highlightActivePage() {
+    const path = location.pathname.replace(/\/+$/, '') || '/';
+    let current = 'home';
+    if (path === '/' || /index\.html?$/.test(path)) current = 'home';
+    else if (/leaderboard/.test(path)) current = 'leaderboard';
+    else if (/guess/.test(path)) current = 'guess';
+    else if (/custom/.test(path)) current = 'custom';
+
+    document.querySelectorAll('.sidebar-links a[data-page]').forEach(a => {
+        a.classList.toggle('active', a.dataset.page === current);
+    });
+}
+highlightActivePage();
+
+function openSidebar() {
+    document.getElementById('sidebarOverlay').classList.add('show');
+    document.getElementById('siteSidebar').classList.add('show');
+}
+function closeSidebar() {
+    document.getElementById('sidebarOverlay').classList.remove('show');
+    document.getElementById('siteSidebar').classList.remove('show');
+}
+
+document.getElementById('siteTitleTrigger').addEventListener('click', openSidebar);
+document.getElementById('siteTitleTrigger').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSidebar(); }
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSidebar(); });
+document.querySelectorAll('.theme-swatch').forEach(el => {
+    el.addEventListener('click', () => applyTheme(el.dataset.theme));
+});
+
+/* ── Fireworks (Seasonal theme only) ── */
 (function () {
     var canvas = document.getElementById('fw-canvas');
     var ctx = canvas.getContext('2d');
     var w, h;
+    var running = false;
+    var rafId = null;
 
     function resize() {
         w = canvas.width = window.innerWidth;
@@ -416,7 +596,6 @@ nav a.active {
     window.addEventListener('resize', resize);
 
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) return;
 
     var COLORS = ['#ff4d4d', '#ffffff', '#5c8bff', '#ffd700'];
 
@@ -523,6 +702,8 @@ nav a.active {
     var nextGap = rand(700, 1500);
 
     function loop(ts) {
+        if (!running) return;
+
         ctx.globalCompositeOperation = 'destination-out';
         ctx.fillStyle = 'rgba(0,0,0,0.18)';
         ctx.fillRect(0, 0, w, h);
@@ -556,10 +737,25 @@ nav a.active {
             if (sparks[k].dead()) sparks.splice(k, 1);
         }
 
-        requestAnimationFrame(loop);
+        rafId = requestAnimationFrame(loop);
     }
-    requestAnimationFrame(loop);
+
+    window.startFireworks = function () {
+        if (running || reduceMotion) return;
+        running = true;
+        rockets = []; sparks = []; flashes = [];
+        lastSpawn = 0;
+        rafId = requestAnimationFrame(loop);
+    };
+    window.stopFireworks = function () {
+        running = false;
+        if (rafId) cancelAnimationFrame(rafId);
+        ctx.clearRect(0, 0, w, h);
+        rockets = []; sparks = []; flashes = [];
+    };
 })();
+
+loadTheme();
 </script>
 <script>
 const common=["🎮 Your #1 hub for Blooket content creator info & games!","📈 Tracking the biggest Blooktubers!","⭐ Made for upcoming Blooktubers, made by a Blooktuber!","🏆 Home of the Blooktuber Leaderboard.","🎥 Supporting your favorite Blooktubers!","🌟 Welcome to BlookTools!"];
