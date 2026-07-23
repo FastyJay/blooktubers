@@ -392,7 +392,7 @@ document.querySelectorAll('.sidebar-links a[data-page]').forEach(a => {
     a.classList.toggle('active', a.dataset.page === 'leaderboard');
 });
 
-const inactiveCreators = ["kinkade", "blooket elite", "bil", "c0mputerm4n"];
+const inactiveCreators = ["kinkade", "blooket elite", "bil", "c0mputerm4n", "Mr noble wywy", "imbac", "Cereal.For.Blooket"];
 const terminatedCreators = ["blook master"];
 
 const defaultImage = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fyt3.googleusercontent.com%2Fytc%2FAIdro_l1w6Mc5WEokWWYbrNNP_5BEshKUO25cIZVOqiU6AojVw%3Ds900-c-k-c0x00ffffff-no-rj&f=1&nofb=1&ipt=9e9827da110a3ddd46c8388025131ce04094fdaa5ea06308022c4c6612b4d6ff";
@@ -422,35 +422,33 @@ const creatorList = [
     ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FdK4xmnwEWzflE11UaFoy_KMR5amTBVofIz02wbU5KgiI1DVJpKnZcU2I6buwgbmLtckYi1zv9g%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
     ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT", "https://mathuniverse.online/turtelix.png"],
     ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT", "https://yt3.googleusercontent.com/jqSEQqOe03q2My36l3Khz09hh8qmrhDGkbD-VsLGrW-ESIbSneCIfSeYVravW7BwhlKfiaUPpg=s800-c-k-c0x00ffffff-no-rj"],
-    ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT", null],
-    ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook", null],
-    ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer", null],
-    ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan", null],
-    ["Kinkade", "ItzKinkade", "https://www.youtube.com/@ItzKinkade", null],
-    ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT", null],
+    ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT", "https://yt3.googleusercontent.com/it5rmpwxDWxJktHp4E3KWslikkQQ9xuWFpJ-kvVAQdnEAy_aTriFrRthtJmV_LzfZ1ib_--rOg=s800-c-k-c0x00ffffff-no-rj"],
+    ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook", "https://yt3.googleusercontent.com/YBrBVXBLRqRpFFiLvJGgfnjboHu7I2rW572cTDhgdXHKLqTIh3pzVgalhAIOq8FsUOaOMMdP=s800-c-k-c0x00ffffff-no-rj"],
+    ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer", "https://yt3.googleusercontent.com/DZTf5N836Mzg_Rs3xm7RC93lW1mdmAy4mdcuGeaVaaPnTDnIT8-MaBMJSqhKHYgF0GDWYacYkQ=s800-c-k-c0x00ffffff-no-rj"],
+    ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan", "https://yt3.googleusercontent.com/VUW4XPzxbAW7jvsmJwvrIxCnYZ4ZFzGYjo87k7k2SvuOmMONcNcv4dzz2RvOV40D7vEkklJmCBs=s800-c-k-c0x00ffffff-no-rj"],
+    ["Kinkade", "ItzKinkade", "https://www.youtube.com/@ItzKinkade", "https://yt3.googleusercontent.com/kl2RLrcpmg_u6XnDYpBvPLaBI82znctxoeQbH4R4rFbpDXR0sJreoIyHuDtZjCTpdWafH-_sug=s800-c-k-c0x00ffffff-no-rj"],
+    ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT", "https://yt3.googleusercontent.com/XupwnkZIgVmXhVelkGEtqKPSbwtRlQrmF3a1gqk1w4qhzJkfOllwwMQX0Egiss2cMPhfoFbMBQ=s800-c-k-c0x00ffffff-no-rj"],
     ["Freedo", "TheRealFreedoBlox", "https://www.youtube.com/@TheRealFreedoBlox", null],
-    ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw", null],
+    ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw", "https://yt3.googleusercontent.com/WDhBu9_C1_Li24ytFNwDMqN_eqPeXTHXCJ4I2fbAWyHMLjmIrpm4ivIqwRnwWjoX_wstQVq0sio=s800-c-k-c0x00ffffff-no-rj"],
     ["Blooket Galaxy", "BlooketGalaxy", "https://www.youtube.com/@BlooketGalaxy", null],
     ["TheBlooketBro", "theblooketbro", "https://www.youtube.com/@theblooketbro", null],
     ["XpBlooket32", "XPgamer32Blooket", "https://www.youtube.com/@XPgamer32Blooket", null],
     ["Blooket Gael", "UCOhGtij6ftod4pJ6mhU-skQ", "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ", null],
-    ["c0mputerm4n", "c0mputerm4n-yt", "https://www.youtube.com/@c0mputerm4n-yt", null],
     ["BlookFun", "blookfun", "https://www.youtube.com/@blookfun", null],
     ["TheBlooketDude", "TheBlooketDude", "https://www.youtube.com/@TheBlooketDude", null],
     ["Blooket Blitz", "BlooketBiltzYT", "https://www.youtube.com/@BlooketBiltzYT", null],
     ["KoolKid", "ImAwesome0703", "https://www.youtube.com/@ImAwesome0703", null],
-    ["Panda Blooket", "UCJG4i4gLaFuD3KXb3Li3hpA", "https://www.youtube.com/channel/UCJG4i4gLaFuD3KXb3Li3hpA", null],
-    ["Blooklet", "UC3wFnO6_35H4oPd1SfLO8QQ", "https://www.youtube.com/channel/UC3wFnO6_35H4oPd1SfLO8QQ", null],
-    ["Caterpillar9", "UCl_46vdPleB7nIcQ2uRrRYg", "https://www.youtube.com/channel/UCl_46vdPleB7nIcQ2uRrRYg", null],
-    ["Alber", "UCl_46vdPleB7nIcQ2uRrRYg", "https://www.youtube.com/channel/UCl_46vdPleB7nIcQ2uRrRYg", null],
-    ["Blooket Studio", "UCwqPS5F9gWK-dLJ1F3xn-9Q", "https://www.youtube.com/channel/UCwqPS5F9gWK-dLJ1F3xn-9Q", null],
-    ["Mr noble wywy", "UCWUlc91RBPRbytSQfL2P6Vw", "https://www.youtube.com/channel/UCWUlc91RBPRbytSQfL2P6Vw", null],
-    ["imbac", "UCa6fkBCzarr4hmRvOg_562g", "https://www.youtube.com/channel/UCa6fkBCzarr4hmRvOg_562g", null],
-    ["Cereal.For.Blooket", "UCygcI2_f5hzFrjkv9L2zA_g", "https://www.youtube.com/channel/UCygcI2_f5hzFrjkv9L2zA_g", null],
+    ["Panda Blooket", "UCJG4i4gLaFuD3KXb3Li3hpA", "https://www.youtube.com/channel/UCJG4i4gLaFuD3KXb3Li3hpA", "https://yt3.googleusercontent.com/c6Th0sFvyGAZNY4XR6kV0DTw3vu0r8IMO4zceBYMNQv6uIGXSu_loDtYCnecfeeVFmo3MF38=s800-c-k-c0x00ffffff-no-rj"],
+    ["Blooklet", "UC3wFnO6_35H4oPd1SfLO8QQ", "https://www.youtube.com/channel/UC3wFnO6_35H4oPd1SfLO8QQ", "https://yt3.googleusercontent.com/qrfdS1J5B9t4JkMwgpY9UTzxdDltBCDFdcOUHnCvYd_TYTApVxwzEqgyROeDwjyLtpE_ehVk=s800-c-k-c0x00ffffff-no-rj"],
+    ["Caterpillar9", "UCl_46vdPleB7nIcQ2uRrRYg", "https://www.youtube.com/channel/UCl_46vdPleB7nIcQ2uRrRYg", "https://yt3.googleusercontent.com/Z_gfa-nheOPveNJSeraE6o1jaIKwZr10b67_pSYudbMmihoYJ_e1yiMdTINNmxgYnz54E9tPKMw=s800-c-k-c0x00ffffff-no-rj"],
+    ["Alber", "UCl_46vdPleB7nIcQ2uRrRYg", "https://www.youtube.com/channel/UCl_46vdPleB7nIcQ2uRrRYg", "https://yt3.googleusercontent.com/EE6fJchL76dOZAOgzV5x8ZRd4_zrWxq26eYtjSG3aiX7QVPPEcE7C2ViL7wA4AyN7TwWwv68bA=s800-c-k-c0x00ffffff-no-rj"],
+    ["Blooket Studio", "UCwqPS5F9gWK-dLJ1F3xn-9Q", "https://www.youtube.com/channel/UCwqPS5F9gWK-dLJ1F3xn-9Q", "https://yt3.googleusercontent.com/cipU1kNo9hXwrbFvGUGr6SuMxfaxdL4iHLHTqbNC2KC7qzNh4IIUfo6UcxbLA4MCEcv08UG-CA=s800-c-k-c0x00ffffff-no-rj"],
+    ["Mr noble wywy", "UCWUlc91RBPRbytSQfL2P6Vw", "https://www.youtube.com/channel/UCWUlc91RBPRbytSQfL2P6Vw", "https://yt3.googleusercontent.com/dRi2fR45zyViyRwN5hek0j3KLfmk5L1kzpbLht_ey0jOAp4QsKIMfwtnkG_qxJOPPpanpJjCqQ=s800-c-k-c0x00ffffff-no-rj"],
+    ["imbac", "UCa6fkBCzarr4hmRvOg_562g", "https://www.youtube.com/channel/UCa6fkBCzarr4hmRvOg_562g", "https://yt3.googleusercontent.com/m8wXh9fT6lDwuMjW9SER4YvY-qCTzGGMjHjA3HxHjDHxDfIhmDgzr4Nlb9gGXgHKFM7Y3ac-gg=s800-c-k-c0x00ffffff-no-rj"],
+    ["Cereal.For.Blooket", "UCygcI2_f5hzFrjkv9L2zA_g", "https://www.youtube.com/channel/UCygcI2_f5hzFrjkv9L2zA_g", "https://yt3.googleusercontent.com/iwc7v3Qc_OFfWVp9EFcHu6q0yIfzcqqoVHRpgjLAZlYCdjsqusUFmV8wX3JeGLOTo66Ynn3r=s3840-c-k-c0x00ffffff-no-rj"]
 ];
 
-const fallbackSubs = {"Waymore": 150000, "LeonBlox": 79400, "iBlooket": 35200, "BIL": 31200, "Blooket": 31300, "Mega Bot": 27100, "Unblooked": 26900, "Monkey Master": 24000, "Lag0n": 23800, "Blooket Ace": 15400, "FastyJay": 12900, "theblooketgamer": 6250, "Blooket Gods": 4740, "Slade2": 3690, "Blooket Life": 3630, "JustaPanda": 2990, "Blooket Insane": 2900, "notRIC": 2740, "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2200, "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500, "Turtelix": 1420, "Green astronaut": 1100, "Blooket Warrior": 1020, "Blookbread": 1010, "TOBP Blooket": 852, "YouLostMan": 660, "Kinkade": 525, "Peetwick": 396, "Freedo": 289, "Cosmic Dragon": 69, "Blooket Galaxy": 66, "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36, "c0mputerm4n": 27, "BlookFun": 6, "TheBlooketDude": 1410, "Blooket Blitz": 18, "KoolKid": 2800};
-
+const fallbackSubs = {"Waymore":151000,"iBlooket":35100,"Lag0n":35200,"BIL":31200,"Blooket":31500,"Mega Bot":27000,"Unblooked":27000,"Monkey Master":23900,"Blooket Ace":15400,"FastyJay":24200,"Blooket Life":10200,"Blooket Gamer":6300,"Blooket Gods":4840,"Slade2":3690,"Mr noble wywy":3140,"JustaPanda":2990,"imbac":2950,"Blooket Insane":2950,"KoolKid":2790,"notRIC":2750,"SRN Games":2690,"Caterpillar9":2460,"BlooketBam":2440,"Twisted Bread":2100,"Blookbread":1590,"Pig55":1530,"Blooket Elite":1500,"Turtelix":1430,"TheBlooketDude":1410,"Green astronaut":1320,"Cereal.For.Blooket":1030,"Blooket Warrior":1020,"Blooket Studio":946,"TOBP Blooket":853,"YouLostMan":659,"Panda Blooket":592,"Kinkade":530,"Peetwick":433,"Freedo":287,"Blooklet":283,"Cosmic Dragon":81,"Blooket Galaxy":75,"TheBlooketBro":73,"XpBlooket32":48,"Blooket Gael":37,"c0mputerm4n":30,"Blooket Blitz":26,"BlookFun":15,"Alber":7};
 let creators = [];
 let lastUpdated = null;
 const terminatedSound = new Audio("https://mathuniverse.online/wrong.MP3");
