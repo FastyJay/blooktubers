@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlookTools</title>
+<meta name="description" content="This page doesn't exist.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<link rel="icon" type="image/png" href="https://blooket.mathuniverse.online/blooktools.png">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
+
+:root {
+    --bg-main: #0bc2cf;
+    --stripe-color: rgba(255,255,255,.08);
+    --surface: #ffffff;
+    --surface-alt: #f5f5f5;
+    --ink: #222222;
+    --ink-soft: #555b61;
+    --border: #333333;
+    --shadow: #333333;
+    --bar-blue: #60a5fa;
+    --highlight-bg: #ffe066;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Nunito', sans-serif; font-weight:800; }
+html { scroll-behavior:smooth; }
+body {
+    background: var(--bg-main);
+    min-height: 100vh;
+    overflow: hidden;
+    display:flex; align-items:center; justify-content:center;
+    padding: 24px;
+}
+body::before {
+    content:""; position:fixed; inset:0;
+    background: linear-gradient(45deg, var(--stripe-color) 25%, transparent 25%, transparent 75%, var(--stripe-color) 75%);
+    background-size: 80px 80px; z-index:-2;
+}
+
+/* ============================================================
+   SOUND TOGGLE CONTROL
+   ============================================================ */
+.quick-controls { position: fixed; top: 16px; right: 16px; z-index: 250; }
+.quick-btn {
+    width:42px; height:42px; border-radius:50%; border:3px solid var(--border);
+    background: var(--surface); color: var(--ink); box-shadow: 0 4px 0 var(--shadow);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:15px;
+    transition: transform .12s ease, background-color .2s ease, box-shadow .15s ease;
+}
+.quick-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 var(--shadow); }
+.quick-btn:active { transform: scale(.96); }
+
+/* ============================================================
+   BLOOK PIT (Physics Elements)
+   ============================================================ */
+.blook-pile { 
+    position: fixed; 
+    inset: 0; 
+    z-index: 0; 
+    overflow: hidden; 
+}
+.blook-physics-item {
+    position: absolute; 
+    top: 0; 
+    left: 0;
+    will-change: transform;
+    filter: drop-shadow(0 4px 3px rgba(0,0,0,.3));
+    cursor: grab;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: auto;
+}
+.blook-physics-item:active {
+    cursor: grabbing;
+}
+
+/* ============================================================
+   404 CARD
+   ============================================================ */
+.card {
+    position: relative; z-index: 10;
+    background: var(--surface);
+    border: 4px solid var(--border);
+    border-radius: 24px;
+    box-shadow: 0 10px 0 var(--shadow);
+    padding: 44px 40px;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    animation: cardIn .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes cardIn { 
+    from { opacity:0; transform: translateY(24px) scale(.94); } 
+    to { opacity:1; transform: translateY(0) scale(1); } 
+}
+
+.error-code {
+    font-family: 'Titan One', cursive; font-weight: normal;
+    font-size: 5.5rem; line-height: 1;
+    color: var(--bar-blue);
+    text-shadow: 4px 4px 0 var(--border);
+    letter-spacing: 2px;
+    animation: wobble 3.2s ease-in-out infinite;
+    display:inline-block;
+}
+@keyframes wobble { 
+    0%,100% { transform: rotate(0deg); } 
+    25% { transform: rotate(-3deg); } 
+    75% { transform: rotate(3deg); } 
+}
+
+.error-title {
+    font-family: 'Titan One', cursive; font-weight: normal;
+    font-size: 1.7rem; color: var(--ink); margin-top: 6px; letter-spacing: 1px;
+}
+.error-copy { color: var(--ink-soft); font-size: 15px; line-height: 1.55; margin: 14px 0 26px; }
+
+.error-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.error-btn {
+    display:inline-flex; align-items:center; gap:8px;
+    text-decoration:none; font-size:15px; font-weight:900;
+    border-radius: 14px; padding: 12px 20px;
+    border: 3px solid var(--border); box-shadow: 0 4px 0 var(--shadow);
+    transition: transform .12s ease, box-shadow .15s ease;
+    cursor:pointer;
+}
+.error-btn:active { transform: scale(.96); }
+.error-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 var(--shadow); }
+.error-btn.primary { background: var(--highlight-bg); color:#1a1a1a; }
+.error-btn.secondary { background: var(--surface-alt); color: var(--ink); }
+
+.error-footnote { margin-top: 22px; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
+.error-footnote a { color: var(--bar-blue); text-decoration: underline; font-weight: 800; }
+
+@media (max-width: 480px) {
+    .card { padding: 34px 24px; }
+    .error-code { font-size: 4rem; }
+    .error-title { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="quick-controls">
+    <button id="soundBtn" class="quick-btn" type="button" aria-label="Toggle Sound Effects">
+        <i id="soundIcon" class="fa-solid fa-volume-xmark"></i>
+    </button>
+</div>
+
+<div class="blook-pile" id="blookPile" aria-hidden="true"></div>
+
+<main class="card" id="cardElement" role="main">
+    <span class="error-code">404</span>
+    <h1 class="error-title">Tool Not Found</h1>
+    <p class="error-copy">This page must've randomly vanished or never existed. While Mega Bot tries to fix this, a lot the blooks got bored and piled up down there.</p>
+    <div class="error-actions">
+        <a href="/" class="error-btn primary"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="leaderboard" class="error-btn secondary"><i class="fa-solid fa-trophy"></i> Leaderboard</a>
+    </div>
+    <div class="error-footnote">
+        Think this page should exist? <a href="https://forms.gle/UdtzPTVHsx26kqJS9" target="_blank" rel="noopener">Let us know</a>.
+    </div>
+</main>
+
+<script>
+const BLOOK_ICONS = [
+    "https://ac.blooket.com/marketassets/blooks/chick.svg",
+    "https://ac.blooket.com/marketassets/blooks/dragon.svg",
+    "https://ac.blooket.com/marketassets/blooks/cow.svg",
+    "https://ac.blooket.com/marketassets/blooks/dog.svg",
+    "https://ac.blooket.com/marketassets/blooks/cat.svg",
+    "https://ac.blooket.com/marketassets/blooks/pig.svg",
+    "https://ac.blooket.com/marketassets/blooks/bear.svg",
+    "https://ac.blooket.com/marketassets/blooks/penguin.svg",
+    "https://ac.blooket.com/marketassets/blooks/frog.svg",
+    "https://ac.blooket.com/marketassets/blooks/alien.svg",
+    "https://ac.blooket.com/marketassets/blooks/unicorn.svg",
+    "https://ac.blooket.com/marketassets/blooks/arcticfox.svg"
+];
+
+/* ============================================================
+   WEB AUDIO API SOUND SYNTHESIZER
+   ============================================================ */
+let audioCtx = null;
+let soundEnabled = false; // Kept OFF by default
+
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+function playPopSound(intensity = 1) {
+    if (!soundEnabled || !audioCtx) return;
+
+    try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        // Randomize pitch for playful variability
+        const freq = 200 + Math.random() * 300 + (intensity * 50);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.08);
+
+        const volume = Math.min(0.2, 0.03 * intensity);
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.08);
+    } catch(e){}
+}
+
+/* ============================================================
+   MATTER.JS PHYSICS ENGINE
+   ============================================================ */
+function startPhysicsPit() {
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    const Engine = Matter.Engine,
+          Runner = Matter.Runner,
+          Bodies = Matter.Bodies,
+          Composite = Matter.Composite,
+          Mouse = Matter.Mouse,
+          Events = Matter.Events,
+          MouseConstraint = Matter.MouseConstraint;
+
+    const engine = Engine.create();
+    const wallOptions = { isStatic: true, render: { visible: false } };
+    let ground, leftWall, rightWall, cardBody;
+
+    function createBoundaries() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        
+        if (ground) Composite.remove(engine.world, [ground, leftWall, rightWall]);
+        if (cardBody) Composite.remove(engine.world, cardBody);
+
+        ground = Bodies.rectangle(w / 2, h + 50, w + 200, 100, wallOptions);
+        leftWall = Bodies.rectangle(-50, h / 2, 100, h * 2, wallOptions);
+        rightWall = Bodies.rectangle(w + 50, h / 2, 100, h * 2, wallOptions);
+        
+        const cardElem = document.getElementById('cardElement');
+        if (cardElem) {
+            const rect = cardElem.getBoundingClientRect();
+            cardBody = Bodies.rectangle(
+                rect.left + rect.width / 2,
+                rect.top + rect.height / 2,
+                rect.width,
+                rect.height,
+                { isStatic: true, chamfer: { radius: 24 } }
+            );
+            Composite.add(engine.world, cardBody);
+        }
+
+        Composite.add(engine.world, [ground, leftWall, rightWall]);
+    }
+    createBoundaries();
+    window.addEventListener('resize', createBoundaries);
+
+    // Mouse Controls (Drag & Throw)
+    const mouse = Mouse.create(document.body);
+    const mouseConstraint = MouseConstraint.create(engine, {
+        mouse: mouse,
+        constraint: { stiffness: 0.2, render: { visible: false } }
+    });
+
+    mouseConstraint.mouse.element.removeEventListener("mousewheel", mouseConstraint.mouse.mousewheel);
+    mouseConstraint.mouse.element.removeEventListener("DOMMouseScroll", mouseConstraint.mouse.mousewheel);
+
+    Composite.add(engine.world, mouseConstraint);
+
+    // Play impact sound on collisions
+    Events.on(engine, 'collisionStart', (event) => {
+        if (!soundEnabled) return;
+        event.pairs.forEach(pair => {
+            const speedA = pair.bodyA.velocity;
+            const speedB = pair.bodyB.velocity;
+            const relativeVelocity = Math.hypot(speedA.x - speedB.x, speedA.y - speedB.y);
+            
+            if (relativeVelocity > 2) {
+                playPopSound(relativeVelocity);
+            }
+        });
+    });
+
+    const runner = Runner.create();
+    Runner.run(runner, engine);
+
+    const pile = document.getElementById('blookPile');
+    const activeBlooks = [];
+    const maxBlooks = Math.floor(window.innerWidth / 8);
+    let droppedCount = 0;
+
+    function dropBlook() {
+        if (droppedCount >= maxBlooks) return;
+
+        const size = 52 + Math.random() * 12;
+        const xPos = Math.random() * (window.innerWidth - 60) + 30;
+        const yPos = -80;
+
+        const body = Bodies.polygon(xPos, yPos, 8, size / 2.2, {
+            restitution: 0.4,
+            friction: 0.6,
+            density: 0.005
+        });
+
+        Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.2);
+
+        const img = document.createElement('img');
+        img.src = BLOOK_ICONS[Math.floor(Math.random() * BLOOK_ICONS.length)];
+        img.className = 'blook-physics-item';
+        img.style.width = size + 'px';
+        img.style.height = size + 'px';
+        img.alt = "";
+        
+        pile.appendChild(img);
+        Composite.add(engine.world, body);
+        
+        activeBlooks.push({ body, img, size });
+        droppedCount++;
+    }
+
+    const dropInterval = setInterval(() => {
+        if (droppedCount >= maxBlooks) clearInterval(dropInterval);
+        else dropBlook();
+    }, 200);
+
+    function updateGraphics() {
+        activeBlooks.forEach(blook => {
+            const pos = blook.body.position;
+            const angle = blook.body.angle;
+            blook.img.style.transform = `translate(${pos.x - blook.size / 2}px, ${pos.y - blook.size / 2}px) rotate(${angle}rad)`;
+        });
+        requestAnimationFrame(updateGraphics);
+    }
+    
+    requestAnimationFrame(updateGraphics);
+}
+
+// Sound Button Controller
+document.addEventListener('DOMContentLoaded', () => {
+    const soundBtn = document.getElementById('soundBtn');
+    const soundIcon = document.getElementById('soundIcon');
+
+    soundBtn.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        if (soundEnabled) {
+            initAudio();
+            soundIcon.className = 'fa-solid fa-volume-high';
+            playPopSound(4); // Trigger test pop
+        } else {
+            soundIcon.className = 'fa-solid fa-volume-xmark';
+        }
+    });
+
+    startPhysicsPit();
+});
+</script>
+</body>
+</html>
