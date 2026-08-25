@@ -2,343 +2,1648 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Custom Leaderboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BlookTools | Custom Leaderboard</title>
 <link rel="icon" type="image/png" href="https://blooket.mathuniverse.online/blooktools.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Titan+One&display=swap" rel="stylesheet">
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
-
-*{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
-
-body{ background: #0bc2cf; min-height: 100vh; overflow-x: hidden; padding-bottom: 40px; }
-
-body::before{
-    content: ""; position: fixed; inset: 0;
-    background: linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%);
-    background-size: 80px 80px; z-index: -2;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
 }
 
-.blook{ position: fixed; top: -150px; opacity: .25; animation: fall linear infinite; pointer-events: none; z-index: -1; }
-@keyframes fall{ from{ transform: translateY(0) rotate(0deg); } to{ transform: translateY(120vh) rotate(360deg); } }
+body {
+    background: #0bc2cf;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: 40px;
+    color: #222;
+}
 
-h1{ text-align: center; color: white; font-family: 'Titan One', cursive; font-size: 3.5rem; margin-top: 25px; text-shadow: 4px 4px 0 #222, 8px 8px 12px rgba(0,0,0,.2); padding: 0 15px; letter-spacing: 2px; }
-.subtitle{ text-align: center; color: white; font-size: 1.2rem; margin-bottom: 10px; text-shadow: 2px 2px 0 #222; }
-.live-status { text-align: center; margin-bottom: 25px; font-size: 0.95rem; color: white; text-shadow: 1px 1px 0 #222; min-height: 22px; }
-.live-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #4ade80; margin-right: 6px; animation: pulse 1.5s infinite; vertical-align: middle; }
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%);
+    background-size: 80px 80px;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.blook {
+    position: fixed;
+    top: -150px;
+    opacity: .25;
+    animation: fall linear infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes fall {
+    from { transform: translateY(0) rotate(0deg); }
+    to { transform: translateY(125vh) rotate(360deg); }
+}
+
+/* ── EXACT BLOOKTOOLS SIDEBAR SPEC ── */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 1400;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+.sidebar-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sidebar {
+    --sb-purple: #a34bc7;
+    --sb-purple-dark: #7f3a9c;
+    --sb-teal: #22d3c5;
+    --sb-teal-dark: #17a89d;
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 245px;
+    max-width: 85vw;
+    height: 100vh;
+    background: var(--sb-purple);
+    border-right: 4px solid var(--sb-purple-dark);
+    z-index: 1500;
+    transition: left .3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 6px 0 20px rgba(0,0,0,.3);
+}
+.sidebar.show {
+    left: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 22px 20px 14px;
+}
+.sidebar-header h3 {
+    font-family: 'Titan One', cursive;
+    font-size: 1.6rem;
+    color: white;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 0 var(--sb-purple-dark);
+}
+
+.sidebar-home-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 4px 18px 16px;
+    padding: 12px 0;
+    background: var(--sb-teal);
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 4px 0 var(--sb-teal-dark);
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    text-decoration: none;
+    transition: .15s;
+}
+.sidebar-home-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--sb-teal-dark);
+}
+.sidebar-home-btn .sb-icon {
+    font-size: 18px;
+}
+
+.sidebar-links {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.sidebar-links a, .sidebar-links button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: rgba(255,255,255,.9);
+    font-weight: 800;
+    font-size: 15px;
+    transition: .15s;
+    background: none;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Nunito', sans-serif;
+}
+.sidebar-links a:hover, .sidebar-links button:hover {
+    background: rgba(255,255,255,.12);
+}
+.sidebar-links a.active, .sidebar-links button.active {
+    background: white;
+    color: var(--sb-purple);
+    box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+.sidebar-links a .sb-icon, .sidebar-links button .sb-icon {
+    font-size: 20px;
+    width: 24px;
+    text-align: center;
+}
+.sidebar-divider {
+    height: 1px;
+    background: rgba(255,255,255,.25);
+    margin: 10px 8px;
+}
+
+@media (max-width: 640px) {
+    .sidebar { width: 250px; }
+}
+
+/* ==================== HEADINGS & STATS ==================== */
+h1 {
+    text-align: center;
+    color: white;
+    font-family: 'Titan One', cursive;
+    font-size: 3.5rem;
+    margin-top: 25px;
+    text-shadow: 4px 4px 0 #222, 8px 8px 12px rgba(0,0,0,.2);
+    padding: 0 15px;
+    letter-spacing: 2px;
+    user-select: none;
+}
+
+.subtitle {
+    text-align: center;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    text-shadow: 2px 2px 0 #222;
+}
+
+.live-status {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    color: white;
+    text-shadow: 1px 1px 0 #222;
+    min-height: 22px;
+}
+
+.live-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4ade80;
+    margin-right: 6px;
+    animation: pulse 1.5s infinite;
+    vertical-align: middle;
+}
+
 .live-dot.loading { background: #fbbf24; animation: pulse 0.7s infinite; }
 .live-dot.error { background: #f87171; animation: none; }
-@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
-.container{ width: 90%; max-width: 1100px; margin: auto; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.refresh-btn {
+    display: block;
+    margin: 0 auto 20px auto;
+    padding: 10px 25px;
+    background: white;
+    border: 3.5px solid #333;
+    border-radius: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #333;
+    transition: 0.15s ease;
+}
+
+.refresh-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #333;
+}
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
 
 .controls {
     display: flex;
     align-items: center;
     gap: 12px;
     max-width: 600px;
-    margin: 0 auto 35px auto;
-    flex-wrap: wrap;
+    margin: 0 auto 30px auto;
+    flex-wrap: nowrap;
 }
-.search{
-    flex: 1; min-width: 0;
-    padding: 15px; border: none; border-radius: 15px; font-size: 18px;
-    border: 4px solid #333; box-shadow: 0 5px 0 #333; outline: none; transition: 0.2s;
+
+.search {
+    flex: 1;
+    min-width: 0;
+    padding: 13px 18px;
+    border-radius: 16px;
+    font-size: 17px;
+    font-weight: 800;
+    border: 3.5px solid #333;
+    box-shadow: 0 4px 0 #333;
+    outline: none;
+    transition: 0.2s;
     font-family: 'Nunito', sans-serif;
+    background: white;
 }
-.search:focus { transform: translateY(2px); box-shadow: 0 3px 0 #333; }
+
+.search:focus {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #333;
+}
 
 .sort-toggle {
     display: flex;
-    border: 4px solid #333;
-    border-radius: 15px;
+    border: 3.5px solid #333;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 5px 0 #333;
+    box-shadow: 0 4px 0 #333;
     flex-shrink: 0;
+    background: white;
 }
+
 .sort-btn {
-    padding: 12px 14px;
+    padding: 11px 14px;
     background: white;
     border: none;
     font-family: 'Nunito', sans-serif;
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 900;
     cursor: pointer;
     transition: 0.15s;
     color: #555;
     white-space: nowrap;
 }
-.sort-btn:first-child { border-right: 3px solid #333; }
+
+.sort-btn:not(:last-child) { border-right: 2.5px solid #333; }
 .sort-btn.active {
     background: #333;
     color: white;
 }
 .sort-btn:hover:not(.active) { background: #f0f0f0; }
 
-.podium{ display: flex; justify-content: center; align-items: flex-end; gap: 15px; margin-bottom: 40px; }
-.podium-card{ width: 180px; text-align: center; color: black; border: 4px solid #333; border-radius: 20px 20px 0 0; font-size: 22px; padding-top: 15px; box-shadow: 0 8px 0 #333; transition: 0.3s; display: flex; flex-direction: column; }
-.podium-name { font-family: 'Titan One', cursive; font-size: 22px; letter-spacing: 1px; line-height: 1.15; word-break: break-word; hyphens: auto; padding: 0 8px; }
-.podium-subs { font-size: 20px; font-weight: 900; margin-top: auto; }
-a.podium-link { text-decoration: none; color: inherit; transition: 0.2s; display: flex; flex-direction: column; align-items: center; height: 100%; padding: 0 0 15px 0; gap: 8px; }
-a.podium-link:hover .podium-name { text-decoration: underline; }
-.first{ background: gold; min-height: 220px; order: 2; }
-.second{ background: silver; min-height: 180px; order: 1; }
-.third{ background: #cd7f32; min-height: 150px; order: 3; }
-.leaderboard{ background: white; border-radius: 20px; padding: 20px; border: 4px solid #333; box-shadow: 0 8px 0 #333; }
-a.row { display: flex; align-items: center; gap: 15px; padding: 12px; margin-bottom: 10px; border-radius: 15px; border: 3px solid #333; background: #f5f5f5; transition: .2s; text-decoration: none; color: inherit; cursor: pointer; }
-a.row:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 4px 0 #333; }
-.rank{ width: 60px; font-size: 22px; font-weight: 900; }
-.name{ width: 220px; font-family: 'Titan One', cursive; font-size: 22px; font-weight: normal; letter-spacing: 1px; padding-top: 3px; display: flex; align-items: center; }
-.subs{ width: 120px; text-align: right; font-weight: bold; }
+/* Custom Badge Pill */
+.custom-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 2px 7px;
+    border-radius: 8px;
+    background: #ffd700;
+    color: #000;
+    border: 1.5px solid #333;
+    margin-left: 6px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-.bar-bg{ flex: 1; height: 20px; border: 2px solid #333; border-radius: 10px; overflow: hidden; background: #eee; }
-.bar{ height: 100%; background: #4ade80; transition: width 0.8s ease-out; }
+/* Custom Settings & Appearance Card */
+.custom-settings-card {
+    background: white;
+    border: 4px solid #333;
+    border-radius: 20px;
+    padding: 18px 20px;
+    box-shadow: 0 6px 0 #333;
+    margin-bottom: 22px;
+}
+
+.custom-settings-card h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.25rem;
+    color: #111;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.custom-settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.custom-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.custom-field-group label {
+    font-size: 13px;
+    font-weight: 900;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.custom-field-group input[type="text"], .custom-field-group select {
+    padding: 10px 14px;
+    border: 3px solid #333;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 800;
+    outline: none;
+    background: #f8fafc;
+    transition: 0.15s;
+}
+
+.custom-field-group input[type="text"]:focus {
+    background: white;
+    border-color: #7c3aed;
+    box-shadow: 0 2px 0 #7c3aed;
+}
+
+.theme-swatches-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.theme-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid #333;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #333;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.theme-swatch:hover {
+    transform: translateY(2px) scale(1.1);
+    box-shadow: 0 1px 0 #333;
+}
+
+.theme-swatch.active {
+    outline: 3px solid white;
+    box-shadow: 0 0 0 5px #333;
+}
+
+.custom-color-picker-input {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 3px solid #333;
+    padding: 0;
+    cursor: pointer;
+    background: none;
+    box-shadow: 0 3px 0 #333;
+}
+
+/* Blook Avatars Grid */
+.blook-avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+    gap: 8px;
+    max-height: 140px;
+    overflow-y: auto;
+    padding: 8px;
+    background: #f1f5f9;
+    border: 2.5px solid #333;
+    border-radius: 14px;
+    margin-top: 6px;
+}
+
+.blook-avatar-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 2.5px solid #333;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    transition: transform 0.15s, border-color 0.15s;
+    box-shadow: 0 2px 0 #333;
+}
+
+.blook-avatar-btn:hover {
+    transform: translateY(-2px) scale(1.08);
+    border-color: #7c3aed;
+}
+
+.blook-avatar-btn.selected {
+    background: #ede9fe;
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px #a78bfa;
+}
+
+.blook-avatar-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Custom Card Action Buttons */
+.custom-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.custom-action-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 2px solid #333;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.15s;
+    box-shadow: 0 2px 0 #333;
+}
+
+.custom-action-btn:hover {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 #333;
+}
+
+.custom-action-btn.move-up:hover { background: #e0f2fe; }
+.custom-action-btn.move-down:hover { background: #e0f2fe; }
+.custom-action-btn.edit-btn { background: #fef08a; border-color: #ca8a04; }
+.custom-action-btn.edit-btn:hover { background: #fde047; }
+
+/* Custom Experience Rating Card */
+.custom-rating-card {
+    margin-top: 30px;
+    background: linear-gradient(135deg, #ffffff, #faf5ff);
+    border: 4px solid #7c3aed;
+    border-radius: 24px;
+    padding: 22px 24px;
+    box-shadow: 0 8px 0 #7c3aed;
+    text-align: center;
+}
+
+.custom-rating-card h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: #4c1d95;
+    margin-bottom: 6px;
+}
+
+.custom-rating-card p {
+    font-size: 14px;
+    font-weight: 800;
+    color: #6b21a8;
+    margin-bottom: 16px;
+}
+
+.rating-stars {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.rating-star-btn {
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    transition: transform 0.15s ease, filter 0.15s ease;
+    filter: grayscale(1) opacity(0.35);
+    user-select: none;
+}
+
+.rating-star-btn:hover {
+    transform: scale(1.3) rotate(8deg);
+}
+
+.rating-star-btn.active {
+    filter: none;
+    transform: scale(1.1);
+}
+
+.rating-feedback-msg {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    color: #7c3aed;
+    min-height: 24px;
+    margin-bottom: 14px;
+}
+
+.rating-tags-wrap {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rating-tag-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 2px solid #7c3aed;
+    background: white;
+    color: #7c3aed;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.15s;
+    box-shadow: 0 2px 0 #7c3aed;
+}
+
+.rating-tag-pill:hover, .rating-tag-pill.selected {
+    background: #7c3aed;
+    color: white;
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 #4c1d95;
+}
+
+/* Edit Creator Modal */
+.edit-modal-card {
+    background: white;
+    border: 4px solid #333;
+    border-radius: 24px;
+    max-width: 480px;
+    width: 92%;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 22px;
+    box-shadow: 0 8px 0 #333;
+    text-align: left;
+}
+
+.edit-modal-card h2 {
+    font-family: 'Titan One', cursive;
+    font-size: 1.6rem;
+    color: #111;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.edit-modal-card .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 12px;
+    min-width: 0;
+}
+
+.edit-modal-card label {
+    font-size: 12px;
+    font-weight: 900;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.edit-modal-card input,
+.edit-modal-card select {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 12px;
+    border: 2.5px solid #333;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    outline: none;
+    background: #f8fafc;
+}
+
+.edit-modal-card input:focus,
+.edit-modal-card select:focus {
+    background: white;
+    border-color: #7c3aed;
+}
+
+.edit-modal-card .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.edit-pfp-preview-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.edit-pfp-preview {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 3px solid #333;
+    object-fit: contain;
+    background: #fff;
+    box-shadow: 0 3px 6px rgba(0,0,0,.15);
+}
+
+.edit-avatar-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: #555;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.edit-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.btn-cancel {
+    background: #e2e8f0;
+    color: #333;
+    border-color: #94a3b8;
+    box-shadow: 0 3px 0 #94a3b8;
+}
+
+.btn-primary {
+    background: #7c3aed;
+    border-color: #4c1d95;
+    box-shadow: 0 3px 0 #4c1d95;
+}
+
+/* Removes the circular photo styling for official Blook avatar art, so icons
+   keep their natural shape instead of being cropped into a portrait circle. */
+.no-avatar-border {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    object-fit: contain !important;
+}
+
+/* ==================== PODIUM (COMPACT & SLEEK PROPORTIONS) ==================== */
+.podium-container {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto 30px auto;
+    padding: 0 6px;
+}
+
+.podium {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 8px;
+    width: 100%;
+}
+
+.podium-card {
+    flex: 1;
+    min-width: 88px;
+    max-width: 136px;
+    text-align: center;
+    color: #222;
+    border: 3px solid #222;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 5px 0 #222;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 4px 0 4px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+}
+
+.podium-card:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.05);
+}
+
+.podium-card.first {
+    background: #ffd000;
+    height: 205px;
+    order: 2;
+}
+
+.podium-card.second {
+    background: #a8a8a8;
+    height: 172px;
+    order: 1;
+}
+
+.podium-card.third {
+    background: #c87d32;
+    height: 148px;
+    order: 3;
+}
+
+.medal-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.medal-svg {
+    width: 32px;
+    height: 32px;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+}
+
+.podium-pfp-wrap {
+    margin: 2px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.podium-pfp {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2.5px solid #222;
+    object-fit: cover;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,.2);
+}
+
+.podium-name {
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: -0.2px;
+    line-height: 1.15;
+    color: #111;
+    word-break: break-word;
+    padding: 0 2px;
+    margin-top: 3px;
+}
+
+.podium-subs {
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: #111;
+    margin-top: 1px;
+    margin-bottom: auto;
+}
+
+.podium-base-bar {
+    width: calc(100% + 8px);
+    height: 8px;
+    background: #222;
+    margin: 4px -4px 0 -4px;
+    flex-shrink: 0;
+}
+
+/* ==================== LEADERBOARD LIST ==================== */
+.leaderboard {
+    background: white;
+    border-radius: 24px;
+    padding: 16px;
+    border: 4px solid #333;
+    box-shadow: 0 8px 0 #333;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+    border: 3.5px solid #333;
+    background: #f5f5f5;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    user-select: none;
+}
+
+.row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 0 #333;
+}
+
+.rank {
+    width: 44px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    text-align: center;
+    flex-shrink: 0;
+    color: #222;
+}
+
+.row-pfp {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid #333;
+    object-fit: cover;
+    background: #fff;
+    flex-shrink: 0;
+}
+
+.row-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+}
+
+.row-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.name {
+    font-family: 'Nunito', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #222;
+}
+
+.subs {
+    width: 80px;
+    text-align: right;
+    font-family: 'Nunito', sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+    flex-shrink: 0;
+    color: #222;
+}
+
+.bar-bg {
+    width: 100%;
+    height: 14px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.06);
+}
+
+.bar {
+    height: 100%;
+    background: #4ade80;
+    border-radius: 8px;
+    transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 .bar.views-bar { background: #60a5fa; }
-.fastyjay{ background: #ffe066 !important; border: 4px solid #333; box-shadow: 0 0 15px gold; }
-.inactive { background: #ffe0e0 !important; border: 4px solid #333; box-shadow: 0 0 15px red; }
-.terminated { background: #ff6b6b !important; border: 4px solid #8b0000; box-shadow: 0 0 15px #ff0000; }
 
-/* Modal Styles */
+.fastyjay { background: #ffe066 !important; border: 3.5px solid #333; box-shadow: 0 0 15px gold; }
+.inactive { background: #ffe0e0 !important; border: 3.5px solid #333; box-shadow: 0 0 12px rgba(239,68,68,0.2); }
+.terminated { background: #ff6b6b !important; border: 3.5px solid #8b0000; box-shadow: 0 0 15px #ff0000; color: white !important; }
+.terminated .rank, .terminated .name, .terminated .subs { color: white !important; }
+
+/* Section Header */
+.section-header {
+    margin-top: 40px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.section-header h2 {
+    font-family: 'Titan One', cursive;
+    font-size: 2.2rem;
+    color: white;
+    text-shadow: 3px 3px 0 #222;
+    letter-spacing: 1.5px;
+}
+
+.section-header p {
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.95rem;
+    text-shadow: 1px 1px 0 #222;
+}
+
+.leaderboard.underrated {
+    background: #f3e8ff;
+    border-color: #7c3aed;
+    box-shadow: 0 8px 0 #7c3aed;
+}
+
+.leaderboard.underrated .row {
+    background: #ede9fe;
+    border-color: #7c3aed;
+}
+
+.leaderboard.underrated .row:hover {
+    box-shadow: 0 4px 0 #7c3aed;
+}
+
+.leaderboard.underrated .bar {
+    background: #a78bfa;
+}
+
+.leaderboard.underrated .bar.views-bar {
+    background: #818cf8;
+}
+
+.leaderboard.underrated .bar-bg {
+    border-color: #7c3aed;
+}
+
+/* Modals */
 .modal {
     display: none;
     position: fixed;
     z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
+    inset: 0;
+    background-color: rgba(0,0,0,0.55);
+    backdrop-filter: blur(5px);
     justify-content: center;
     align-items: center;
+    padding: 16px;
 }
+
 .modal.show { display: flex; }
+
 .modal-content {
-    background-color: #fefefe;
-    padding: 20px;
+    background-color: #fff;
+    padding: 24px;
     border: 4px solid #333;
-    border-radius: 15px;
-    width: 80%;
+    border-radius: 20px;
+    width: 100%;
     max-width: 400px;
     text-align: center;
-    font-family: 'Nunito', sans-serif;
     box-shadow: 0 8px 0 #333;
+    animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-.modal-content h2 { font-family: 'Titan One', cursive; margin-bottom: 15px; color: #ff0000; }
-.modal-content p { font-size: 16px; margin-bottom: 20px; color: #333; }
+
+@keyframes modalPop {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-pfp {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    border: 4px solid #333;
+    object-fit: cover;
+    background: #fff;
+    margin: 0 auto 12px auto;
+    display: block;
+    box-shadow: 0 4px 6px rgba(0,0,0,.15);
+}
+
+.modal-content h2 {
+    font-family: 'Titan One', cursive;
+    margin-bottom: 12px;
+    font-size: 1.8rem;
+    color: #222;
+}
+
+.stats-container {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+.stat-box {
+    background: #f8fafc;
+    border: 3px solid #333;
+    border-radius: 14px;
+    padding: 12px 10px;
+    flex: 1;
+    box-shadow: 0 3px 0 #e2e8f0;
+}
+
+.stat-label {
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: #16a34a;
+    margin-top: 4px;
+}
+
+.stat-box:nth-child(2) .stat-value { color: #2563eb; }
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.visit-btn {
+    flex: 1;
+    background: #ef4444;
+    color: white;
+    text-decoration: none;
+    border: 3px solid #991b1b;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 900;
+    box-shadow: 0 4px 0 #991b1b;
+    transition: 0.15s;
+}
+
+.visit-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #991b1b; }
+
 .close-btn {
     background: #333;
     color: white;
-    border: 3px solid #333;
-    border-radius: 10px;
+    border: 3px solid #111;
+    border-radius: 12px;
     padding: 10px 20px;
-    font-size: 16px;
-    font-weight: 800;
-    cursor: pointer;
     font-family: 'Nunito', sans-serif;
-    box-shadow: 0 4px 0 #333;
-    transition: 0.2s;
-}
-.close-btn:hover {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 #333;
+    font-size: 15px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #111;
+    transition: 0.15s;
 }
 
-/* CUSTOM TOOLTIP STYLES */
-.tooltip-container { position: relative; display: inline-flex; cursor: help; margin-left: 6px; }
+.close-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #111; }
+
+/* Terminated Card */
+.terminated-card {
+    background: linear-gradient(180deg, #fff, #ffeaea);
+    border-color: #8b0000;
+    box-shadow: 0 8px 0 #8b0000;
+    max-width: 420px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.terminated-card h2 {
+    background: #d62828;
+    color: #fff;
+    padding: 16px;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.terminated-card p {
+    padding: 18px 20px 10px 20px;
+    font-size: 16px;
+    line-height: 1.4;
+    font-weight: 700;
+}
+
+.terminated-card .close-btn {
+    margin-bottom: 20px;
+    background: #d62828;
+    border-color: #8b0000;
+    box-shadow: 0 4px 0 #8b0000;
+}
+
+/* Tooltip */
+.tooltip-container { position: relative; display: inline-flex; cursor: help; margin-left: 4px; }
 .custom-tooltip {
-    visibility: hidden; width: 180px; background-color: #222; color: #fff; text-align: center;
-    padding: 8px; border-radius: 6px; position: absolute; z-index: 100;
-    bottom: 140%; left: 50%; transform: translateX(-50%);
-    font-family: 'Nunito', sans-serif; font-size: 13px; opacity: 0; transition: opacity 0.2s;
-    border: 1px solid #444; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    visibility: hidden; width: 170px; background-color: #222; color: #fff; text-align: center;
+    padding: 6px 10px; border-radius: 8px; position: absolute; z-index: 100;
+    bottom: 135%; left: 50%; transform: translateX(-50%);
+    font-size: 12px; font-weight: 700; opacity: 0; transition: opacity 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: none;
 }
 .tooltip-container:hover .custom-tooltip { visibility: visible; opacity: 1; }
 
-.refresh-btn { display: block; margin: 0 auto 20px auto; padding: 10px 25px; background: white; border: 3px solid #333; border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 #333; transition: 0.2s; }
-.refresh-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
-.refresh-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-.section-header { margin-top: 40px; margin-bottom: 8px; text-align: center; }
-.section-header h2 { font-family: 'Titan One', cursive; font-size: 2.2rem; color: white; text-shadow: 3px 3px 0 #222; letter-spacing: 2px; }
-.section-header p { color: white; font-size: 1rem; text-shadow: 1px 1px 0 #222; margin-bottom: 15px; }
-.leaderboard.underrated { background: #f3e8ff; border-color: #7c3aed; box-shadow: 0 8px 0 #7c3aed; }
-.leaderboard.underrated a.row { background: #ede9fe; border-color: #7c3aed; }
-.leaderboard.underrated a.row:hover { box-shadow: 0 4px 0 #7c3aed; }
-.leaderboard.underrated .bar { background: #a78bfa; }
-.leaderboard.underrated .bar.views-bar { background: #818cf8; }
-.leaderboard.underrated .bar-bg { border-color: #7c3aed; }
-
-@media (max-width: 768px) {
-    .controls { flex-direction: column; align-items: stretch; }
-    .sort-toggle { justify-content: center; }
-    .podium { flex-wrap: wrap; }
-    .podium-card { width: 100px; font-size: 16px; }
-    .podium-name { font-size: 18px; }
-    .podium-subs { font-size: 14px; }
-    .first { height: 180px; }
-    .second { height: 140px; }
-    .third { height: 120px; }
-    a.row { flex-wrap: wrap; }
-    .name { width: auto; flex: 1; }
-    .bar-bg { width: 100%; flex: none; }
-}
-
-/* Enhanced terminated modal */
-.modal{backdrop-filter:blur(6px);}
-.terminated-card{
-background:linear-gradient(180deg,#fff,#ffeaea);
-max-width:460px;padding:0;overflow:hidden;animation:pop .25s ease;
-}
-.terminated-card h2{background:#d62828;color:#fff;padding:18px;margin:0;text-shadow:none}
-.terminated-card p{padding:24px;font-size:17px;line-height:1.5}
-.terminated-card .close-btn{margin-bottom:22px;background:#d62828;border-color:#8b0000;box-shadow:0 4px 0 #8b0000}
-@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
-
-/* ==================== CUSTOM LEADERBOARD (gear button + full page) ==================== */
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes toastIn { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-
+/* ==================== CUSTOM LEADERBOARD (GEAR & MODAL) ==================== */
 .gear-btn {
-    position: fixed; bottom: 22px; right: 22px; z-index: 900;
-    width: 54px; height: 54px; border-radius: 50%;
-    background: white; border: 4px solid #333; box-shadow: 0 5px 0 #333;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: 0.2s;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 900;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: white;
+    border: 4px solid #333;
+    box-shadow: 0 5px 0 #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.gear-btn:hover { transform: translateY(2px) rotate(35deg); box-shadow: 0 3px 0 #333; }
-.gear-icon { width: 26px; height: 26px; fill: #333; }
+
+.gear-btn:hover {
+    transform: translateY(2px) rotate(35deg);
+    box-shadow: 0 3px 0 #333;
+}
+
+.gear-icon { width: 28px; height: 28px; fill: #333; }
 
 .custom-page {
-    display: none; position: fixed; inset: 0; z-index: 950;
-    background: #0bc2cf; overflow-y: auto; animation: fadeIn 0.15s ease;
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+    background: #0bc2cf;
+    overflow-y: auto;
 }
+
 .custom-page.show { display: block; }
+
 .custom-page::before {
-    content: ""; position: fixed; inset: 0;
+    content: "";
+    position: fixed;
+    inset: 0;
     background: linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%);
-    background-size: 80px 80px; z-index: 0; pointer-events: none;
+    background-size: 80px 80px;
+    z-index: 0;
+    pointer-events: none;
 }
-.custom-page-inner { position: relative; z-index: 1; width: 90%; max-width: 1100px; margin: auto; padding: 28px 0 70px 0; }
+
+.custom-page-inner {
+    position: relative;
+    z-index: 1;
+    width: 90%;
+    max-width: 960px;
+    margin: auto;
+    padding: 24px 0 80px 0;
+}
 
 .custom-back-btn {
-    background: white; border: 3px solid #333; border-radius: 12px; padding: 9px 16px;
-    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer;
-    box-shadow: 0 4px 0 #333; transition: 0.15s; margin-bottom: 20px;
+    background: white;
+    border: 3.5px solid #333;
+    border-radius: 14px;
+    padding: 9px 18px;
+    font-weight: 900;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #333;
+    transition: 0.15s;
+    margin-bottom: 20px;
 }
+
 .custom-back-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
 
-.custom-page-header { text-align: center; margin-bottom: 24px; }
-.custom-page-header h1 { font-family: 'Titan One', cursive; font-size: 2.6rem; color: white; text-shadow: 3px 3px 0 #222, 6px 6px 10px rgba(0,0,0,.2); letter-spacing: 1px; }
-.custom-page-header p { color: white; text-shadow: 1px 1px 0 #222; margin-top: 8px; font-size: 1rem; }
-.custom-page-header .note {
-    display: inline-block; margin-top: 12px; font-size: 12.5px; color: #4c1d95;
-    background: #f3e8ff; border: 2px dashed #a78bfa; border-radius: 10px; padding: 8px 14px;
+.custom-page-header { text-align: center; margin-bottom: 22px; }
+.custom-page-header h1 {
+    font-family: 'Titan One', cursive;
+    font-size: 2.6rem;
+    color: white;
+    text-shadow: 3px 3px 0 #222, 6px 6px 10px rgba(0,0,0,.2);
+    letter-spacing: 1px;
 }
 
-.custom-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 22px; }
+.custom-page-header p {
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    text-shadow: 1px 1px 0 #222;
+    margin-top: 6px;
+    font-size: 1rem;
+}
+
+.custom-toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
 .custom-toolbar .search { flex: 1; min-width: 180px; }
+
 .custom-toolbar-btn {
-    padding: 13px 18px; border: 3px solid #333; border-radius: 12px; font-weight: 800; cursor: pointer;
-    box-shadow: 0 4px 0 #333; transition: 0.15s; background: white; font-family: 'Nunito', sans-serif; font-size: 14px;
+    padding: 12px 16px;
+    border: 3.5px solid #333;
+    border-radius: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #333;
+    transition: 0.15s;
+    background: white;
+    font-size: 14px;
     white-space: nowrap;
 }
+
 .custom-toolbar-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
-.custom-toolbar-btn.add { background: linear-gradient(135deg, #4ade80, #22c55e); color: #063; }
-.custom-toolbar-btn.export { background: linear-gradient(135deg, #60a5fa, #7c3aed); color: white; }
+.custom-toolbar-btn.add { background: linear-gradient(135deg, #4ade80, #22c55e); color: #064e3b; }
+.custom-toolbar-btn.import { background: linear-gradient(135deg, #a78bfa, #7c3aed); color: white; }
+.custom-toolbar-btn.export { background: linear-gradient(135deg, #60a5fa, #3b82f6); color: white; }
 .custom-toolbar-btn.reset { background: #fff; color: #7c3aed; }
 
 .custom-add-form {
-    background: white; border: 4px solid #333; border-radius: 18px; box-shadow: 0 6px 0 #333;
-    padding: 20px; margin-bottom: 22px; display: none;
+    background: white;
+    border: 4px solid #333;
+    border-radius: 20px;
+    box-shadow: 0 6px 0 #333;
+    padding: 20px;
+    margin-bottom: 22px;
+    display: none;
+    animation: modalPop 0.2s ease;
 }
+
 .custom-add-form.show { display: block; }
-.custom-add-form h4 { font-family: 'Titan One', cursive; margin-bottom: 12px; font-size: 1.1rem; }
-.custom-add-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
-.custom-add-grid input, .custom-add-grid select {
-    padding: 11px; border: 3px solid #333; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 14px; width: 100%;
+.custom-add-form h4 { font-family: 'Nunito', sans-serif; font-weight: 900; margin-bottom: 12px; font-size: 1.25rem; }
+
+.custom-add-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
 }
-.custom-add-grid input:focus, .custom-add-grid select:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.2); }
+
+.custom-add-grid input, .custom-add-grid select {
+    padding: 10px 12px;
+    border: 3px solid #333;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    width: 100%;
+}
+
+.custom-add-grid input:focus, .custom-add-grid select:focus {
+    outline: none;
+    border-color: #7c3aed;
+}
+
 .custom-add-submit { margin-top: 14px; }
 
-.custom-leaderboard { background: #f3e8ff; border: 4px solid #7c3aed; border-radius: 20px; padding: 20px; box-shadow: 0 8px 0 #7c3aed; display: flex; flex-direction: column; gap: 10px; }
-.custom-empty { text-align: center; padding: 30px; font-size: 16px; color: #555; }
+.custom-leaderboard {
+    background: #f3e8ff;
+    border: 4px solid #7c3aed;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 8px 0 #7c3aed;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
 .custom-card {
-    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-    background: #ede9fe; border: 3px solid #7c3aed; border-radius: 15px; padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    background: #ede9fe;
+    border: 3px solid #7c3aed;
+    border-radius: 16px;
+    padding: 10px 12px;
     transition: 0.15s;
 }
+
 .custom-card:hover { transform: translateY(-2px); box-shadow: 0 4px 0 #7c3aed; }
 .custom-card.inactive { background: #ffe6d5; border-color: #d97706; }
 .custom-card.terminated { background: #ffdada; border-color: #8b0000; }
 
-.custom-card-name { font-family: 'Titan One', cursive; font-size: 17px; min-width: 140px; flex: 1 1 140px; }
-.custom-card-bar-wrap { flex: 2 1 160px; display: flex; align-items: center; gap: 8px; min-width: 140px; }
+.custom-card-name {
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    min-width: 130px;
+    flex: 1 1 130px;
+    color: #222;
+}
+
+.custom-card-bar-wrap {
+    flex: 2 1 150px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 130px;
+}
+
 .custom-card-bar-wrap .bar-bg { border-color: #7c3aed; }
 .custom-card-bar-wrap .bar { background: #a78bfa; }
-.custom-card-metric { font-size: 13px; font-weight: 800; min-width: 46px; text-align: right; }
+.custom-card-metric { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; min-width: 48px; text-align: right; color: #222; }
 
-.custom-card-fields { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.custom-card-fields input, .custom-card-fields select {
-    font-size: 12px; padding: 6px 7px; border: 2px solid #7c3aed; border-radius: 8px; width: 78px; font-family: 'Nunito', sans-serif;
+.custom-card-fields {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
 }
-.custom-card-fields select { width: 100px; }
+
+.custom-card-fields input, .custom-card-fields select {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 8px;
+    border: 2px solid #7c3aed;
+    border-radius: 10px;
+    width: 76px;
+    background: white;
+}
+
+.custom-card-fields select { width: 95px; }
 
 .custom-remove-btn {
-    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
-    background: #ff6b6b; border: 3px solid #8b0000; color: white; font-weight: 900; font-size: 15px;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.15s;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: #ff6b6b;
+    border: 2.5px solid #8b0000;
+    color: white;
+    font-weight: 900;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.15s;
 }
-.custom-remove-btn:hover { background: #ff4747; transform: scale(1.12) rotate(90deg); }
+
+.custom-remove-btn:hover { background: #ff4747; transform: scale(1.1); }
 
 .custom-drag-handle {
-    cursor: grab; color: #7c3aed; display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; width: 26px; height: 34px; touch-action: none; -webkit-user-drag: element;
+    cursor: grab;
+    color: #7c3aed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 32px;
+    touch-action: none;
 }
-.custom-drag-handle:active { cursor: grabbing; }
-.custom-drag-handle svg circle { fill: currentColor; }
 
 .custom-card.dragging { opacity: 0.35; }
-.custom-card.drag-over { box-shadow: 0 0 0 3px #7c3aed inset, 0 4px 0 #7c3aed; }
+.custom-card.drag-over { box-shadow: 0 0 0 4px #7c3aed inset, 0 4px 0 #7c3aed; }
 
-.custom-removed-section { margin-top: 26px; }
-.custom-removed-section summary { cursor: pointer; color: white; text-shadow: 1px 1px 0 #222; font-weight: 800; margin-bottom: 10px; list-style: none; }
+.custom-removed-section {
+    margin-top: 24px;
+    background: rgba(255,255,255,0.7);
+    border: 3px solid #333;
+    border-radius: 18px;
+    padding: 14px 18px;
+    box-shadow: 0 4px 0 #333;
+}
+
+.custom-removed-section summary {
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    color: #333;
+    font-size: 15px;
+    list-style: none;
+}
+
 .custom-removed-section summary::-webkit-details-marker { display: none; }
 .custom-removed-section summary::before { content: '▶ '; }
 .custom-removed-section[open] summary::before { content: '▼ '; }
-.custom-removed-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-.custom-removed-row { display: flex; align-items: center; justify-content: space-between; background: #ffe0e0; border: 3px solid #333; border-radius: 12px; padding: 10px 14px; }
-.custom-restore-btn { background: #fbbf24; border: 3px solid #333; border-radius: 10px; padding: 6px 12px; font-weight: 800; cursor: pointer; box-shadow: 0 3px 0 #333; transition: 0.15s; }
-.custom-restore-btn:hover { transform: translateY(1px); box-shadow: 0 2px 0 #333; }
 
-.export-output { width: 100%; height: 170px; margin-top: 14px; font-family: monospace; font-size: 11px; padding: 10px; border: 3px solid #333; border-radius: 12px; resize: vertical; }
-
-.custom-toast {
-    position: fixed; bottom: 92px; left: 50%; transform: translateX(-50%);
-    background: #333; color: white; padding: 12px 18px; border-radius: 12px; font-weight: 700; font-size: 14px;
-    display: flex; align-items: center; gap: 14px; z-index: 1100; animation: toastIn 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,.3);
+.custom-removed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
 }
-.custom-toast button { background: #7c3aed; border: none; color: white; padding: 6px 12px; border-radius: 8px; font-weight: 800; cursor: pointer; }
 
-/* Custom popup (used instead of native alert/confirm for Custom panel actions) */
+.custom-removed-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffe0e0;
+    border: 2.5px solid #333;
+    border-radius: 12px;
+    padding: 8px 12px;
+}
+
+.custom-restore-btn {
+    background: #fbbf24;
+    border: 2.5px solid #333;
+    border-radius: 10px;
+    padding: 5px 12px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #333;
+    transition: 0.15s;
+    font-size: 12px;
+}
+
+.custom-restore-btn:hover { transform: translateY(1px); box-shadow: 0 1px 0 #333; }
+
+.export-output {
+    width: 100%;
+    height: 160px;
+    margin-top: 14px;
+    font-family: monospace;
+    font-size: 12px;
+    padding: 12px;
+    border: 3.5px solid #333;
+    border-radius: 16px;
+    resize: vertical;
+    background: #f8fafc;
+}
+
+/* ==================== IMPORT MODAL ==================== */
+.import-card {
+    background: white;
+    max-width: 500px;
+    text-align: left;
+    padding: 0;
+    overflow: hidden;
+}
+
+.import-header {
+    background: #7c3aed;
+    color: white;
+    padding: 16px 20px;
+    font-family: 'Titan One', cursive;
+    font-size: 1.4rem;
+}
+
+.import-body {
+    padding: 20px;
+}
+
+.import-textarea {
+    width: 100%;
+    height: 180px;
+    font-family: monospace;
+    font-size: 12px;
+    padding: 10px;
+    border: 3px solid #333;
+    border-radius: 12px;
+    margin-top: 10px;
+    resize: none;
+    background: #f8fafc;
+}
+
+.import-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 20px;
+    background: #f1f5f9;
+    border-top: 3px solid #333;
+}
+
+/* Alert / Popup Card */
 .custom-popup-card {
     background: linear-gradient(180deg, #fff, #f3e8ff);
-    max-width: 420px; padding: 0; overflow: hidden; animation: pop .25s ease;
+    max-width: 400px;
+    padding: 24px 20px;
 }
-.custom-popup-icon { font-size: 46px; margin: 24px 0 6px 0; }
-.custom-popup-card p { padding: 0 24px 20px 24px; font-size: 16px; line-height: 1.5; color: #333; }
-.custom-popup-buttons { display: flex; gap: 10px; justify-content: center; padding-bottom: 24px; }
-.close-btn.confirm { background: #7c3aed; border-color: #4c1d95; box-shadow: 0 4px 0 #4c1d95; }
-.close-btn.cancel { background: #e5e5e5; color: #333; border-color: #999; box-shadow: 0 4px 0 #999; }
 
-@media (max-width: 500px) {
-    .custom-card-name { min-width: 100%; }
-    .custom-card-fields input, .custom-card-fields select { width: 70px; }
+.custom-popup-icon { font-size: 42px; margin-bottom: 8px; }
+.custom-popup-card p { font-size: 16px; font-weight: 800; color: #222; margin-bottom: 20px; }
+.custom-popup-buttons { display: flex; gap: 10px; justify-content: center; }
+
+/* Toast */
+.custom-toast {
+    position: fixed;
+    bottom: 85px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1100;
+    box-shadow: 0 6px 16px rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,0.2);
+    animation: toastIn 0.2s ease;
+}
+
+@keyframes toastIn {
+    from { transform: translate(-50%, 20px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.custom-toast button {
+    background: #7c3aed;
+    border: none;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+/* ==================== MOBILE RESPONSIVENESS ==================== */
+@media (max-width: 768px) {
+    h1 { font-size: 2.5rem; margin-top: 25px; }
+    .subtitle { font-size: 1.1rem; }
+    .controls { flex-wrap: nowrap; gap: 8px; margin-bottom: 20px; }
+    .search { font-size: 15px; padding: 10px 14px; }
+    .sort-btn { font-size: 13px; padding: 10px 12px; }
+
+    .podium-container { max-width: 340px; margin-bottom: 22px; }
+    .podium-card.first { height: 165px; }
+    .podium-card.second { height: 140px; }
+    .podium-card.third { height: 120px; }
+
+    .podium-pfp { width: 42px; height: 42px; border-width: 2px; }
+    .medal-svg { width: 26px; height: 26px; }
+    .podium-name { font-size: 12.5px; }
+    .podium-subs { font-size: 12px; }
+
+    .row { padding: 8px 10px; gap: 8px; }
+    .rank { width: 34px; font-size: 17px; }
+    .row-pfp { width: 38px; height: 38px; }
+    .name { font-size: 16px; }
+    .subs { width: 65px; font-size: 14px; }
+
+    .custom-page-header h1 { font-size: 2rem; }
+    .custom-card { padding: 8px 10px; gap: 6px; }
+    .custom-card-name { font-size: 15px; min-width: 100px; }
+}
+
+@media (max-width: 480px) {
+    .container { width: 94%; }
+    .podium-container { max-width: 310px; }
+    .podium-card { min-width: 72px; padding: 5px 2px 0 2px; }
+    .podium-name { font-size: 11.5px; }
+    .podium-subs { font-size: 11px; }
+    .sort-btn { padding: 8px 10px; font-size: 12px; }
 }
 </style>
 </head>
 <body>
 
+<!-- Sidebar Overlay Backdrop -->
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- Slide-out Sidebar Navigation -->
+<div id="siteSidebar" class="sidebar">
+    <div class="sidebar-header">
+        <h3>BlookTools</h3>
+    </div>
+    <a href="https://blooket.mathuniverse.online" class="sidebar-home-btn"><span class="sb-icon"><i class="fa-solid fa-house"></i></span> Home</a>
+    <div class="sidebar-links">
+        <a href="leaderboard" data-page="leaderboard" class="active" onclick="closeSidebar(); return false;"><span class="sb-icon"><i class="fa-solid fa-trophy"></i></span> Leaderboard</a>
+        <a href="https://blooket.mathuniverse.online/guess" data-page="guess" target="_blank" rel="noopener"><span class="sb-icon"><i class="fa-solid fa-question"></i></span> Guess the Blooktuber</a>
+        <div class="sidebar-divider"></div>
+        <a href="https://forms.gle/UdtzPTVHsx26kqJS9" target="_blank" rel="noopener"><span class="sb-icon"><i class="fa-solid fa-circle-info"></i></span> Suggestions</a>
+        <a href="https://discord.gg/DkfmANQBzw" target="_blank" rel="noopener"><span class="sb-icon"><i class="fa-brands fa-discord"></i></span> Discord</a>
+    </div>
+</div>
+
+<!-- Floating Blooks -->
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/chick.svg" alt="" aria-hidden="true" style="left:5%; width:80px; animation-duration:16s; animation-delay:-2s;">
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/dragon.svg" alt="" aria-hidden="true" style="left:75%; width:100px; animation-duration:20s; animation-delay:-8s;">
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/cow.svg" alt="" aria-hidden="true" style="left:45%; width:90px; animation-duration:18s; animation-delay:-12s;">
@@ -352,8 +1657,8 @@ max-width:460px;padding:0;overflow:hidden;animation:pop .25s ease;
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/unicorn.svg" alt="" aria-hidden="true" style="left:30%; width:90px; animation-duration:16s; animation-delay:-9s;">
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/mouse.svg" alt="" aria-hidden="true" style="left:68%; width:60px; animation-duration:14s; animation-delay:-15s;">
 
-<a href="https://blooket.mathuniverse.online" style="text-decoration: none; display: block;"><h1>BlookTools</h1></a>
-<div class="subtitle">Custom Leaderboard!</div>
+<h1 id="siteTitleTrigger" role="button" tabindex="0" aria-label="Open menu" style="cursor:pointer;" onclick="openSidebar()">BlookTools</h1>
+<div class="subtitle" id="siteSubtitleDisplay">Custom Leaderboard! ⚙️</div>
 
 <div class="live-status" id="liveStatus">
     <span class="live-dot loading" id="liveDot"></span>
@@ -361,64 +1666,78 @@ max-width:460px;padding:0;overflow:hidden;animation:pop .25s ease;
 </div>
 
 <div class="container">
-    <button class="refresh-btn" id="refreshBtn" onclick="fetchAllSubs()" disabled>Update Subscribe Counts</button>
+
 
     <div class="controls">
-        <input type="text" id="search" class="search" placeholder="Search Blooktubers...">
+        <input type="text" id="search" class="search" placeholder="Search Blooktubers..." oninput="onSearchChange()">
         <div class="sort-toggle">
             <button class="sort-btn active" id="sortSubs" onclick="setSort('subs')">📊 Subs</button>
             <button class="sort-btn" id="sortViews" onclick="setSort('views')">👁️ Views</button>
         </div>
     </div>
 
-    <div class="podium" id="podium"></div>
-    <div class="leaderboard" id="leaderboard">
-        <div style="text-align:center; padding:30px; font-size:18px;">Loading live counts... 🔄</div>
+    <!-- Podium Component -->
+    <div class="podium-container" id="podiumContainer">
+        <div class="podium" id="podium"></div>
     </div>
+
+    <!-- Leaderboard Rows -->
+    <div class="leaderboard" id="leaderboard">
+        <div style="text-align:center; padding:30px; font-size:18px; font-weight:800;">Loading live counts... 🔄</div>
+    </div>
+
+    <!-- Underrated section -->
     <div class="section-header" id="underratedHeader" style="display:none;">
         <h2>Up and Coming Blooktubers</h2>
-        <p>Blooktubers with under 100 subscribers</p>
+        <p id="underratedSub">Blooktubers with under 100 subscribers</p>
     </div>
     <div class="leaderboard underrated" id="underratedBoard" style="display:none;"></div>
 </div>
 
-<!-- ==================== CUSTOM LEADERBOARD PAGE ==================== -->
+<!-- Floating Gear Button -->
 <button id="adminToggleBtn" class="gear-btn" onclick="toggleAdminPanel()" title="Customize your leaderboard" aria-label="Customize your leaderboard">
     <svg class="gear-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.04-.7-1.63-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.44.17-.48.41l-.36 2.54c-.59.24-1.13.57-1.63.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
     </svg>
 </button>
 
+<!-- ==================== CUSTOM LEADERBOARD MODAL / PAGE ==================== -->
 <div id="customPage" class="custom-page">
     <div class="custom-page-inner">
         <button class="custom-back-btn" onclick="toggleAdminPanel()">← Back to Live Leaderboard</button>
 
         <div class="custom-page-header">
-            <h1>🛠 Custom Leaderboard 🛠</h1>
-            <p>Add, remove, and tweak anyone.</p>
-            <div><span class="note">👀 Only you can see this</span></div>
+            <h1 style="font-family:'Titan One', cursive;">🛠 Custom Leaderboard 🛠</h1>
+            <p>Customize titles, profile pictures, reorder ranks, and tweak your theme.</p>
         </div>
 
         <div class="custom-toolbar">
             <input type="text" id="customSearch" class="search" placeholder="Search your leaderboard..." oninput="renderAdminList()">
             <button class="custom-toolbar-btn add" onclick="toggleAddForm()">⭐ Add Blooktuber</button>
-            <button class="custom-toolbar-btn reset" onclick="resetMyRemix()">🔄 Reset</button>
+            <button class="custom-toolbar-btn import" onclick="openImportModal()">📥 Import Code</button>
             <button class="custom-toolbar-btn export" onclick="exportConfig()">📋 Save (copy code)</button>
+            <button class="custom-toolbar-btn reset" onclick="resetMyRemix()">🔄 Reset</button>
         </div>
 
         <div id="customAddForm" class="custom-add-form">
             <h4>⭐ Add Your Own Blooktuber</h4>
             <div class="custom-add-grid">
                 <input type="text" id="newName" placeholder="Name (e.g. New Guy)">
-                <input type="text" id="newHandle" placeholder="YouTube handle (just for reference)">
+                <input type="text" id="newHandle" placeholder="YouTube handle (optional)">
                 <input type="text" id="newUrl" placeholder="Channel URL (https://youtube.com/@...)">
+                <input type="url" id="newPfp" placeholder="Profile picture URL or pick below">
                 <input type="number" id="newSubs" placeholder="Subscriber count (e.g. 500)">
                 <input type="number" id="newViews" placeholder="View count (optional)">
+                <input type="text" id="newBadge" placeholder="Custom Badge text (e.g. GOAT, 👑)">
                 <select id="newStatus">
                     <option value="normal">🟢 Normal</option>
                     <option value="inactive">🕊️ Inactive</option>
                     <option value="terminated">⛔ Terminated</option>
                 </select>
+            </div>
+            <div style="margin-top:10px;">
+                <span style="font-size:12px; font-weight:800; color:#555;">Or pick a Blooket blook:</span>
+                <div class="blook-avatar-grid" id="addBlookGrid"></div>
             </div>
             <button class="custom-toolbar-btn add custom-add-submit" onclick="addCustomCreator()">Add to my board</button>
         </div>
@@ -431,29 +1750,155 @@ max-width:460px;padding:0;overflow:hidden;animation:pop .25s ease;
         </details>
 
         <textarea id="exportOutput" class="export-output" readonly style="display:none;"></textarea>
+
+        <div class="custom-settings-card">
+            <h3>🎨 Board Customization & Theme</h3>
+            <div class="custom-settings-grid">
+                <div class="custom-field-group">
+                    <label for="customSiteTitleInput">Leaderboard Title</label>
+                    <input type="text" id="customSiteTitleInput" placeholder="e.g. BlookTools" oninput="updateCustomTitle(this.value)">
+                </div>
+                <div class="custom-field-group">
+                    <label for="customSiteSubtitleInput">Subtitle</label>
+                    <input type="text" id="customSiteSubtitleInput" placeholder="e.g. Custom Leaderboard! ⚙️" oninput="updateCustomSubtitle(this.value)">
+                </div>
+                <div class="custom-field-group">
+                    <label>Theme Background</label>
+                    <div class="theme-swatches-wrap">
+                        <div class="theme-swatch" style="background:#0bc2cf;" onclick="applyThemeColor('#0bc2cf')" title="Cyan Classic"></div>
+                        <div class="theme-swatch" style="background:#7c3aed;" onclick="applyThemeColor('#7c3aed')" title="Royal Purple"></div>
+                        <div class="theme-swatch" style="background:#0f172a;" onclick="applyThemeColor('#0f172a')" title="Midnight Dark"></div>
+                        <div class="theme-swatch" style="background:#f97316;" onclick="applyThemeColor('#f97316')" title="Sunset Orange"></div>
+                        <div class="theme-swatch" style="background:#059669;" onclick="applyThemeColor('#059669')" title="Emerald Green"></div>
+                        <div class="theme-swatch" style="background:#ec4899;" onclick="applyThemeColor('#ec4899')" title="Bubblegum Pink"></div>
+                        <div class="theme-swatch" style="background:#eab308;" onclick="applyThemeColor('#eab308')" title="Gold Rush"></div>
+                        <input type="color" id="customThemeColorInput" class="custom-color-picker-input" onchange="applyThemeColor(this.value)" title="Custom Color">
+                    </div>
+                </div>
+                <div class="custom-field-group">
+                    <label>Display Options</label>
+                    <div style="display:flex; align-items:center; gap:10px; margin-top:6px;">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:14px; font-weight:800; text-transform:none; color:#111;">
+                            <input type="checkbox" id="podiumToggleCheck" checked onchange="togglePodiumVisibility(this.checked)" style="width:18px; height:18px; cursor:pointer; accent-color:#7c3aed;">
+                            Show Podium (🥇🥈🥉)
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
-<div id="customToastContainer"></div>
+<!-- ==================== EDIT CREATOR MODAL ==================== -->
+<div id="editCreatorModal" class="modal">
+    <div class="modal-content edit-modal-card">
+        <h2>✏️ Edit Blooktuber</h2>
+        <input type="hidden" id="editOriginalName">
 
-<div id="customPopupModal" class="modal">
-    <div class="modal-content custom-popup-card">
-        <div class="custom-popup-icon">⚠</div>
-        <p id="customPopupMessage"></p>
-        <div class="custom-popup-buttons">
-            <button class="close-btn cancel" id="customPopupCancelBtn" style="display:none;">Cancel</button>
-            <button class="close-btn confirm" id="customPopupConfirmBtn">OK</button>
+        <div class="edit-pfp-preview-wrap">
+            <img id="editPfpPreview" class="edit-pfp-preview" src="" alt="Preview" onerror="this.style.visibility='hidden'">
+        </div>
+
+        <div class="field-group">
+            <label for="editCreatorName">Name</label>
+            <input type="text" id="editCreatorName" placeholder="Creator Name">
+        </div>
+        <div class="field-group">
+            <label for="editCreatorUrl">Channel URL</label>
+            <input type="text" id="editCreatorUrl" placeholder="https://youtube.com/@...">
+        </div>
+        <div class="field-group">
+            <label for="editCreatorPfp">Profile Picture URL</label>
+            <input type="text" id="editCreatorPfp" placeholder="https://... or choose below" oninput="updateEditPreview(this.value)">
+        </div>
+        <div class="field-group">
+            <span class="edit-avatar-label">Pick a Blook:</span>
+            <div class="blook-avatar-grid" id="editBlookGrid"></div>
+        </div>
+        <div class="field-row" style="margin-bottom:12px;">
+            <div class="field-group" style="margin-bottom:0;">
+                <label for="editCreatorSubs">Subscribers</label>
+                <input type="number" id="editCreatorSubs" placeholder="Subs count">
+            </div>
+            <div class="field-group" style="margin-bottom:0;">
+                <label for="editCreatorViews">Views</label>
+                <input type="number" id="editCreatorViews" placeholder="Views count">
+            </div>
+        </div>
+        <div class="field-row" style="margin-bottom:16px;">
+            <div class="field-group" style="margin-bottom:0;">
+                <label for="editCreatorStatus">Status</label>
+                <select id="editCreatorStatus">
+                    <option value="normal">🟢 Normal</option>
+                    <option value="inactive">🕊️ Inactive</option>
+                    <option value="terminated">⛔ Terminated</option>
+                </select>
+            </div>
+            <div class="field-group" style="margin-bottom:0;">
+                <label for="editCreatorBadge">Custom Badge</label>
+                <input type="text" id="editCreatorBadge" placeholder="e.g. GOAT, 👑">
+            </div>
+        </div>
+        <div class="edit-modal-actions">
+            <button class="close-btn btn-cancel" onclick="closeEditCreatorModal()">Cancel</button>
+            <button class="close-btn btn-primary" onclick="saveCreatorEdit()">Save Changes</button>
         </div>
     </div>
 </div>
 
+<!-- ==================== IMPORT CODE MODAL ==================== -->
+<div id="importModal" class="modal">
+    <div class="modal-content import-card">
+        <div class="import-header">📥 Import Leaderboard Code</div>
+        <div class="import-body">
+            <p style="font-size:13.5px; font-weight:700; color:#444; line-height:1.4;">
+                Paste your exported leaderboard code snippet or JSON below to restore your custom remix:
+            </p>
+            <textarea id="importInput" class="import-textarea" placeholder="Paste your exported code snippet here... (e.g. let creatorList = [...];)"></textarea>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                <button type="button" onclick="loadSampleImportCode()" style="background:none; border:none; color:#7c3aed; font-weight:800; cursor:pointer; font-size:12px; text-decoration:underline;">Load example preset</button>
+                <span style="font-size:11.5px; color:#888; font-weight:700;">Supports JS & JSON</span>
+            </div>
+        </div>
+        <div class="import-footer">
+            <button class="close-btn btn-cancel" onclick="closeImportModal()">Cancel</button>
+            <button class="close-btn btn-primary" onclick="applyImportCode()">Import & Apply</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== STATS MODAL ==================== -->
+<div id="statsModal" class="modal">
+    <div class="modal-content">
+        <img src="" id="modalPfp" class="modal-pfp" alt="Creator Profile Picture">
+        <h2 id="modalName">Creator Name</h2>
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-label">Subscribers</div>
+                <div class="stat-value" id="modalSubs">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Views</div>
+                <div class="stat-value" id="modalViews">0</div>
+            </div>
+        </div>
+        <div class="modal-buttons" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
+            <button id="modalEditBtn" class="close-btn btn-primary" style="flex:1; min-width:140px;" onclick="closeStatsModal(); openEditCreatorModal(currentStatsModalCreator);">✏️ Edit Stats</button>
+            <a href="#" id="modalLink" target="_blank" rel="noopener noreferrer" class="visit-btn" style="flex:1; min-width:140px;">📺 Visit Channel</a>
+            <button class="close-btn" style="width:100%;" onclick="closeStatsModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TERMINATED MODAL ==================== -->
 <div id="terminatedModal" class="modal">
     <div class="modal-content terminated-card">
         <h2>⛔ Channel Terminated</h2>
-        <div style="display:flex;flex-direction:column;align-items:center;padding:24px;">
-            <div style="font-size:60px;margin-bottom:16px;">🚫</div>
-            <p style="margin:0 0 18px 0;">This Blooktuber's YouTube channel has been <b>terminated</b> or permanently removed by YouTube.</p>
-            <div style="margin:0 0 20px;background:#fff4f4;border:2px solid #ffb3b3;border-radius:12px;padding:12px;font-size:14px;max-width:340px;">
+        <div style="display:flex; flex-direction:column; align-items:center; padding:20px;">
+            <div style="font-size:54px; margin-bottom:12px;">🚫</div>
+            <p style="margin:0 0 14px 0;">This Blooktuber's YouTube channel has been <b>terminated</b> or permanently removed by YouTube.</p>
+            <div style="margin:0 0 18px; background:#fff4f4; border:2px solid #ffb3b3; border-radius:12px; padding:10px; font-size:13px; font-weight:700; color:#8b0000; max-width:320px;">
                This Blooktuber's channel is no longer available, so you can't access it.
             </div>
             <button class="close-btn" onclick="closeTerminatedModal()">Close</button>
@@ -461,28 +1906,363 @@ max-width:460px;padding:0;overflow:hidden;animation:pop .25s ease;
     </div>
 </div>
 
+<!-- ==================== POPUP MODAL ==================== -->
+<div id="customPopupModal" class="modal">
+    <div class="modal-content custom-popup-card">
+        <div class="custom-popup-icon">⚠</div>
+        <p id="customPopupMessage"></p>
+        <div class="custom-popup-buttons">
+            <button class="close-btn" id="customPopupCancelBtn" style="background:#e5e5e5; color:#333; border-color:#999; box-shadow:0 3px 0 #999; display:none;">Cancel</button>
+            <button class="close-btn btn-primary" id="customPopupConfirmBtn">OK</button>
+        </div>
+    </div>
+</div>
+
+<div id="customToastContainer"></div>
+
 <script>
 const STATS_API_URL = "https://blooktools-api.fastyjayden.workers.dev/";
+const defaultImage = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fyt3.googleusercontent.com%2Fytc%2FAIdro_l1w6Mc5WEokWWYbrNNP_5BEshKUO25cIZVOqiU6AojVw%3Ds900-c-k-c0x00ffffff-no-rj&f=1";
 
-let inactiveCreators = ["kinkade", "blooket elite", "bil"];
-let terminatedCreators = ["blook master"];
-let creatorList = [["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT"], ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket"], ["BIL", "BILBRB", "https://www.youtube.com/@BILBRB"], ["Blooket", "PlayBlooket", "https://www.youtube.com/@PlayBlooket"], ["Mega Bot", "MegaBot91", "https://www.youtube.com/@MegaBot91"], ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked"], ["Monkey Master", "MonkeyMasterYT", "https://www.youtube.com/@MonkeyMasterYT"], ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4"], ["Blooket Ace", "blooketace", "https://www.youtube.com/@blooketace"], ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay"], ["Blooket Gamer", "theblooketgamer", "https://www.youtube.com/@theblooketgamer"], ["Blooket Gods", "BlooketGodsYT", "https://www.youtube.com/@BlooketGodsYT"], ["Slade2", "theslade2", "https://www.youtube.com/@theslade2"], ["Blooket Life", "BlooketLifeYT", "https://www.youtube.com/@BlooketLifeYT"], ["JustaPanda", "JustaPanda888", "https://www.youtube.com/@JustaPanda888"], ["Blooket Insane", "blooketinsane", "https://www.youtube.com/@blooketinsane"], ["notRIC", "playblacket", "https://www.youtube.com/@playblacket"], ["SRN Games", "srngameslol", "https://www.youtube.com/@srngameslol"], ["BlooketBam", "BlooketBAM", "https://www.youtube.com/@BlooketBAM"], ["Blook Master", "BlookMasterYT", "https://www.youtube.com/@BlookMasterYT"], ["Twisted Bread", "TwistedBread", "https://www.youtube.com/@TwistedBread/"], ["Pig55", "Pig_55", "https://www.youtube.com/@Pig_55"], ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries"], ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT"], ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT"], ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT"], ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook"], ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer"], ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan"], ["Kinkade", "ItzKinkade", "https://www.youtube.com/@ItzKinkade"], ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT"], ["Freedo", "TheRealFreedoBlox", "https://www.youtube.com/@TheRealFreedoBlox"], ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"], ["Blooket Galaxy", "BlooketGalaxy", "https://www.youtube.com/@BlooketGalaxy"], ["TheBlooketBro", "theblooketbro", "https://www.youtube.com/@theblooketbro"], ["XpBlooket32", "XPgamer32Blooket", "https://www.youtube.com/@XPgamer32Blooket"], ["Blooket Gael", "UCOhGtij6ftod4pJ6mhU-skQ", "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"], ["c0mputerm4n", "c0mputerm4n-yt", "https://www.youtube.com/@c0mputerm4n-yt"], ["BlookFun", "blookfun", "https://www.youtube.com/@blookfun"], ["TheBlooketDude", "TheBlooketDude", "https://www.youtube.com/@TheBlooketDude"], ["Blooket Blitz", "BlooketBiltzYT", "https://www.youtube.com/@BlooketBiltzYT"], ["KoolKid", "ImAwesome0703", "https://www.youtube.com/@ImAwesome0703"]];
-const fallbackSubs = {"Waymore": 150000, "LeonBlox": 79400, "iBlooket": 35200, "BIL": 31200, "Blooket": 31300, "Mega Bot": 27100, "Unblooked": 26900, "Monkey Master": 24000, "Lag0n": 23800, "Blooket Ace": 15400, "FastyJay": 12900, "Blooket Gamer": 6250, "Blooket Gods": 4740, "Slade2": 3690, "Blooket Life": 3620, "JustaPanda": 2990, "Blooket Insane": 2900, "notRIC": 2740, "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2200, "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500, "Turtelix": 1420, "Green astronaut": 1100, "Blooket Warrior": 1020, "Blookbread": 1010, "TOBP Blooket": 852, "YouLostMan": 660, "Kinkade": 525, "Peetwick": 396, "Freedo": 289, "Cosmic Dragon": 69, "Blooket Galaxy": 66, "TheBlooketBro": 65, "XpBlooket32": 45, "Blooket Gael": 36, "c0mputerm4n": 27, "BlookFun": 6, "TheBlooketDude": 1410, "Blooket Blitz": 18, "KoolKid": 2800};
+const PFP_BY_NAME = {
+  "Waymore": "https://yt3.googleusercontent.com/fpVQ5VoYlN-UptRogESSqHnxEX61T-7YW1YNGObVrFX2w_1jBO-njl76kt-6vkPF_2cC9x66kQ=s800-c-k-c0x00ffffff-no-rj",
+  "Lag0n": "https://yt3.googleusercontent.com/sGMDSWtF1ljfF1LvdvSfWvvHUaDFY7xiqhNZHawJ-Kz-pLvMcd2sf3HkX3ojPe7XIAOHxgAzkm4=s800-c-k-c0x00ffffff-no-rj",
+  "iBlooket": "https://yt3.googleusercontent.com/OmDwNKSgt4mxydmndADjlva5mWYKLVpm2BGLrzMlU7GWIRTgE3eReMX40s147P31K4Z1k51Phg=s800-c-k-c0x00ffffff-no-rj",
+  "Blooket": "https://yt3.googleusercontent.com/ytc/AIdro_n9MuS8YZrvKTzvVPJhLaRlgDjUouMy9flhM8rbKox6epI=s800-c-k-c0x00ffffff-no-rj",
+  "BIL": "https://yt3.googleusercontent.com/vWuC0e00QIpkpWhkt30Vfc8ogrOL2ego-TH_B55U-EC4Xf-WmiInutIW7gLvtrLmUs6yt4eZPNg=s800-c-k-c0x00ffffff-no-rj",
+  "Mega Bot": "https://yt3.googleusercontent.com/FNAGuNPpY_GZyYDCck-3L_Zd31u90SBJuzcc4hXG9N94_D7vt7PM9iU2GZ43ndU01jUygXjn=s800-c-k-c0x00ffffff-no-rj",
+  "Unblooked": "https://yt3.googleusercontent.com/w_Hs7-L_VL_uZGxhSfncFe7aZfhRjkP5O1BF2NjukAKYbGfSeFcLeCYTDfyfNnRH95l32Aj6DA=s800-c-k-c0x00ffffff-no-rj",
+  "Monkey Master": "https://yt3.ggpht.com/vHPdt2TV8_lN5eYY6ODGprTOb2rLt9Z0PHCA8I5n0vwvcvzrFCo-0ZC3B9MR7M16hyZMcIgT4miW-w=s400-c-fcrop64=1,38000000c7ffffff-rw-nd-v1",
+  "Blooket Ace": "https://yt3.googleusercontent.com/qfQMmUYa3shmyhWigiZwO0T-shBfKTJ09Nv1L9W3dUQWuIhlNGk6ZGGC14Yqz1uaMmLmrm25=s800-c-k-c0x00ffffff-no-rj",
+  "FastyJay": "https://yt3.googleusercontent.com/VuM8z5VYXi_TIw7dr0z5mg9O6fwzy8lzOGUFTR63zmciyPMVzB8ORpnSAwdcs_AUISyBHH0K=s800-c-k-c0x00ffffff-no-rj",
+  "theblooketgamer": "https://yt3.googleusercontent.com/IbwGyfwHd4-lH4gA69Uns3iHqwO9VnyM4azJEca1sjiRn2yEzZf5vDBbs0zC4hjvEzK4en3L=s800-c-k-c0x00ffffff-no-rj",
+  "Blooket Gods": "https://yt3.googleusercontent.com/f0PsafM-0nW8e0CGsGMZnwfpmHeBJ48AO3GQEoJRALPjI95md4n8VFiN8Q1aQ_prZHPjXY8YfQ=s800-c-k-c0x00ffffff-no-rj",
+  "Slade2": "https://yt3.googleusercontent.com/xcACNowE58NcX9Cvp7bHHhnOwJdmPMYgm1KnWD1I4UKARwl7hQw_QJYWOHRpIkdtLNjVVaRexg=s120-c-k-c0x00ffffff-no-rj",
+  "Blooket Life": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FzhmX3SBS3f4iUC6gp7nn2ZGGAoN38KQzcaE4yZ0DHiG89Kng5N1cys0HkvsC9nHY4xM_7zU3cg%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "JustaPanda": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2Fkkz1dMJi7Lbnv4QbrCOEOlGGwjslE8emd3jHpNpT4JayVESMM1CMM0LvzC2L_Iw2R457266n%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "Blooket Insane": "https://ac.blooket.com/marketassets/blooks/timthealien.svg",
+  "notRIC": "https://yt3.googleusercontent.com/qC52cG4ReXALa5C8j_pgLnFDX_cYQv9q4Ps8Ldp0kMFgbRyYPdGCGjUmn4Rx0LYt2aYOEChP=s800-c-k-c0x00ffffff-no-rj",
+  "SRN Games": "https://yt3.googleusercontent.com/JsVykeiTKj9vJGwD1iNvzE2znEaVwdiCcbrgtNb8-HLfB4CFW24AeQwXkw87NNY8znH2lmwi=s800-c-k-c0x00ffffff-no-rj",
+  "BlooketBam": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FaFNdNrcYHFMPYonDeyBJ_kiEtYcinQ4UtemafkNBwprzM4bBmDlfkWOGHLDaqcvE6yhGfnYrFQ%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "Twisted Bread": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FRFzqZI0f0iEEDVO7eub262ajY7d_AHG0TaYHvG_AF19tecRVqelU4WVgF2DPLYHE6AGDzPkG8bY%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "Pig55": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FD8v4jgmppYAy3lseL7_c_TUXZLiKKEiTe2j_xNbQW1EW9l57wGHuNvlPoB4k6r9OukttkjGiy3I%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "Blooket Elite": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FdK4xmnwEWzflE11UaFoy_KMR5amTBVofIz02wbU5KgiI1DVJpKnZcU2I6buwgbmLtckYi1zv9g%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "Turtelix": "https://mathuniverse.online/turtelix.png",
+  "Green astronaut": "https://yt3.googleusercontent.com/jqSEQqOe03q2My36l3Khz09hh8qmrhDGkbD-VsLGrW-ESIbSneCIfSeYVravW7BwhlKfiaUPpg=s800-c-k-c0x00ffffff-no-rj",
+  "Blooket Warrior": "https://yt3.googleusercontent.com/it5rmpwxDWxJktHp4E3KWslikkQQ9xuWFpJ-kvVAQdnEAy_aTriFrRthtJmV_LzfZ1ib_--rOg=s800-c-k-c0x00ffffff-no-rj",
+  "Blookbread": "https://yt3.googleusercontent.com/YBrBVXBLRqRpFFiLvJGgfnjboHu7I2rW572cTDhgdXHKLqTIh3pzVgalhAIOq8FsUOaOMMdP=s800-c-k-c0x00ffffff-no-rj",
+  "TOBP Blooket": "https://yt3.googleusercontent.com/DZTf5N836Mzg_Rs3xm7RC93lW1mdmAy4mdcuGeaVaaPnTDnIT8-MaBMJSqhKHYgF0GDWYacYkQ=s800-c-k-c0x00ffffff-no-rj",
+  "YouLostMan": "https://yt3.googleusercontent.com/VUW4XPzxbAW7jvsmJwvrIxCnYZ4ZFzGYjo87k7k2SvuOmMONcNcv4dzz2RvOV40D7vEkklJmCBs=s800-c-k-c0x00ffffff-no-rj",
+  "Peetwick": "https://yt3.googleusercontent.com/XupwnkZIgVmXhVelkGEtqKPSbwtRlQrmF3a1gqk1w4qhzJkfOllwwMQX0Egiss2cMPhfoFbMBQ=s800-c-k-c0x00ffffff-no-rj",
+  "Freedo": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FXQJuP7Lx7GXcsmQvOSgHroXzz0pRSwhNaIpLFs3oDUKJQkZMZ04kW1dJMPiQp6VCTmP7punAOA%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "Cosmic Dragon": "https://yt3.googleusercontent.com/WDhBu9_C1_Li24ytFNwDMqN_eqPeXTHXCJ4I2fbAWyHMLjmIrpm4ivIqwRnwWjoX_wstQVq0sio=s800-c-k-c0x00ffffff-no-rj",
+  "TheBlooketBro": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FKLRrnSMPbo59fJaqFBr8t0MHVKdcOdXS_qR0MMkXeccqUPmakVF5RzruPfEO0pr51YOkviyP1sE%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "XpBlooket32": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FvaQMF1KimpHRD-2losjh2OAomw_AoHLxz3as9n7RtdpT1F9HLhWCVXd3a1RnobFd1CJyaFOz%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "Blooket Gael": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FaMyLWneN3YaSsnLenjyLgCtiNXB3rWQS5xEN9bJhzwbWaMlyYTBgcKr5cuw_CoDCDfFRRgQ9hw%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "BlookFun": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2F88v-cl3OgDOYElVCrELzSCIvnMf_cPFm7_Y-jqzQaMnA19Yacibr-Tw718y53sWxgvdbbYiWOQ%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "TheBlooketDude": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2F3gDy-EvuADRawQGXUqjLPiBEKYqDjKpfUfWuV0s6UnTPWOME-WKbbA7Mlex0UtKU7jYkIHEX7A%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "Blooket Blitz": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FiC2Iy2Ru5-wGjnRf949EXWhTyhb0Mzb08LrAHP9_MhPLr-CkwMDUQ3AvPkcl167FZyQGeLcMHw%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "KoolKid": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FDbDqelZlcX3qzPbMhluKY-6rG3_K9xgnfpVyL7RpLxJ-2Oruyx9AzO51ZHvPEFPCDGcSEe92zQ%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+  "Panda Blooket": "https://yt3.googleusercontent.com/c6Th0sFvyGAZNY4XR6kV0DTw3vu0r8IMO4zceBYMNQv6uIGXSu_loDtYCnecfeeVFmo3MF38=s800-c-k-c0x00ffffff-no-rj",
+  "Blooklet": "https://yt3.googleusercontent.com/qrfdS1J5B9t4JkMwgpY9UTzxdDltBCDFdcOUHnCvYd_TYTApVxwzEqgyROeDwjyLtpE_ehVk=s800-c-k-c0x00ffffff-no-rj",
+  "Caterpillar9": "https://yt3.googleusercontent.com/Z_gfa-nheOPveNJSeraE6o1jaIKwZr10b67_pSYudbMmihoYJ_e1yiMdTINNmxgYnz54E9tPKMw=s800-c-k-c0x00ffffff-no-rj",
+  "Alber": "https://yt3.googleusercontent.com/EE6fJchL76dOZAOgzV5x8ZRd4_zrWxq26eYtjSG3aiX7QVPPEcE7C2ViL7wA4AyN7TwWwv68bA=s800-c-k-c0x00ffffff-no-rj",
+  "Blooket Studio": "https://yt3.googleusercontent.com/cipU1kNo9hXwrbFvGUGr6SuMxfaxdL4iHLHTqbNC2KC7qzNh4IIUfo6UcxbLA4MCEcv08UG-CA=s800-c-k-c0x00ffffff-no-rj",
+  "Mr noble wywy": "https://yt3.googleusercontent.com/dRi2fR45zyViyRwN5hek0j3KLfmk5L1kzpbLht_ey0jOAp4QsKIMfwtnkG_qxJOPPpanpJjCqQ=s800-c-k-c0x00ffffff-no-rj",
+  "imbac": "https://yt3.googleusercontent.com/m8wXh9fT6lDwuMjW9SER4YvY-qCTzGGMjHjA3HxHjDHxDfIhmDgzr4Nlb9gGXgHKFM7Y3ac-gg=s800-c-k-c0x00ffffff-no-rj",
+  "Cereal.For.Blooket": "https://yt3.googleusercontent.com/iwc7v3Qc_OFfWVp9EFcHu6q0yIfzcqqoVHRpgjLAZlYCdjsqusUFmV8wX3JeGLOTo66Ynn3r=s3840-c-k-c0x00ffffff-no-rj",
+  "Blook Master": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FcU5e1UhyIL87C5TnQUkPcEhY6a_n21xq7LC_ZSjWXbPAzclYzArPrI0OTAD5UuHMmQhoO_azFQ%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
+};
+
+let inactiveCreators = ["blooket elite", "bil"];
+let terminatedCreators = [];
+
+let creatorList = [
+  ["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT"],
+  ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4"],
+  ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket"],
+  ["Blooket", "PlayBlooket", "https://www.youtube.com/@PlayBlooket"],
+  ["BIL", "BILBRB", "https://www.youtube.com/@BILBRB"],
+  ["Mega Bot", "MegaBot91", "https://www.youtube.com/@MegaBot91"],
+  ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked"],
+  ["Monkey Master", "MonkeyMasterYT", "https://www.youtube.com/@MonkeyMasterYT"],
+  ["Blooket Ace", "blooketace", "https://www.youtube.com/@blooketace"],
+  ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay"],
+  ["theblooketgamer", "theblooketgamer", "https://www.youtube.com/@theblooketgamer"],
+  ["Blooket Gods", "BlooketGodsYT", "https://www.youtube.com/@BlooketGodsYT"],
+  ["Slade2", "theslade2", "https://www.youtube.com/@theslade2"],
+  ["Blooket Life", "BlooketLifeYT", "https://www.youtube.com/@BlooketLifeYT"],
+  ["JustaPanda", "JustaPanda888", "https://www.youtube.com/@JustaPanda888"],
+  ["Blooket Insane", "blooketinsane", "https://www.youtube.com/@blooketinsane"],
+  ["KoolKid", "ImAwesome0703", "https://www.youtube.com/@ImAwesome0703"],
+  ["notRIC", "playblacket", "https://www.youtube.com/@playblacket"],
+  ["SRN Games", "srngameslol", "https://www.youtube.com/@srngameslol"],
+  ["BlooketBam", "BlooketBAM", "https://www.youtube.com/@BlooketBAM"],
+  ["Blook Master", "BlookMasterYT", "https://www.youtube.com/@BlookMasterYT"],
+  ["Twisted Bread", "TwistedBread", "https://www.youtube.com/@TwistedBread/"],
+  ["Pig55", "Pig_55", "https://www.youtube.com/@Pig_55"],
+  ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries"],
+  ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT"],
+  ["TheBlooketDude", "TheBlooketDude", "https://www.youtube.com/@TheBlooketDude"],
+  ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT"],
+  ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT"],
+  ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook"],
+  ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer"],
+  ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan"],
+  ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT"],
+  ["Freedo", "TheRealFreedoBlox", "https://www.youtube.com/@TheRealFreedoBlox"],
+  ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"],
+  ["Blooket Galaxy", "BlooketGalaxy", "https://www.youtube.com/@BlooketGalaxy"],
+  ["TheBlooketBro", "theblooketbro", "https://www.youtube.com/@theblooketbro"],
+  ["XpBlooket32", "XPgamer32Blooket", "https://www.youtube.com/@XPgamer32Blooket"],
+  ["Blooket Gael", "UCOhGtij6ftod4pJ6mhU-skQ", "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"],
+  ["c0mputerm4n", "c0mputerm4n-yt", "https://www.youtube.com/@c0mputerm4n-yt"],
+  ["Blooket Blitz", "BlooketBiltzYT", "https://www.youtube.com/@BlooketBiltzYT"],
+  ["BlookFun", "blookfun", "https://www.youtube.com/@blookfun"]
+];
+
+let fallbackSubs = {
+  "Waymore": 150000, "Lag0n": 42500, "iBlooket": 35200, "Blooket": 31300,
+  "BIL": 31200, "Mega Bot": 27100, "Unblooked": 26900, "Monkey Master": 24000,
+  "Blooket Ace": 15400, "FastyJay": 12900, "theblooketgamer": 6250, "Blooket Gods": 4740,
+  "Slade2": 3690, "Blooket Life": 3620, "JustaPanda": 2990, "Blooket Insane": 2900,
+  "KoolKid": 2800, "notRIC": 2740, "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2200,
+  "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500, "Turtelix": 1420,
+  "TheBlooketDude": 1410, "Green astronaut": 1100, "Blooket Warrior": 1020, "Blookbread": 1010,
+  "TOBP Blooket": 852, "YouLostMan": 660, "Peetwick": 396, "Freedo": 289,
+  "Cosmic Dragon": 69, "Blooket Galaxy": 66, "TheBlooketBro": 65, "XpBlooket32": 45,
+  "Blooket Gael": 36, "c0mputerm4n": 27, "Blooket Blitz": 18, "BlookFun": 6
+};
 
 let creators = [];
 let lastUpdated = null;
 const terminatedSound = new Audio("https://mathuniverse.online/wrong.MP3");
 let sortMode = 'subs';
 
-/* ---------- Remix state (session-only in this browser; "Save My Remix" copies exportable code) ---------- */
 const ORIGINAL_CREATOR_LIST = JSON.parse(JSON.stringify(creatorList));
 let removedCreators = new Set();
-let customStatus = {};      // key(name) -> 'inactive' | 'terminated'
+let customStatus = {};      // key(name) -> 'normal' | 'inactive' | 'terminated'
 let subsOverrides = {};     // key(name) -> number
 let viewsOverrides = {};    // key(name) -> number
-let lastStatsData = null;   // last successful API stats payload
+let customBadges = {};      // key(name) -> string (e.g. "GOAT", "👑")
+let lastStatsData = null;
 
-function keyOf(name) { return name.toLowerCase(); }
+// Official Blook avatar presets
+const BLOOK_PRESETS = [
+    { name: "Chick", url: "https://ac.blooket.com/marketassets/blooks/chick.svg" },
+    { name: "Dragon", url: "https://ac.blooket.com/marketassets/blooks/dragon.svg" },
+    { name: "King", url: "https://ac.blooket.com/marketassets/blooks/king.svg" },
+    { name: "Hedgehog", url: "https://ac.blooket.com/marketassets/blooks/hedgehog.svg" },
+    { name: "Phantom King", url: "https://ac.blooket.com/marketassets/blooks/phantomking.svg" },
+    { name: "Rainbow Astronaut", url: "https://ac.blooket.com/marketassets/blooks/rainbowastronaut.svg" },
+    { name: "Green Astronaut", url: "https://ac.blooket.com/marketassets/blooks/greenastronaut.svg" },
+    { name: "Megabot", url: "https://ac.blooket.com/marketassets/blooks/megabot.svg" },
+    { name: "Alien", url: "https://ac.blooket.com/marketassets/blooks/alien.svg" },
+    { name: "Tim Alien", url: "https://ac.blooket.com/marketassets/blooks/timthealien.svg" },
+    { name: "Sandwich", url: "https://ac.blooket.com/marketassets/blooks/sandwich.svg" },
+    { name: "Unicorn", url: "https://ac.blooket.com/marketassets/blooks/unicorn.svg" },
+    { name: "Pig", url: "https://ac.blooket.com/marketassets/blooks/pig.svg" },
+    { name: "Cow", url: "https://ac.blooket.com/marketassets/blooks/cow.svg" },
+    { name: "Cat", url: "https://ac.blooket.com/marketassets/blooks/cat.svg" },
+    { name: "Dog", url: "https://ac.blooket.com/marketassets/blooks/dog.svg" },
+    { name: "Bear", url: "https://ac.blooket.com/marketassets/blooks/bear.svg" },
+    { name: "Ghost", url: "https://ac.blooket.com/marketassets/blooks/ghost.svg" },
+    { name: "Frog", url: "https://ac.blooket.com/marketassets/blooks/frog.svg" },
+    { name: "Penguin", url: "https://ac.blooket.com/marketassets/blooks/penguin.svg" },
+    { name: "Rainbow Panda", url: "https://ac.blooket.com/marketassets/blooks/rainbowpanda.svg" }
+];
+
+function keyOf(name) { return String(name || '').toLowerCase().trim(); }
+
+const BLOOK_ASSET_PREFIX = "https://ac.blooket.com/marketassets";
+function isBlookAsset(url) { return typeof url === 'string' && url.startsWith(BLOOK_ASSET_PREFIX); }
+
+/* ==================== TITLE, SUBTITLE & THEME CUSTOMIZATION ==================== */
+function loadCustomSettings() {
+    const savedTitle = localStorage.getItem('bt_custom_title');
+    if (savedTitle) {
+        document.getElementById('siteTitleTrigger').textContent = savedTitle;
+        const inp = document.getElementById('customSiteTitleInput');
+        if (inp) inp.value = savedTitle;
+    } else {
+        const inp = document.getElementById('customSiteTitleInput');
+        if (inp) inp.value = "BlookTools";
+    }
+
+    const savedSubtitle = localStorage.getItem('bt_custom_subtitle');
+    if (savedSubtitle) {
+        const subEl = document.getElementById('siteSubtitleDisplay');
+        if (subEl) subEl.textContent = savedSubtitle;
+        const inp = document.getElementById('customSiteSubtitleInput');
+        if (inp) inp.value = savedSubtitle;
+    } else {
+        const inp = document.getElementById('customSiteSubtitleInput');
+        if (inp) inp.value = "Custom Leaderboard! ⚙️";
+    }
+
+    const savedTheme = localStorage.getItem('bt_custom_theme');
+    if (savedTheme) {
+        applyThemeColor(savedTheme, false);
+    }
+
+    const savedPodium = localStorage.getItem('bt_show_podium');
+    if (savedPodium !== null) {
+        const show = savedPodium === 'true';
+        const chk = document.getElementById('podiumToggleCheck');
+        if (chk) chk.checked = show;
+        const pCont = document.getElementById('podiumContainer');
+        if (pCont) pCont.style.display = show ? 'block' : 'none';
+    }
+
+    const savedRating = localStorage.getItem('bt_board_rating');
+    if (savedRating) {
+        setBoardRating(Number(savedRating), false);
+    }
+
+    initBlookGrid('addBlookGrid', (url) => {
+        document.getElementById('newPfp').value = url;
+    });
+    initBlookGrid('editBlookGrid', (url) => {
+        document.getElementById('editCreatorPfp').value = url;
+    });
+}
+
+function updateCustomTitle(val) {
+    const title = val.trim() || 'BlookTools';
+    document.getElementById('siteTitleTrigger').textContent = title;
+    localStorage.setItem('bt_custom_title', title);
+}
+
+function updateCustomSubtitle(val) {
+    const sub = val.trim() || 'Custom Leaderboard! ⚙️';
+    const subEl = document.getElementById('siteSubtitleDisplay');
+    if (subEl) subEl.textContent = sub;
+    localStorage.setItem('bt_custom_subtitle', sub);
+}
+
+function applyThemeColor(color, save = true) {
+    document.body.style.backgroundColor = color;
+    const page = document.getElementById('customPage');
+    if (page) page.style.backgroundColor = color;
+    const inp = document.getElementById('customThemeColorInput');
+    if (inp) inp.value = color;
+    if (save) localStorage.setItem('bt_custom_theme', color);
+}
+
+function togglePodiumVisibility(show) {
+    const pCont = document.getElementById('podiumContainer');
+    if (pCont) pCont.style.display = show ? 'block' : 'none';
+    localStorage.setItem('bt_show_podium', String(show));
+}
+
+function initBlookGrid(containerId, onSelect) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = BLOOK_PRESETS.map(blook => `
+        <button type="button" class="blook-avatar-btn" title="${blook.name}" onclick="handleBlookSelect('${containerId}', '${blook.url}')">
+            <img src="${blook.url}" alt="${blook.name}">
+        </button>
+    `).join('');
+}
+
+function handleBlookSelect(containerId, url) {
+    if (containerId === 'addBlookGrid') {
+        document.getElementById('newPfp').value = url;
+    } else if (containerId === 'editBlookGrid') {
+        document.getElementById('editCreatorPfp').value = url;
+        updateEditPreview(url);
+    }
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.querySelectorAll('.blook-avatar-btn').forEach(btn => {
+            const img = btn.querySelector('img');
+            btn.classList.toggle('selected', img && img.src === url);
+        });
+    }
+}
+
+// Keeps the small preview photo (and the Blook Avatar grid highlight) in sync
+// with whatever URL is currently in the Profile Picture field.
+function updateEditPreview(url) {
+    const preview = document.getElementById('editPfpPreview');
+    if (preview) {
+        const clean = (url || '').trim();
+        preview.style.visibility = clean ? 'visible' : 'hidden';
+        preview.src = clean || '';
+        preview.classList.toggle('no-avatar-border', isBlookAsset(clean));
+    }
+    const grid = document.getElementById('editBlookGrid');
+    if (grid) {
+        grid.querySelectorAll('.blook-avatar-btn').forEach(btn => {
+            const img = btn.querySelector('img');
+            btn.classList.toggle('selected', img && img.src === url);
+        });
+    }
+}
+
+/* ==================== EXPERIENCE RATING COMPONENT ==================== */
+function setBoardRating(stars, save = true) {
+    const starsWrap = document.getElementById('ratingStarsWrap');
+    if (starsWrap) {
+        const starBtns = starsWrap.querySelectorAll('.rating-star-btn');
+        starBtns.forEach((btn, idx) => {
+            btn.classList.toggle('active', idx < stars);
+        });
+    }
+    const msgEl = document.getElementById('ratingFeedbackMsg');
+    const messages = {
+        1: "⭐ 1/5 — Thanks for testing! What can we improve? 🛠️",
+        2: "⭐⭐ 2/5 — Nice! We're tuning and upgrading features every day! 📈",
+        3: "⭐⭐⭐ 3/5 — Good stuff! Your custom leaderboard is taking shape! 🎨",
+        4: "⭐⭐⭐⭐ 4/5 — Awesome! Super smooth and customizable! ✨",
+        5: "⭐⭐⭐⭐⭐ 5/5 — Legendary! Peak Blooket Leaderboard Experience! 🚀"
+    };
+    if (msgEl) msgEl.textContent = messages[stars] || messages[5];
+    if (save) {
+        localStorage.setItem('bt_board_rating', String(stars));
+        showUndoToast(`Thank you for rating ${stars} ⭐!`, () => {});
+    }
+}
+
+function toggleFeedbackTag(btn, tag) {
+    btn.classList.toggle('selected');
+    const tags = [];
+    document.querySelectorAll('#ratingTagsWrap .rating-tag-pill.selected').forEach(el => {
+        tags.push(el.textContent.trim());
+    });
+    localStorage.setItem('bt_board_tags', JSON.stringify(tags));
+}
+
+/* ==================== SIDEBAR HANDLERS ==================== */
+function openSidebar() {
+    const sidebar = document.getElementById('siteSidebar') || document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (sidebar) sidebar.classList.add('show');
+    if (overlay) overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('siteSidebar') || document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (sidebar) sidebar.classList.remove('show');
+    if (overlay) overlay.classList.remove('show');
+    const page = document.getElementById('customPage');
+    if (!page || !page.classList.contains('show')) {
+        document.body.style.overflow = '';
+    }
+}
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('siteSidebar') || document.getElementById('sidebar');
+    if (sidebar && sidebar.classList.contains('show')) {
+        closeSidebar();
+    } else {
+        openSidebar();
+    }
+}
+
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSidebar(); });
 
 function isInactiveCreator(name) {
     const k = keyOf(name);
@@ -493,63 +2273,67 @@ function isInactiveCreator(name) {
 function buildCreators(statsData) {
     return creatorList
         .filter(([name]) => !removedCreators.has(keyOf(name)))
-        .map(([name, handle, url]) => {
+        .map(([name, handle, url, pfpUrl]) => {
             const stats = statsData ? statsData[name] : null;
             const k = keyOf(name);
             const override = customStatus[k];
             const isTerminated = override === 'terminated' || (!override && terminatedCreators.includes(k));
             const subsOv = subsOverrides[k];
             const viewsOv = viewsOverrides[k];
+            const badge = customBadges[k] || '';
             return {
                 name,
                 url,
+                pfp: pfpUrl || PFP_BY_NAME[name] || defaultImage,
                 subs: isTerminated ? "-" : (subsOv !== undefined ? subsOv : (stats ? stats.subs : (fallbackSubs[name] || 0))),
                 views: isTerminated ? "-" : (viewsOv !== undefined ? viewsOv : (stats ? stats.views : 0)),
-                terminated: isTerminated
+                terminated: isTerminated,
+                badge: badge
             };
         });
 }
 
 function formatSubs(num) {
-    if (num === "-") return "-";
-    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-    return num.toLocaleString();
+    if (num === "-" || num === null || num === undefined) return "-";
+    const val = typeof num === 'string' ? parseFloat(num) : num;
+    if (isNaN(val)) return "-";
+    if (val >= 1000000) return (val / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (val >= 1000) return (val / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return val.toLocaleString();
 }
 
 function setSort(mode) {
     sortMode = mode;
-    document.getElementById('sortSubs').classList.toggle('active', mode === 'subs');
-    document.getElementById('sortViews').classList.toggle('active', mode === 'views');
-    if (creators.length > 0) {
-        const searchVal = document.getElementById('search').value.toLowerCase();
-        const filtered = creators.filter(c => c.name.toLowerCase().includes(searchVal));
-        renderBoard(filtered);
-        renderUnderrated(filtered);
-        renderPodium(getSorted(creators, false));
-    }
+    const btnSubs = document.getElementById('sortSubs');
+    const btnViews = document.getElementById('sortViews');
+    if (btnSubs) btnSubs.classList.toggle('active', mode === 'subs');
+    if (btnViews) btnViews.classList.toggle('active', mode === 'views');
+
+    const searchVal = (document.getElementById('search')?.value || '').toLowerCase();
+    const filtered = creators.filter(c => c.name.toLowerCase().includes(searchVal));
+    renderBoard(filtered);
+    renderUnderrated(filtered);
+    renderPodium(getSorted(creators, false));
 }
 
 function getSorted(data, includeTerminated = true) {
-    let filtered = data;
+    let filtered = [...data];
     if (!includeTerminated) {
-        filtered = data.filter(c => !terminatedCreators.includes(c.name.toLowerCase()) && c.terminated !== true);
+        filtered = filtered.filter(c => !c.terminated);
     }
-    
-    // Split Blook Master away during sorting logic to force rank positioning
-    let bm = filtered.find(c => c.name.toLowerCase() === "blook master");
-    let rest = filtered.filter(c => c.name.toLowerCase() !== "blook master");
 
-    rest.sort((a, b) => {
-        if (a.terminated && !b.terminated) return 1;
-        if (!a.terminated && b.terminated) return -1;
-        return sortMode === 'views' ? b.views - a.views : b.subs - a.subs;
+    // Sort numerically by subscriber count or view count (including any modified custom values)
+    filtered.sort((a, b) => {
+        const valA = sortMode === 'views' 
+            ? (a.views === '-' ? -1 : (Number(a.views) || 0)) 
+            : (a.subs === '-' ? -1 : (Number(a.subs) || 0));
+        const valB = sortMode === 'views' 
+            ? (b.views === '-' ? -1 : (Number(b.views) || 0)) 
+            : (b.subs === '-' ? -1 : (Number(b.subs) || 0));
+        return valB - valA;
     });
 
-    if (bm && includeTerminated) {
-        rest.splice(20, 0, bm); // Splice directly to position 21 (index 20)
-    }
-    return rest;
+    return filtered;
 }
 
 function showTerminatedModal() {
@@ -563,84 +2347,152 @@ function closeTerminatedModal() {
 }
 
 window.onclick = function(event) {
-    const modal = document.getElementById('terminatedModal');
-    if (event.target == modal) {
-        modal.classList.remove('show');
+    if (event.target.classList.contains('modal')) {
+        event.target.classList.remove('show');
     }
 }
+
+// Cached stats persistence
+try {
+    const cachedStats = localStorage.getItem('bt_last_stats_cache');
+    if (cachedStats) {
+        lastStatsData = JSON.parse(cachedStats);
+    }
+} catch (e) {}
+
+let pollTimeoutId = null;
 
 async function fetchAllSubs() {
     const dot = document.getElementById("liveDot");
     const text = document.getElementById("liveText");
     const btn = document.getElementById("refreshBtn");
-    dot.className = "live-dot loading"; text.textContent = "Fetching live counts..."; btn.disabled = true;
+    if (dot) dot.className = "live-dot loading";
+    if (text) text.textContent = "Fetching live counts...";
+    if (btn) btn.disabled = true;
+
+    if (pollTimeoutId) clearTimeout(pollTimeoutId);
+
     try {
-        const res = await fetch(STATS_API_URL);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
+        const res = await fetch(STATS_API_URL, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (data.error) throw new Error(data.error);
-        lastStatsData = data.stats || null;
+
+        if (data.stats && typeof data.stats === 'object') {
+            lastStatsData = data.stats;
+            try {
+                localStorage.setItem('bt_last_stats_cache', JSON.stringify(data.stats));
+            } catch (e) {}
+        }
 
         creators = buildCreators(lastStatsData);
         creators = getSorted(creators, true);
         creators.forEach((c, i) => c.rank = i + 1);
 
         lastUpdated = new Date(data.updatedAt || Date.now());
-        dot.className = "live-dot";
-        text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
-        const sorted = getSorted(creators, false);
-        renderPodium(sorted);
+        if (dot) dot.className = "live-dot";
+        if (text) text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
+        renderPodium(getSorted(creators, false));
         renderBoard(creators);
         renderUnderrated(creators);
         renderAdminList();
-        setTimeout(fetchAllSubs, 5 * 60 * 1000);
     } catch (err) {
-        dot.className = "live-dot error"; text.textContent = "⚠️ API error — showing last known counts";
-        lastStatsData = null;
-        creators = buildCreators(null);
+        console.warn("API request failed:", err.message);
+        if (dot) dot.className = "live-dot error";
+        if (text) text.textContent = lastStatsData ? `⚠️ API offline — showing cached counts` : "⚠️ API offline — showing counts";
+        
+        // Keep last known valid stats if available instead of wiping to null
+        creators = buildCreators(lastStatsData);
         creators = getSorted(creators, true);
         creators.forEach((c, i) => c.rank = i + 1);
-        renderPodium(getSorted(creators, false)); renderBoard(creators); renderUnderrated(creators);
+        renderPodium(getSorted(creators, false));
+        renderBoard(creators);
+        renderUnderrated(creators);
         renderAdminList();
+    } finally {
+        if (btn) btn.disabled = false;
+        // Ensure auto-polling continues even after a network or rate limit failure
+        pollTimeoutId = setTimeout(fetchAllSubs, 60000);
     }
-    btn.disabled = false;
+}
+
+/* ==================== PODIUM RENDERING ==================== */
+function getMedalSvg(rank) {
+    const coinColor = rank === 1 ? '#FFD700' : (rank === 2 ? '#E2E8F0' : '#CD7F32');
+    const coinBorder = rank === 1 ? '#D97706' : (rank === 2 ? '#94A3B8' : '#92400E');
+    const ribbon = '#0284C7';
+    const ribbonDark = '#0369A1';
+    return `
+    <svg class="medal-svg" viewBox="0 0 36 36">
+        <path d="M12 4 L8 14 L14 14 Z" fill="${ribbon}" />
+        <path d="M24 4 L28 14 L22 14 Z" fill="${ribbon}" />
+        <path d="M14 6 L18 13 L22 6 Z" fill="${ribbonDark}" />
+        <circle cx="18" cy="20" r="11" fill="${coinColor}" stroke="${coinBorder}" stroke-width="2.5" />
+        <circle cx="18" cy="20" r="8.5" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" />
+        <text x="18" y="24" text-anchor="middle" fill="#1E293B" font-size="11" font-weight="900" font-family="'Titan One', 'Nunito', sans-serif">${rank}</text>
+    </svg>`;
 }
 
 function renderPodium(data) {
-    if (data.length < 3) return;
     const podium = document.getElementById("podium");
-    const medals = ["🥇", "🥈", "🥉"];
-    const classes = ["first", "second", "third"];
+    if (!podium) return;
+    if (data.length < 3) { podium.innerHTML = ""; return; }
+
     const isViews = sortMode === 'views';
-    podium.innerHTML = [0, 1, 2].map(i => `
-        <div class="podium-card ${classes[i]}">
-            <a href="${data[i].url}" target="_blank" class="podium-link">
-                <span>${medals[i]}</span>
-                <span class="podium-name">${data[i].name}</span>
-                <span class="podium-subs">${formatSubs(isViews ? data[i].views : data[i].subs)}</span>
-            </a>
-        </div>`).join("");
+    const first = data[0];
+    const second = data[1];
+    const third = data[2];
+
+    const slots = [
+        { creator: second, rank: 2, cls: "second" },
+        { creator: first, rank: 1, cls: "first" },
+        { creator: third, rank: 3, cls: "third" }
+    ];
+
+    podium.innerHTML = slots.map(slot => {
+        const c = slot.creator;
+        if (!c) return '';
+        const metric = isViews ? c.views : c.subs;
+        const safeName = c.name.replace(/'/g, "\\'");
+        return `
+        <div class="podium-card ${slot.cls}" onclick="openCreatorStats('${safeName}')">
+            <div class="medal-badge">${getMedalSvg(slot.rank)}</div>
+            <div class="podium-pfp-wrap">
+                <img src="${c.pfp}" class="podium-pfp${isBlookAsset(c.pfp) ? ' no-avatar-border' : ''}" alt="${c.name}" onerror="this.src='${defaultImage}'">
+            </div>
+            <div class="podium-name">${c.name}</div>
+            <div class="podium-subs">${formatSubs(metric)}</div>
+            <div class="podium-base-bar"></div>
+        </div>`;
+    }).join("");
 }
 
 function getSpecialEmojisHtml(name) {
     const htmlParts = [];
-    if (terminatedCreators.includes(name.toLowerCase()) && !customStatus[keyOf(name)]) {
+    const k = keyOf(name);
+    if (customStatus[k] === 'terminated' || (terminatedCreators.includes(k) && !customStatus[k])) {
         htmlParts.push(" ⛔");
     }
-    if (customStatus[keyOf(name)] === 'terminated') {
-        htmlParts.push(" ⛔");
-    }
-    if (name === "LeonBlox") {
-        htmlParts.push(`
-        <span class="tooltip-container">
-            <img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/fire_1f525.gif" style="width: 20px; vertical-align: middle; cursor: help;">
-            <span class="custom-tooltip">Rapidly growing Blooktuber!</span>
-        </span>`);
+    if (customBadges[k]) {
+        htmlParts.push(`<span class="custom-badge-pill">${customBadges[k]}</span>`);
     }
     return htmlParts.join("");
 }
 
+function onSearchChange() {
+    const searchVal = document.getElementById('search').value.toLowerCase();
+    const filtered = creators.filter(c => c.name.toLowerCase().includes(searchVal));
+    renderBoard(filtered);
+    renderUnderrated(filtered);
+}
+
 function renderBoard(data) {
     const board = document.getElementById("leaderboard");
+    if (!board) return;
     board.innerHTML = "";
     const isViews = sortMode === 'views';
 
@@ -653,39 +2505,43 @@ function renderBoard(data) {
     }), true);
 
     if (mainData.length === 0) {
-        board.innerHTML = "<div style='text-align:center; padding: 20px; font-size: 18px;'>No Blooktubers found! 😭</div>";
+        board.innerHTML = "<div style='text-align:center; padding:25px; font-size:18px; font-weight:800;'>No Blooktubers found! 😭</div>";
         return;
     }
+
+    const eligible = creators.filter(c => !c.terminated && (isViews ? c.views >= 20000 : c.subs >= 100));
     const maxVal = isViews
-        ? Math.max(...getSorted(creators.filter(c => c.views !== "-" && c.views >= 20000)).map(c => c.views)) || 1
-        : (getSorted(creators.filter(c => c.subs !== "-" && c.subs >= 100))[0]?.subs || 1);
+        ? (Math.max(...eligible.map(c => Number(c.views) || 0)) || 1)
+        : (getSorted(eligible, true)[0]?.subs || 1);
 
     mainData.forEach((creator) => {
-        const row = document.createElement("a");
-        
-        if (creator.terminated) {
-            row.href = "#";
-            row.onclick = (e) => { e.preventDefault(); showTerminatedModal(); };
-        } else {
-            row.href = creator.url;
-            row.target = "_blank";
-        }
-        
+        const row = document.createElement("div");
         row.className = "row";
-        if (creator.name.toLowerCase() === "fastyjay") row.classList.add("fastyjay");
+        if (keyOf(creator.name) === "fastyjay") row.classList.add("fastyjay");
         if (creator.terminated) row.classList.add("terminated");
+
         const isInactive = isInactiveCreator(creator.name);
         if (isInactive && !creator.terminated) row.classList.add("inactive");
 
         const metricVal = creator.terminated ? 0 : (isViews ? creator.views : creator.subs);
-        const barWidth = creator.terminated ? 0 : ((metricVal / maxVal) * 100);
+        const barWidth = creator.terminated ? 0 : Math.min(100, Math.max(2, (Number(metricVal) / Number(maxVal)) * 100));
         const barClass = isViews ? "bar views-bar" : "bar";
+
+        row.onclick = () => {
+            if (creator.terminated) showTerminatedModal();
+            else openCreatorStats(creator.name);
+        };
 
         row.innerHTML = `
             <div class="rank">#${creator.globalRank}</div>
-            <div class="name">${creator.name}${isInactive && !creator.terminated ? ' 🕊️' : ''}${getSpecialEmojisHtml(creator.name)}</div>
-            <div class="subs">${formatSubs(creator.terminated ? "-" : metricVal)}</div>
-            <div class="bar-bg"><div class="${barClass}" style="width: ${barWidth}%"></div></div>`;
+            <img src="${creator.pfp}" class="row-pfp${isBlookAsset(creator.pfp) ? ' no-avatar-border' : ''}" alt="${creator.name}" onerror="this.src='${defaultImage}'">
+            <div class="row-content">
+                <div class="row-top">
+                    <span class="name">${creator.name}${isInactive && !creator.terminated ? ' 🕊️' : ''}${getSpecialEmojisHtml(creator.name)}</span>
+                </div>
+                <div class="bar-bg"><div class="${barClass}" style="width:${barWidth}%"></div></div>
+            </div>
+            <div class="subs">${formatSubs(creator.terminated ? "-" : metricVal)}</div>`;
         board.appendChild(row);
     });
 }
@@ -693,8 +2549,10 @@ function renderBoard(data) {
 function renderUnderrated(data) {
     const header = document.getElementById("underratedHeader");
     const board = document.getElementById("underratedBoard");
-    const isViews = sortMode === 'views';
+    const subText = document.getElementById("underratedSub");
+    if (!header || !board) return;
 
+    const isViews = sortMode === 'views';
     const allSorted = getSorted(creators, true);
     allSorted.forEach((c, i) => c.globalRank = i + 1);
 
@@ -703,42 +2561,70 @@ function renderUnderrated(data) {
         return isViews ? c.views < 20000 : c.subs < 100;
     }), true);
 
-    document.querySelector("#underratedHeader h2").textContent = "Up and Coming Blooktubers";
-    document.querySelector("#underratedHeader p").textContent = isViews
-        ? "Blooktubers with under 20K views"
-        : "Blooktubers with under 100 subscribers";
+    subText.textContent = isViews ? "Blooktubers with under 20K views" : "Blooktubers with under 100 subscribers";
 
-    if (underrated.length === 0) { header.style.display = "none"; board.style.display = "none"; return; }
-    header.style.display = "block"; board.style.display = "block"; board.innerHTML = "";
+    if (underrated.length === 0) {
+        header.style.display = "none";
+        board.style.display = "none";
+        return;
+    }
+
+    header.style.display = "block";
+    board.style.display = "block";
+    board.innerHTML = "";
+
     const maxVal = isViews
-        ? Math.max(...underrated.map(c => c.views)) || 1
-        : underrated[0]?.subs || 1;
+        ? (Math.max(...underrated.map(c => Number(c.views) || 0)) || 1)
+        : (underrated[0]?.subs || 1);
 
     underrated.forEach((creator) => {
-        const row = document.createElement("a");
-        row.href = creator.url; row.target = "_blank"; row.className = "row";
+        const row = document.createElement("div");
+        row.className = "row";
+        row.onclick = () => openCreatorStats(creator.name);
+
         if (isInactiveCreator(creator.name)) row.classList.add("inactive");
+
         const metricVal = isViews ? creator.views : creator.subs;
-        const barWidth = (metricVal / maxVal) * 100;
+        const barWidth = Math.min(100, Math.max(2, (Number(metricVal) / Number(maxVal)) * 100));
         const barClass = isViews ? "bar views-bar" : "bar";
+
         row.innerHTML = `
             <div class="rank">#${creator.globalRank}</div>
-            <div class="name">${creator.name}${getSpecialEmojisHtml(creator.name)}</div>
-            <div class="subs">${formatSubs(metricVal)}</div>
-            <div class="bar-bg"><div class="${barClass}" style="width: ${barWidth}%"></div></div>`;
+            <img src="${creator.pfp}" class="row-pfp${isBlookAsset(creator.pfp) ? ' no-avatar-border' : ''}" alt="${creator.name}" onerror="this.src='${defaultImage}'">
+            <div class="row-content">
+                <div class="row-top">
+                    <span class="name">${creator.name}${getSpecialEmojisHtml(creator.name)}</span>
+                </div>
+                <div class="bar-bg"><div class="${barClass}" style="width:${barWidth}%"></div></div>
+            </div>
+            <div class="subs">${formatSubs(metricVal)}</div>`;
         board.appendChild(row);
     });
 }
 
-document.getElementById("search").addEventListener("input", e => {
-    const val = e.target.value.toLowerCase();
-    const filtered = creators.filter(c => c.name.toLowerCase().includes(val));
-    renderBoard(filtered);
-    renderUnderrated(filtered);
-    if (!val) renderPodium(getSorted(creators, false));
-});
+let currentStatsModalCreator = '';
 
-/* ==================== ADMIN PANEL LOGIC ==================== */
+function openCreatorStats(name) {
+    const creator = creators.find(c => keyOf(c.name) === keyOf(name));
+    if (!creator) return;
+    if (creator.terminated) {
+        showTerminatedModal();
+        return;
+    }
+    currentStatsModalCreator = creator.name;
+    document.getElementById("modalName").textContent = creator.name;
+    document.getElementById("modalSubs").textContent = formatSubs(creator.subs);
+    document.getElementById("modalViews").textContent = formatSubs(creator.views);
+    const modalPfpEl = document.getElementById("modalPfp");
+    modalPfpEl.src = creator.pfp || defaultImage;
+    modalPfpEl.classList.toggle('no-avatar-border', isBlookAsset(creator.pfp));
+    document.getElementById("modalLink").href = creator.url;
+    document.getElementById("statsModal").classList.add("show");
+}
+
+function closeStatsModal() {
+    document.getElementById("statsModal").classList.remove("show");
+}
 
 function showCustomPopup(message, opts = {}) {
     const { isConfirm = false } = opts;
@@ -794,7 +2680,7 @@ function refreshAfterAdminChange() {
     creators = buildCreators(lastStatsData);
     creators = getSorted(creators, true);
     creators.forEach((c, i) => c.rank = i + 1);
-    const searchVal = document.getElementById('search').value.toLowerCase();
+    const searchVal = (document.getElementById('search')?.value || '').toLowerCase();
     const filtered = creators.filter(c => c.name.toLowerCase().includes(searchVal));
     renderPodium(getSorted(creators, false));
     renderBoard(filtered);
@@ -810,6 +2696,12 @@ function resetMyRemix() {
         customStatus = {};
         subsOverrides = {};
         viewsOverrides = {};
+        customBadges = {};
+        updateCustomTitle('BlookTools');
+        updateCustomSubtitle('Custom Leaderboard! ⚙️');
+        applyThemeColor('#0bc2cf');
+        togglePodiumVisibility(true);
+        setSort('subs');
         refreshAfterAdminChange();
     });
 }
@@ -818,25 +2710,31 @@ function addCustomCreator() {
     const name = document.getElementById('newName').value.trim();
     const handle = document.getElementById('newHandle').value.trim() || name;
     const url = document.getElementById('newUrl').value.trim();
+    const pfp = document.getElementById('newPfp').value.trim();
     const subsVal = document.getElementById('newSubs').value;
     const viewsVal = document.getElementById('newViews').value;
     const status = document.getElementById('newStatus').value;
+    const badge = (document.getElementById('newBadge')?.value || '').trim();
 
-    if (!name || !url) { showCustomPopup("Failed to add blooktuber!"); return; }
+    if (!name || !url) { showCustomPopup("Please provide at least a Creator Name and YouTube Channel URL!"); return; }
     if (creatorList.some(([n]) => keyOf(n) === keyOf(name))) { showCustomPopup("Someone's already on the board with that name!"); return; }
 
-    creatorList.push([name, handle, url]);
-    if (subsVal !== '') subsOverrides[keyOf(name)] = Number(subsVal);
-    if (viewsVal !== '') viewsOverrides[keyOf(name)] = Number(viewsVal);
-    if (status !== 'normal') customStatus[keyOf(name)] = status;
-    removedCreators.delete(keyOf(name));
+    creatorList.push([name, handle, url, pfp || PFP_BY_NAME[name] || defaultImage]);
+    const k = keyOf(name);
+    if (subsVal !== '') subsOverrides[k] = Number(subsVal);
+    if (viewsVal !== '') viewsOverrides[k] = Number(viewsVal);
+    if (status !== 'normal') customStatus[k] = status;
+    if (badge) customBadges[k] = badge;
+    removedCreators.delete(k);
 
     document.getElementById('newName').value = '';
     document.getElementById('newHandle').value = '';
     document.getElementById('newUrl').value = '';
+    document.getElementById('newPfp').value = '';
     document.getElementById('newSubs').value = '';
     document.getElementById('newViews').value = '';
     document.getElementById('newStatus').value = 'normal';
+    if (document.getElementById('newBadge')) document.getElementById('newBadge').value = '';
     document.getElementById('customAddForm').classList.remove('show');
 
     refreshAfterAdminChange();
@@ -891,9 +2789,170 @@ function displaySubsFor(name) {
     return stats ? stats.subs : (fallbackSubs[name] || 0);
 }
 
+/* ==================== EDIT CREATOR MODAL HANDLERS ==================== */
+function openEditCreatorModal(name) {
+    const creatorItem = creatorList.find(([n]) => keyOf(n) === keyOf(name));
+    if (!creatorItem) return;
+    const [cName, cHandle, cUrl, cPfp] = creatorItem;
+    const k = keyOf(cName);
+    const status = statusOf(cName);
+    const subs = subsOverrides[k] !== undefined ? subsOverrides[k] : (lastStatsData && lastStatsData[cName] ? lastStatsData[cName].subs : (fallbackSubs[cName] || ''));
+    const views = viewsOverrides[k] !== undefined ? viewsOverrides[k] : (lastStatsData && lastStatsData[cName] ? lastStatsData[cName].views : '');
+    const badge = customBadges[k] || '';
+
+    document.getElementById('editOriginalName').value = cName;
+    document.getElementById('editCreatorName').value = cName;
+    document.getElementById('editCreatorUrl').value = cUrl || '';
+    document.getElementById('editCreatorPfp').value = cPfp || PFP_BY_NAME[cName] || '';
+    document.getElementById('editCreatorSubs').value = subs !== '-' ? subs : '';
+    document.getElementById('editCreatorViews').value = views !== '-' ? views : '';
+    document.getElementById('editCreatorStatus').value = status;
+    document.getElementById('editCreatorBadge').value = badge;
+
+    updateEditPreview(cPfp || PFP_BY_NAME[cName] || '');
+    document.getElementById('editCreatorModal').classList.add('show');
+}
+
+function closeEditCreatorModal() {
+    document.getElementById('editCreatorModal').classList.remove('show');
+}
+
+function saveCreatorEdit() {
+    const origName = document.getElementById('editOriginalName').value;
+    const newName = document.getElementById('editCreatorName').value.trim();
+    const newUrl = document.getElementById('editCreatorUrl').value.trim();
+    const newPfp = document.getElementById('editCreatorPfp').value.trim();
+    const newSubs = document.getElementById('editCreatorSubs').value;
+    const newViews = document.getElementById('editCreatorViews').value;
+    const newStatus = document.getElementById('editCreatorStatus').value;
+    const newBadge = document.getElementById('editCreatorBadge').value.trim();
+
+    if (!newName) {
+        showCustomPopup("Creator name cannot be empty!");
+        return;
+    }
+
+    const origKey = keyOf(origName);
+    const newKey = keyOf(newName);
+
+    // Update in creatorList
+    const idx = creatorList.findIndex(([n]) => keyOf(n) === origKey);
+    if (idx !== -1) {
+        creatorList[idx] = [newName, creatorList[idx][1] || newName, newUrl, newPfp || PFP_BY_NAME[newName] || defaultImage];
+    }
+
+    // Migrate overrides if name changed
+    if (origKey !== newKey) {
+        if (subsOverrides[origKey] !== undefined) {
+            subsOverrides[newKey] = subsOverrides[origKey];
+            delete subsOverrides[origKey];
+        }
+        if (viewsOverrides[origKey] !== undefined) {
+            viewsOverrides[newKey] = viewsOverrides[origKey];
+            delete viewsOverrides[origKey];
+        }
+        if (customStatus[origKey] !== undefined) {
+            customStatus[newKey] = customStatus[origKey];
+            delete customStatus[origKey];
+        }
+        if (customBadges[origKey] !== undefined) {
+            customBadges[newKey] = customBadges[origKey];
+            delete customBadges[origKey];
+        }
+        if (removedCreators.has(origKey)) {
+            removedCreators.delete(origKey);
+            removedCreators.add(newKey);
+        }
+    }
+
+    // Apply new values
+    if (newSubs !== '') subsOverrides[newKey] = Number(newSubs);
+    else delete subsOverrides[newKey];
+
+    if (newViews !== '') viewsOverrides[newKey] = Number(newViews);
+    else delete viewsOverrides[newKey];
+
+    if (newStatus === 'normal') delete customStatus[newKey];
+    else customStatus[newKey] = newStatus;
+
+    if (newBadge) customBadges[newKey] = newBadge;
+    else delete customBadges[newKey];
+
+    closeEditCreatorModal();
+    refreshAfterAdminChange();
+    showUndoToast(`Saved changes for ${newName}!`, () => {});
+}
+
+/* ==================== REORDERING (DRAG & BUTTONS) ==================== */
+function moveCreatorUp(name) {
+    const activeList = creatorList.filter(([n]) => !removedCreators.has(keyOf(n)));
+    const activeIdx = activeList.findIndex(([n]) => keyOf(n) === keyOf(name));
+    if (activeIdx <= 0) return;
+    const targetName = activeList[activeIdx - 1][0];
+    reorderCreator(name, targetName);
+}
+
+function moveCreatorDown(name) {
+    const activeList = creatorList.filter(([n]) => !removedCreators.has(keyOf(n)));
+    const activeIdx = activeList.findIndex(([n]) => keyOf(n) === keyOf(name));
+    if (activeIdx === -1 || activeIdx >= activeList.length - 1) return;
+    const targetName = activeList[activeIdx + 1][0];
+    
+    // To move down past targetName:
+    const draggedIdx = creatorList.findIndex(([n]) => keyOf(n) === keyOf(name));
+    const targetIdx = creatorList.findIndex(([n]) => keyOf(n) === keyOf(targetName));
+    if (draggedIdx === -1 || targetIdx === -1) return;
+    const [item] = creatorList.splice(draggedIdx, 1);
+    creatorList.splice(targetIdx, 0, item);
+    
+    refreshAfterAdminChange();
+}
+
+function reorderCreator(draggedNameVal, targetName) {
+    const draggedIdx = creatorList.findIndex(([n]) => keyOf(n) === keyOf(draggedNameVal));
+    if (draggedIdx === -1) return;
+    const [item] = creatorList.splice(draggedIdx, 1);
+    const targetIdx = creatorList.findIndex(([n]) => keyOf(n) === keyOf(targetName));
+    const insertAt = targetIdx === -1 ? creatorList.length : targetIdx;
+    creatorList.splice(insertAt, 0, item);
+    
+    refreshAfterAdminChange();
+}
+
+let draggedName = null;
+function handleDragStart(e, name) {
+    draggedName = name;
+    e.dataTransfer.effectAllowed = 'move';
+    const card = e.target.closest('.custom-card');
+    if (card) card.classList.add('dragging');
+}
+function handleDragEnd() {
+    document.querySelectorAll('.custom-card.dragging').forEach(el => el.classList.remove('dragging'));
+    document.querySelectorAll('.custom-card.drag-over').forEach(el => el.classList.remove('drag-over'));
+    draggedName = null;
+}
+function handleDragOver(e) {
+    e.preventDefault();
+    const card = e.currentTarget;
+    if (draggedName && keyOf(card.dataset.name) !== keyOf(draggedName)) card.classList.add('drag-over');
+}
+function handleDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+}
+function handleDrop(e) {
+    e.preventDefault();
+    const card = e.currentTarget;
+    card.classList.remove('drag-over');
+    if (!draggedName) return;
+    const targetName = card.dataset.name;
+    if (keyOf(targetName) === keyOf(draggedName)) return;
+    reorderCreator(draggedName, targetName);
+}
+
 function renderAdminList() {
     const listEl = document.getElementById('adminList');
     const removedListEl = document.getElementById('removedList');
+    if (!listEl) return;
     const searchVal = (document.getElementById('customSearch')?.value || '').toLowerCase();
     const activeList = creatorList.filter(([n]) => !removedCreators.has(keyOf(n)));
     const removedList = creatorList.filter(([n]) => removedCreators.has(keyOf(n)));
@@ -903,29 +2962,33 @@ function renderAdminList() {
 
     const esc = (s) => s.replace(/'/g, "\\'");
     const maxSubs = Math.max(1, ...activeList.map(([n]) => displaySubsFor(n)));
-
     const filteredActive = activeList.filter(([n]) => n.toLowerCase().includes(searchVal));
 
     if (filteredActive.length === 0) {
-        listEl.innerHTML = "<div class='custom-empty'>No Blooktubers match your search 😭</div>";
+        listEl.innerHTML = "<div style='text-align:center; padding:20px; font-weight:700;'>No Blooktubers match your search 😭</div>";
     } else {
-        listEl.innerHTML = filteredActive.map(([name]) => {
+        listEl.innerHTML = filteredActive.map(([name, handle, url, pfp]) => {
             const k = keyOf(name);
             const status = statusOf(name);
             const subsOv = subsOverrides[k] !== undefined ? subsOverrides[k] : '';
             const viewsOv = viewsOverrides[k] !== undefined ? viewsOverrides[k] : '';
             const displaySubs = displaySubsFor(name);
-            const barWidth = (displaySubs / maxSubs) * 100;
+            const barWidth = Math.min(100, Math.max(2, (Number(displaySubs) / Number(maxSubs)) * 100));
             const esc2 = esc(name);
+            const creatorPfp = pfp || PFP_BY_NAME[name] || defaultImage;
+            const badge = customBadges[k];
             return `
             <div class="custom-card ${status !== 'normal' ? status : ''}" data-name="${esc2}"
                  ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
                 <span class="custom-drag-handle" draggable="true" title="Drag to reorder"
-                      ondragstart="handleDragStart(event, '${esc2}')" ondragend="handleDragEnd(event)"
-                      ontouchstart="handleTouchStart(event, '${esc2}')" ontouchmove="handleTouchMove(event)" ontouchend="handleTouchEnd(event)">
-                    <svg viewBox="0 0 20 20" width="16" height="16"><circle cx="6" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg>
+                      ondragstart="handleDragStart(event, '${esc2}')" ondragend="handleDragEnd(event)">
+                    <svg viewBox="0 0 20 20" width="16" height="16" fill="currentColor"><circle cx="6" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg>
                 </span>
-                <div class="custom-card-name" title="${name}">${name}</div>
+                <img src="${creatorPfp}" class="row-pfp${isBlookAsset(creatorPfp) ? ' no-avatar-border' : ''}" alt="${name}" onerror="this.src='${defaultImage}'">
+                <div class="custom-card-name" title="${name}">
+                    ${name}
+                    ${badge ? `<span class="custom-badge-pill">${badge}</span>` : ''}
+                </div>
                 <div class="custom-card-bar-wrap">
                     <div class="bar-bg"><div class="bar" style="width:${barWidth}%"></div></div>
                     <span class="custom-card-metric">${formatSubs(displaySubs)}</span>
@@ -939,100 +3002,28 @@ function renderAdminList() {
                     <input type="number" placeholder="Subs" value="${subsOv}" title="Subscriber override" onchange="setSubsOverride('${esc2}', this.value)">
                     <input type="number" placeholder="Views" value="${viewsOv}" title="View override" onchange="setViewsOverride('${esc2}', this.value)">
                 </div>
-                <button class="custom-remove-btn" title="Remove ${esc2}" aria-label="Remove ${esc2}" onclick="removeCreator('${esc2}')">✕</button>
+                <div class="custom-card-actions">
+                    <button class="custom-action-btn move-up" title="Move Up" onclick="moveCreatorUp('${esc2}')">⬆️</button>
+                    <button class="custom-action-btn move-down" title="Move Down" onclick="moveCreatorDown('${esc2}')">⬇️</button>
+                    <button class="custom-action-btn edit-btn" title="Edit details" onclick="openEditCreatorModal('${esc2}')">✏️</button>
+                    <button class="custom-remove-btn" title="Remove ${esc2}" onclick="removeCreator('${esc2}')">✕</button>
+                </div>
             </div>`;
         }).join('');
     }
 
-    removedListEl.innerHTML = removedList.length
-        ? removedList.map(([name]) => `
-            <div class="custom-removed-row">
-                <span>${name}</span>
-                <button class="custom-restore-btn" onclick="restoreCreator('${esc(name)}')">↩️ Restore</button>
-            </div>`).join('')
-        : "<div style='font-size:13px;color:#777;'>Nothing removed yet.</div>";
-}
-
-function reorderCreator(draggedNameVal, targetName) {
-    const draggedIdx = creatorList.findIndex(([n]) => keyOf(n) === keyOf(draggedNameVal));
-    if (draggedIdx === -1) return;
-    const [item] = creatorList.splice(draggedIdx, 1);
-    const targetIdx = creatorList.findIndex(([n]) => keyOf(n) === keyOf(targetName));
-    const insertAt = targetIdx === -1 ? creatorList.length : targetIdx;
-    creatorList.splice(insertAt, 0, item);
-    refreshAfterAdminChange();
-}
-
-/* ---- Mouse drag (desktop) ---- */
-let draggedName = null;
-
-function handleDragStart(e, name) {
-    draggedName = name;
-    e.dataTransfer.effectAllowed = 'move';
-    try { e.dataTransfer.setData('text/plain', name); } catch (err) {}
-    const card = e.target.closest('.custom-card');
-    if (card) card.classList.add('dragging');
-}
-
-function handleDragEnd() {
-    document.querySelectorAll('.custom-card.dragging').forEach(el => el.classList.remove('dragging'));
-    document.querySelectorAll('.custom-card.drag-over').forEach(el => el.classList.remove('drag-over'));
-    draggedName = null;
-}
-
-function handleDragOver(e) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    const card = e.currentTarget;
-    if (draggedName && keyOf(card.dataset.name) !== keyOf(draggedName)) card.classList.add('drag-over');
-}
-
-function handleDragLeave(e) {
-    e.currentTarget.classList.remove('drag-over');
-}
-
-function handleDrop(e) {
-    e.preventDefault();
-    const card = e.currentTarget;
-    card.classList.remove('drag-over');
-    if (!draggedName) return;
-    const targetName = card.dataset.name;
-    if (keyOf(targetName) === keyOf(draggedName)) return;
-    reorderCreator(draggedName, targetName);
-}
-
-/* ---- Touch drag (mobile) ---- */
-let touchDraggedName = null;
-
-function handleTouchStart(e, name) {
-    touchDraggedName = name;
-    const card = e.target.closest('.custom-card');
-    if (card) card.classList.add('dragging');
-}
-
-function handleTouchMove(e) {
-    if (!touchDraggedName) return;
-    e.preventDefault();
-    const touch = e.touches[0];
-    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    const card = el ? el.closest('.custom-card') : null;
-    document.querySelectorAll('.custom-card.drag-over').forEach(c => { if (c !== card) c.classList.remove('drag-over'); });
-    if (card && keyOf(card.dataset.name) !== keyOf(touchDraggedName)) card.classList.add('drag-over');
-}
-
-function handleTouchEnd(e) {
-    if (!touchDraggedName) return;
-    const touch = e.changedTouches[0];
-    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    const card = el ? el.closest('.custom-card') : null;
-    document.querySelectorAll('.custom-card.dragging, .custom-card.drag-over').forEach(c => c.classList.remove('dragging', 'drag-over'));
-    if (card) {
-        const targetName = card.dataset.name;
-        if (keyOf(targetName) !== keyOf(touchDraggedName)) reorderCreator(touchDraggedName, targetName);
+    if (removedListEl) {
+        removedListEl.innerHTML = removedList.length
+            ? removedList.map(([name]) => `
+                <div class="custom-removed-row">
+                    <span style="font-weight:800; font-family:'Titan One',cursive;">${name}</span>
+                    <button class="custom-restore-btn" onclick="restoreCreator('${esc(name)}')">↩️ Restore</button>
+                </div>`).join('')
+            : "<div style='font-size:13px; color:#777; font-weight:700;'>Nothing removed yet.</div>";
     }
-    touchDraggedName = null;
 }
 
+/* ==================== EXPORT & IMPORT ==================== */
 function exportConfig() {
     const remaining = creatorList.filter(([n]) => !removedCreators.has(keyOf(n)));
 
@@ -1057,30 +3048,269 @@ function exportConfig() {
         if (viewsOverrides[k] !== undefined) viewsOut[k] = viewsOverrides[k];
     });
 
+    const customTitle = localStorage.getItem('bt_custom_title') || 'BlookTools';
+    const customSubtitle = localStorage.getItem('bt_custom_subtitle') || 'Custom Leaderboard! ⚙️';
+    const customTheme = localStorage.getItem('bt_custom_theme') || '#0bc2cf';
+
     const lines = [
-        '// ---- Your customizations, ready to share! Paste over the matching declarations near the top of the <script> ----',
+        '// ---- Your customizations, ready to share or import! ----',
         '',
-        'let inactiveCreators = ' + JSON.stringify(inactiveOut) + ';',
-        'let terminatedCreators = ' + JSON.stringify(terminatedOut) + ';',
-        'let creatorList = ' + JSON.stringify(remaining) + ';',
-        'const fallbackSubs = ' + JSON.stringify(fallbackObj) + ';',
-        'let viewsOverrides = ' + JSON.stringify(viewsOut) + ';'
+        'let customLeaderboardConfig = {',
+        '  title: ' + JSON.stringify(customTitle) + ',',
+        '  subtitle: ' + JSON.stringify(customSubtitle) + ',',
+        '  theme: ' + JSON.stringify(customTheme) + ',',
+        '  badges: ' + JSON.stringify(customBadges) + '',
+        '};',
+        '',
+        'let inactiveCreators = ' + JSON.stringify(inactiveOut, null, 2) + ';',
+        '',
+        'let terminatedCreators = ' + JSON.stringify(terminatedOut, null, 2) + ';',
+        '',
+        'let creatorList = ' + JSON.stringify(remaining, null, 2) + ';',
+        '',
+        'const fallbackSubs = ' + JSON.stringify(fallbackObj, null, 2) + ';',
+        '',
+        'let viewsOverrides = ' + JSON.stringify(viewsOut, null, 2) + ';'
     ];
 
     const output = lines.join('\n');
     const textarea = document.getElementById('exportOutput');
     textarea.style.display = 'block';
     textarea.value = output;
-    textarea.focus();
-    textarea.select();
-    try {
-        document.execCommand('copy');
-        showCustomPopup('Copied');
-    } catch (e) {
-        showCustomPopup("Couldn't auto-copy — but your code is right there in the box, just select and copy it!");
+
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(output).then(() => {
+            showCustomPopup('Export code copied to your clipboard! 📋');
+        }).catch(() => {
+            textarea.focus();
+            textarea.select();
+            showCustomPopup('Export code generated! Select and copy from the text box.');
+        });
+    } else {
+        textarea.focus();
+        textarea.select();
+        showCustomPopup('Export code generated! Select and copy from the text box.');
     }
 }
 
+function openImportModal() {
+    document.getElementById('importInput').value = '';
+    document.getElementById('importModal').classList.add('show');
+}
+
+function closeImportModal() {
+    document.getElementById('importModal').classList.remove('show');
+}
+
+function loadSampleImportCode() {
+    document.getElementById('importInput').value = `// ---- Example Custom Blooket Leaderboard ----
+let customLeaderboardConfig = {
+  title: "Ultimate Blook Leaderboard",
+  subtitle: "Top Blooket Creators! 🏆",
+  theme: "#7c3aed",
+  badges: { "waymore": "👑 CHAMP", "lag0n": "⚡ TOP 2" }
+};
+let inactiveCreators = ["bil"];
+let terminatedCreators = [];
+let creatorList = [
+  ["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT"],
+  ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4"],
+  ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket"],
+  ["Mega Bot", "MegaBot91", "https://www.youtube.com/@MegaBot91"],
+  ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked"],
+  ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay"]
+];
+const fallbackSubs = {
+  "Waymore": 150000,
+  "Lag0n": 42500,
+  "iBlooket": 35200,
+  "Mega Bot": 27100,
+  "Unblooked": 26900,
+  "FastyJay": 12900
+};
+let viewsOverrides = {};`;
+}
+
+function applyImportCode() {
+    const raw = document.getElementById('importInput').value.trim();
+    if (!raw) {
+        showCustomPopup("Please paste your export code or JSON first.");
+        return;
+    }
+
+    let parsedCreatorList = null;
+    let parsedInactive = [];
+    let parsedTerminated = [];
+    let parsedFallback = {};
+    let parsedViews = {};
+    let parsedConfig = null;
+
+    // Safely parse JSON-style values from an imported snippet.
+    // The old parser grabbed the first "let creatorList = ..." it saw,
+    // which could be a string inside exportConfig() rather than the real list.
+    const parseValue = (value) => {
+        let text = value.trim();
+        if (text.endsWith(';')) text = text.slice(0, -1).trim();
+
+        try {
+            return JSON.parse(text);
+        } catch (err) {
+            // Support simple JS-style single-quoted strings and trailing commas.
+            try {
+                const fixed = text
+                    .replace(/'/g, '"')
+                    .replace(/,\s*([}\]])/g, '$1');
+                return JSON.parse(fixed);
+            } catch (err2) {
+                return null;
+            }
+        }
+    };
+
+    // Find declaration candidates and extract the full array/object expression
+    // using bracket depth, so copied full-page HTML/JS works too.
+    const extractVar = (name) => {
+        const declarationRegex = new RegExp('(?:let|const|var)\\s+' + name + '\\s*=\\s*', 'g');
+        let match;
+
+        while ((match = declarationRegex.exec(raw)) !== null) {
+            const start = declarationRegex.lastIndex;
+            let i = start;
+            let depth = 0;
+            let quote = null;
+            let escaped = false;
+            let inLineComment = false;
+            let inBlockComment = false;
+
+            for (; i < raw.length; i++) {
+                const ch = raw[i];
+                const next = raw[i + 1];
+
+                if (inLineComment) {
+                    if (ch === '\n' || ch === '\r') inLineComment = false;
+                    continue;
+                }
+
+                if (inBlockComment) {
+                    if (ch === '*' && next === '/') {
+                        inBlockComment = false;
+                        i++;
+                    }
+                    continue;
+                }
+
+                if (quote) {
+                    if (escaped) {
+                        escaped = false;
+                    } else if (ch === '\\') {
+                        escaped = true;
+                    } else if (ch === quote) {
+                        quote = null;
+                    }
+                    continue;
+                }
+
+                if (ch === '/' && next === '/') {
+                    inLineComment = true;
+                    i++;
+                    continue;
+                }
+                if (ch === '/' && next === '*') {
+                    inBlockComment = true;
+                    i++;
+                    continue;
+                }
+
+                if (ch === '"' || ch === "'") {
+                    quote = ch;
+                    continue;
+                }
+
+                if (ch === '[' || ch === '{' || ch === '(') {
+                    depth++;
+                    continue;
+                }
+
+                if (ch === ']' || ch === '}' || ch === ')') {
+                    depth--;
+                    if (depth === 0) {
+                        const candidate = raw.slice(start, i + 1).trim();
+                        const parsed = parseValue(candidate);
+                        if (parsed !== null) return parsed;
+                        break;
+                    }
+                    continue;
+                }
+
+                if (depth === 0 && ch === ';') {
+                    break;
+                }
+            }
+        }
+
+        return null;
+    };
+
+    // 1. Try pure JSON first.
+    try {
+        const json = JSON.parse(raw);
+        if (Array.isArray(json)) {
+            parsedCreatorList = json;
+        } else if (typeof json === 'object' && json !== null) {
+            if (Array.isArray(json.creatorList)) parsedCreatorList = json.creatorList;
+            if (Array.isArray(json.inactiveCreators)) parsedInactive = json.inactiveCreators;
+            if (Array.isArray(json.terminatedCreators)) parsedTerminated = json.terminatedCreators;
+            if (json.fallbackSubs && typeof json.fallbackSubs === 'object') parsedFallback = json.fallbackSubs;
+            if (json.viewsOverrides && typeof json.viewsOverrides === 'object') parsedViews = json.viewsOverrides;
+            if (json.customLeaderboardConfig && typeof json.customLeaderboardConfig === 'object') parsedConfig = json.customLeaderboardConfig;
+        }
+    } catch (e) {
+        // 2. Extract declarations from JS, exported snippets, or full copied page code.
+        parsedCreatorList = extractVar('creatorList');
+        const inact = extractVar('inactiveCreators');
+        if (Array.isArray(inact)) parsedInactive = inact;
+        const term = extractVar('terminatedCreators');
+        if (Array.isArray(term)) parsedTerminated = term;
+        const fall = extractVar('fallbackSubs');
+        if (fall && typeof fall === 'object') parsedFallback = fall;
+        const viewOv = extractVar('viewsOverrides');
+        if (viewOv && typeof viewOv === 'object') parsedViews = viewOv;
+        const cfg = extractVar('customLeaderboardConfig');
+        if (cfg && typeof cfg === 'object') parsedConfig = cfg;
+    }
+
+    if (!Array.isArray(parsedCreatorList) || parsedCreatorList.length === 0) {
+        showCustomPopup("Could not find a valid creator list in the code. Ensure it has `let creatorList = [...]` or valid JSON.");
+        return;
+    }
+
+    // Apply parsed values
+    creatorList = parsedCreatorList.filter(item => Array.isArray(item) && item.length >= 2);
+    if (creatorList.length === 0) {
+        showCustomPopup("The creator list was found, but it does not contain any valid creators.");
+        return;
+    }
+    removedCreators = new Set();
+    customStatus = {};
+    parsedInactive.forEach(name => { customStatus[keyOf(name)] = 'inactive'; });
+    parsedTerminated.forEach(name => { customStatus[keyOf(name)] = 'terminated'; });
+    subsOverrides = parsedFallback || {};
+    viewsOverrides = parsedViews || {};
+    fallbackSubs = Object.assign({}, fallbackSubs, parsedFallback || {});
+
+    if (parsedConfig) {
+        if (parsedConfig.title) updateCustomTitle(parsedConfig.title);
+        if (parsedConfig.subtitle) updateCustomSubtitle(parsedConfig.subtitle);
+        if (parsedConfig.theme) applyThemeColor(parsedConfig.theme);
+        if (parsedConfig.badges) customBadges = parsedConfig.badges;
+    }
+
+    closeImportModal();
+    refreshAfterAdminChange();
+    showCustomPopup(`Successfully imported ${creatorList.length} creators! 🎉`);
+}
+
+loadCustomSettings();
 fetchAllSubs();
 </script>
 </body>
