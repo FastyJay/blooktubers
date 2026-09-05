@@ -636,6 +636,31 @@
         }
         button:active, .quick-btn:active, .capy-btn:active, .texture-preset-btn:active { transform: scale(.96); }
 
+        .zest-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            background: rgba(0, 0, 0, .75);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+        }
+        .zest-overlay.show { display: flex; }
+        .zest-overlay img {
+            max-width: 80vw;
+            max-height: 80vh;
+            border-radius: 18px;
+            border: 4px solid var(--border);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .5);
+            animation: pop .3s cubic-bezier(.34, 1.56, .64, 1) both;
+        }
+        @keyframes pop {
+            from { transform: scale(.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .blook, .blook-custom { animation: none; }
             .capy-skeleton { animation: none; }
@@ -763,6 +788,10 @@
     </main>
 
     <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <div id="zestOverlay" class="zest-overlay">
+        <img id="zestImg" src="" alt="">
+    </div>
 
     <script>
         const CAPY_API_URL = "https://api.capy.lol/v1/capybara?json=true";
@@ -1088,6 +1117,21 @@
             document.querySelectorAll('.snowflake').forEach(s => s.remove());
         }
 
+        let zestBuffer = '';
+        const zestTarget = 'lemon';
+        function trackZestBuffer(key) {
+            if (key.length !== 1) return;
+            zestBuffer = (zestBuffer + key.toLowerCase()).slice(-zestTarget.length);
+            if (zestBuffer === zestTarget) {
+                const overlay = document.getElementById('zestOverlay');
+                const img = document.getElementById('zestImg');
+                img.src = 'https://mathuniverse.online/lemon.png';
+                overlay.classList.add('show');
+                zestBuffer = '';
+            }
+        }
+        function closeZestOverlay() { document.getElementById('zestOverlay').classList.remove('show'); }
+
         function openSidebar() { document.getElementById('sidebarOverlay').classList.add('show'); document.getElementById('siteSidebar').classList.add('show'); }
         function closeSidebar() { document.getElementById('sidebarOverlay').classList.remove('show'); document.getElementById('siteSidebar').classList.remove('show'); }
 
@@ -1182,10 +1226,18 @@
 
             document.getElementById('newCapyBtn').addEventListener('click', fetchCapybara);
             document.getElementById('downloadCapyBtn').addEventListener('click', downloadCapy);
+            document.getElementById('zestOverlay').addEventListener('click', closeZestOverlay);
 
             document.addEventListener('keydown', (e) => {
                 const sidebar = document.getElementById('siteSidebar');
-                if (e.key === 'Escape' && sidebar.classList.contains('show')) closeSidebar();
+                if (e.key === 'Escape') {
+                    if (document.getElementById('zestOverlay').classList.contains('show')) { closeZestOverlay(); return; }
+                    if (sidebar.classList.contains('show')) closeSidebar();
+                    return;
+                }
+                const active = document.activeElement;
+                const typing = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable);
+                if (!typing) trackZestBuffer(e.key);
             });
         }
 
