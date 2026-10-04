@@ -11,6 +11,57 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Titan+One&display=swap" rel="stylesheet">
 
 <style>
+:root {
+    --bg-main: #0bc2cf;
+    --bg-texture: linear-gradient(45deg, rgba(255, 255, 255, .08) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, .08) 75%);
+    --bg-texture-size: 80px 80px;
+    --hero-text-shadow: 4px 4px 0 #222, 8px 8px 12px rgba(0, 0, 0, .2);
+    --subtitle-shadow: #222;
+    --surface: #ffffff;
+    --surface-alt: #f5f5f5;
+    --track-bg: #eeeeee;
+    --ink: #222222;
+    --ink-soft: #555b61;
+    --label-soft: #64748b;
+    --border: #333333;
+    --shadow: #333333;
+    --hr-color: #dddddd;
+    --podium-gold: gold;
+    --podium-silver: silver;
+    --podium-bronze: #cd7f32;
+    --bar-green: #4ade80;
+    --bar-blue: #60a5fa;
+    --danger: #ff6b6b;
+    --danger-strong: #8b0000;
+    --danger-deep: #d62828;
+    --warn-bg: #ffe0e0;
+    --highlight-bg: #ffe066;
+    --alert-text: #1a1a1a;
+    --purple: #7c3aed;
+    --purple-bg: #f3e8ff;
+    --purple-row: #ede9fe;
+    --purple-bar: #a78bfa;
+    --purple-bar-alt: #818cf8;
+    --delta-up: #16a34a;
+    --delta-down: #dc2626;
+    --tier-diamond: #22d3ee;
+    --tier-platinum: #c084fc;
+    --tier-gold: #f59e0b;
+    --tier-silver: #94a3b8;
+    --tier-bronze: #cd7f32;
+    --tier-rising: #4ade80;
+    --skeleton-base: #eef1f4;
+    --skeleton-shine: rgba(255, 255, 255, .75);
+    --toast-bg: #222222;
+    --toast-text: #ffffff;
+    --compare-win-bg: #dcfce7;
+    --compare-lose-bg: #f1f5f9;
+    --compare-win-text: #166534;
+    --compare-lose-text: #64748b;
+    --compare-bar-win: #4ade80;
+    --compare-bar-lose: #cbd5e1;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -18,37 +69,40 @@
     font-family: 'Nunito', sans-serif;
     font-weight: 800;
 }
-
+html {
+    scroll-behavior: smooth;
+}
 body {
-    background: #0bc2cf;
+    background: var(--bg-main);
     min-height: 100vh;
     overflow-x: hidden;
     padding-bottom: 40px;
-    color: #222;
+    transition: background .3s ease;
 }
-
 body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%);
-    background-size: 80px 80px;
-    z-index: -2;
+    background: var(--bg-texture);
+    background-size: var(--bg-texture-size);
+    z-index: -4;
     pointer-events: none;
 }
-
 .blook {
     position: fixed;
     top: -150px;
     opacity: .25;
     animation: fall linear infinite;
     pointer-events: none;
-    z-index: -1;
+    z-index: -2;
 }
-
 @keyframes fall {
-    from { transform: translateY(0) rotate(0deg); }
-    to { transform: translateY(125vh) rotate(360deg); }
+    from {
+        transform: translateY(0) rotate(0deg);
+    }
+    to {
+        transform: translateY(120vh) rotate(360deg);
+    }
 }
 
 /* ── EXACT BLOOKTOOLS SIDEBAR SPEC ── */
@@ -179,40 +233,32 @@ body::before {
     .sidebar { width: 250px; }
 }
 
-/* ==================== HEADINGS & STATS ==================== */
+/* ==================== HEADINGS & STATS (matches leaderboard) ==================== */
 h1 {
     text-align: center;
     color: white;
     font-family: 'Titan One', cursive;
     font-size: 3.5rem;
     margin-top: 25px;
-    text-shadow: 4px 4px 0 #222, 8px 8px 12px rgba(0,0,0,.2);
+    text-shadow: var(--hero-text-shadow);
     padding: 0 15px;
     letter-spacing: 2px;
-    user-select: none;
 }
-
 .subtitle {
     text-align: center;
     color: white;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 1.3rem;
-    margin-bottom: 8px;
-    text-shadow: 2px 2px 0 #222;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 0 var(--subtitle-shadow);
 }
-
 .live-status {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     font-size: 0.95rem;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
     color: white;
-    text-shadow: 1px 1px 0 #222;
+    text-shadow: 1px 1px 0 var(--subtitle-shadow);
     min-height: 22px;
 }
-
 .live-dot {
     display: inline-block;
     width: 10px;
@@ -223,105 +269,140 @@ h1 {
     animation: pulse 1.5s infinite;
     vertical-align: middle;
 }
-
-.live-dot.loading { background: #fbbf24; animation: pulse 0.7s infinite; }
-.live-dot.error { background: #f87171; animation: none; }
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
+.live-dot.loading {
+    background: #fbbf24;
+    animation: pulse 0.7s infinite;
 }
-
+.live-dot.error {
+    background: #f87171;
+    animation: none;
+}
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
+}
 .container {
     width: 90%;
-    max-width: 1000px;
+    max-width: 1100px;
     margin: auto;
 }
 
-.refresh-btn {
+
+.stats-overview {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: 0 auto 22px auto;
+}
+.stat-pill {
+    background: var(--surface);
+    border: 4px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 5px 0 var(--shadow);
+    padding: 12px 20px;
+    text-align: center;
+    min-width: 120px;
+    flex: 1;
+    max-width: 220px;
+    transition: background-color .3s ease, border-color .3s ease;
+}
+.stat-pill-icon {
+    font-size: 18px;
+    color: var(--bar-blue);
+    margin-bottom: 2px;
+}
+.stat-pill-value {
+    font-family: 'Titan One', cursive;
+    font-size: 24px;
+    color: var(--ink);
+    font-weight: normal;
     display: block;
-    margin: 0 auto 20px auto;
-    padding: 10px 25px;
-    background: white;
-    border: 3.5px solid #333;
-    border-radius: 14px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 16px;
-    font-weight: 900;
-    cursor: pointer;
-    box-shadow: 0 4px 0 #333;
-    transition: 0.15s ease;
 }
-
-.refresh-btn:hover {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 #333;
+.stat-pill-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--label-soft);
+    margin-top: 2px;
 }
-
-.refresh-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
+@media (max-width:640px) {
+    .stat-pill {
+        min-width: 44%;
+    }
 }
 
 .controls {
     display: flex;
     align-items: center;
     gap: 12px;
-    max-width: 600px;
+    max-width: 680px;
     margin: 0 auto 30px auto;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
 }
-
 .search {
     flex: 1;
-    min-width: 0;
-    padding: 13px 18px;
-    border-radius: 16px;
-    font-size: 17px;
-    font-weight: 800;
-    border: 3.5px solid #333;
-    box-shadow: 0 4px 0 #333;
+    min-width: 160px;
+    padding: 15px;
+    border-radius: 15px;
+    font-size: 18px;
+    border: 4px solid var(--border);
+    box-shadow: 0 5px 0 var(--shadow);
     outline: none;
     transition: 0.2s;
     font-family: 'Nunito', sans-serif;
-    background: white;
+    font-weight: 800;
+    background: var(--surface);
+    color: var(--ink);
 }
-
 .search:focus {
     transform: translateY(2px);
-    box-shadow: 0 2px 0 #333;
+    box-shadow: 0 3px 0 var(--shadow);
+}
+.search::placeholder {
+    color: var(--label-soft);
+    opacity: 1;
 }
 
 .sort-toggle {
     display: flex;
-    border: 3.5px solid #333;
-    border-radius: 16px;
+    border: 4px solid var(--border);
+    border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 4px 0 #333;
+    box-shadow: 0 5px 0 var(--shadow);
     flex-shrink: 0;
-    background: white;
 }
-
 .sort-btn {
-    padding: 11px 14px;
-    background: white;
+    padding: 12px 14px;
+    background: var(--surface);
     border: none;
     font-family: 'Nunito', sans-serif;
     font-size: 14px;
     font-weight: 900;
     cursor: pointer;
     transition: 0.15s;
-    color: #555;
+    color: var(--ink);
     white-space: nowrap;
 }
-
-.sort-btn:not(:last-child) { border-right: 2.5px solid #333; }
+.sort-btn:not(:last-child) {
+    border-right: 3px solid var(--border);
+}
 .sort-btn.active {
-    background: #333;
+    background: var(--border);
     color: white;
 }
-.sort-btn:hover:not(.active) { background: #f0f0f0; }
+.sort-btn:hover:not(.active) {
+    background: var(--surface-alt);
+}
+
 
 /* Custom Badge Pill */
 .custom-badge-pill {
@@ -725,452 +806,668 @@ h1 {
     object-fit: contain !important;
 }
 
-/* ==================== PODIUM (COMPACT & SLEEK PROPORTIONS) ==================== */
-.podium-container {
-    width: 100%;
-    max-width: 440px;
-    margin: 0 auto 30px auto;
-    padding: 0 6px;
-}
-
+/* ==================== PODIUM, ROWS & MODALS (matches leaderboard) ==================== */
 .podium {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 8px;
-    width: 100%;
+    gap: 15px;
+    margin-bottom: 40px;
 }
-
 .podium-card {
-    flex: 1;
-    min-width: 88px;
-    max-width: 136px;
+    width: 180px;
     text-align: center;
-    color: #222;
-    border: 3px solid #222;
+    color: black;
+    border: 4px solid var(--border);
     border-radius: 20px 20px 0 0;
-    box-shadow: 0 5px 0 #222;
-    transition: transform 0.2s ease, filter 0.2s ease;
+    font-size: 22px;
+    padding-top: 15px;
+    box-shadow: 0 8px 0 var(--shadow);
+    transition: 0.3s;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 4px 0 4px;
     position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    user-select: none;
 }
-
-.podium-card:hover {
-    transform: translateY(-3px);
-    filter: brightness(1.05);
-}
-
-.podium-card.first {
-    background: #ffd000;
-    height: 205px;
-    order: 2;
-}
-
-.podium-card.second {
-    background: #a8a8a8;
-    height: 172px;
-    order: 1;
-}
-
-.podium-card.third {
-    background: #c87d32;
-    height: 148px;
-    order: 3;
-}
-
-.medal-badge {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 2px;
-}
-
-.medal-svg {
-    width: 32px;
-    height: 32px;
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
-}
-
-.podium-pfp-wrap {
-    margin: 2px auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.podium-pfp {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    border: 2.5px solid #222;
-    object-fit: cover;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,.2);
-}
-
 .podium-name {
-    font-family: 'Nunito', sans-serif;
-    font-size: 15px;
-    font-weight: 900;
-    letter-spacing: -0.2px;
+    font-family: 'Titan One', cursive;
+    font-size: 22px;
+    letter-spacing: 1px;
     line-height: 1.15;
-    color: #111;
     word-break: break-word;
-    padding: 0 2px;
-    margin-top: 3px;
+    hyphens: auto;
+    padding: 0 8px;
+    font-weight: normal;
 }
-
 .podium-subs {
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
-    font-weight: 800;
-    color: #111;
-    margin-top: 1px;
-    margin-bottom: auto;
-}
-
-.podium-base-bar {
-    width: calc(100% + 8px);
-    height: 8px;
-    background: #222;
-    margin: 4px -4px 0 -4px;
-    flex-shrink: 0;
-}
-
-/* ==================== LEADERBOARD LIST ==================== */
-.leaderboard {
-    background: white;
-    border-radius: 24px;
-    padding: 16px;
-    border: 4px solid #333;
-    box-shadow: 0 8px 0 #333;
-}
-
-.row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    margin-bottom: 10px;
-    border-radius: 16px;
-    border: 3.5px solid #333;
-    background: #f5f5f5;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-    user-select: none;
-}
-
-.row:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 0 #333;
-}
-
-.rank {
-    width: 44px;
-    font-family: 'Nunito', sans-serif;
     font-size: 20px;
     font-weight: 900;
-    text-align: center;
-    flex-shrink: 0;
-    color: #222;
+    margin-top: auto;
+}
+a.podium-link {
+    text-decoration: none;
+    color: inherit;
+    transition: 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    padding: 0 0 15px 0;
+    gap: 8px;
+}
+a.podium-link:hover .podium-name {
+    text-decoration: underline;
+}
+.podium-star-row {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 2;
+}
+.first {
+    background: var(--podium-gold);
+    min-height: 250px;
+    order: 2;
+}
+.second {
+    background: var(--podium-silver);
+    min-height: 210px;
+    order: 1;
+}
+.third {
+    background: var(--podium-bronze);
+    min-height: 180px;
+    order: 3;
 }
 
 .row-pfp {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    border: 3px solid #333;
+    border: 3px solid var(--border);
     object-fit: cover;
     background: #fff;
     flex-shrink: 0;
 }
-
-.row-content {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 4px;
+.podium-pfp {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid var(--border);
+    object-fit: cover;
+    background: #fff;
+    margin: 2px auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
-
-.row-top {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.name {
-    font-family: 'Nunito', sans-serif;
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: -0.2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #222;
-}
-
-.subs {
-    width: 80px;
-    text-align: right;
-    font-family: 'Nunito', sans-serif;
-    font-size: 17px;
-    font-weight: 800;
-    flex-shrink: 0;
-    color: #222;
-}
-
-.bar-bg {
-    width: 100%;
-    height: 14px;
-    border: 2px solid #333;
-    border-radius: 10px;
-    overflow: hidden;
-    background: rgba(0,0,0,0.06);
-}
-
-.bar {
-    height: 100%;
-    background: #4ade80;
-    border-radius: 8px;
-    transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.bar.views-bar { background: #60a5fa; }
-
-.fastyjay { background: #ffe066 !important; border: 3.5px solid #333; box-shadow: 0 0 15px gold; }
-.inactive { background: #ffe0e0 !important; border: 3.5px solid #333; box-shadow: 0 0 12px rgba(239,68,68,0.2); }
-.terminated { background: #ff6b6b !important; border: 3.5px solid #8b0000; box-shadow: 0 0 15px #ff0000; color: white !important; }
-.terminated .rank, .terminated .name, .terminated .subs { color: white !important; }
-
-/* Section Header */
-.section-header {
-    margin-top: 40px;
-    margin-bottom: 12px;
-    text-align: center;
-}
-
-.section-header h2 {
-    font-family: 'Titan One', cursive;
-    font-size: 2.2rem;
-    color: white;
-    text-shadow: 3px 3px 0 #222;
-    letter-spacing: 1.5px;
-}
-
-.section-header p {
-    color: white;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    font-size: 0.95rem;
-    text-shadow: 1px 1px 0 #222;
-}
-
-.leaderboard.underrated {
-    background: #f3e8ff;
-    border-color: #7c3aed;
-    box-shadow: 0 8px 0 #7c3aed;
-}
-
-.leaderboard.underrated .row {
-    background: #ede9fe;
-    border-color: #7c3aed;
-}
-
-.leaderboard.underrated .row:hover {
-    box-shadow: 0 4px 0 #7c3aed;
-}
-
-.leaderboard.underrated .bar {
-    background: #a78bfa;
-}
-
-.leaderboard.underrated .bar.views-bar {
-    background: #818cf8;
-}
-
-.leaderboard.underrated .bar-bg {
-    border-color: #7c3aed;
-}
-
-/* Modals */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    inset: 0;
-    background-color: rgba(0,0,0,0.55);
-    backdrop-filter: blur(5px);
-    justify-content: center;
-    align-items: center;
-    padding: 16px;
-}
-
-.modal.show { display: flex; }
-
-.modal-content {
-    background-color: #fff;
-    padding: 24px;
-    border: 4px solid #333;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 8px 0 #333;
-    animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes modalPop {
-    from { transform: scale(0.85); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
 .modal-pfp {
     width: 84px;
     height: 84px;
     border-radius: 50%;
-    border: 4px solid #333;
+    border: 4px solid var(--border);
     object-fit: cover;
     background: #fff;
     margin: 0 auto 12px auto;
     display: block;
-    box-shadow: 0 4px 6px rgba(0,0,0,.15);
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.leaderboard {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 20px;
+    border: 4px solid var(--border);
+    box-shadow: 0 8px 0 var(--shadow);
+    transition: background-color .3s ease, border-color .3s ease;
+}
+a.row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    border: 3px solid var(--border);
+    background: var(--surface-alt);
+    transition: .2s;
+    text-decoration: none;
+    color: var(--ink);
+    cursor: pointer;
+}
+a.row:hover {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 4px 0 var(--shadow);
+}
+.rank {
+    width: 48px;
+    font-size: 22px;
+    font-weight: 900;
+    flex-shrink: 0;
+}
+.name {
+    width: 210px;
+    min-width: 0;
+    font-family: 'Titan One', cursive;
+    font-size: 22px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    padding-top: 3px;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 4px;
+    overflow: hidden;
+}
+.name-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+.subs {
+    width: 130px;
+    text-align: right;
+    font-weight: 900;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
 }
 
+.bar-bg {
+    flex: 1;
+    max-width: 500px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--track-bg);
+}
+.bar {
+    height: 100%;
+    background: var(--bar-green);
+    transition: width 0.8s ease-out;
+}
+.bar.views-bar {
+    background: var(--bar-blue);
+}
+.fastyjay {
+    background: var(--highlight-bg) !important;
+    border: 4px solid var(--border);
+    box-shadow: 0 0 15px gold;
+}
+.fastyjay,
+.fastyjay .name,
+.fastyjay .subs,
+.fastyjay .rank {
+    color: var(--alert-text) !important;
+}
+.inactive {
+    background: var(--warn-bg) !important;
+    border: 4px solid var(--border);
+    box-shadow: 0 0 15px red;
+}
+.inactive,
+.inactive .name,
+.inactive .subs,
+.inactive .rank {
+    color: var(--alert-text) !important;
+}
+.terminated {
+    background: var(--danger) !important;
+    border: 4px solid var(--danger-strong);
+    box-shadow: 0 0 15px #ff0000;
+}
+.terminated,
+.terminated .name,
+.terminated .subs,
+.terminated .rank {
+    color: var(--alert-text) !important;
+}
+
+.tier-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    margin-right: 6px;
+    font-size: 10px;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+}
+.tier-badge.tier-diamond {
+    background: var(--tier-diamond);
+    animation: diamondGlow 2.4s ease-in-out infinite;
+}
+.tier-badge.tier-platinum {
+    background: var(--tier-platinum);
+}
+.tier-badge.tier-gold {
+    background: var(--tier-gold);
+}
+.tier-badge.tier-silver {
+    background: var(--tier-silver);
+}
+.tier-badge.tier-bronze {
+    background: var(--tier-bronze);
+}
+.tier-badge.tier-rising {
+    background: var(--tier-rising);
+}
+@keyframes diamondGlow {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(34, 211, 238, .55);
+    }
+    50% {
+        box-shadow: 0 0 0 4px rgba(34, 211, 238, 0);
+    }
+}
+
+.tier-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    border: 2px solid var(--border);
+    margin: 4px 0 0 0;
+}
+.tier-chip.tier-diamond {
+    background: color-mix(in srgb, var(--tier-diamond) 25%, transparent);
+    color: #0e7490;
+}
+.tier-chip.tier-platinum {
+    background: color-mix(in srgb, var(--tier-platinum) 25%, transparent);
+    color: #7e22ce;
+}
+.tier-chip.tier-gold {
+    background: color-mix(in srgb, var(--tier-gold) 25%, transparent);
+    color: #92400e;
+}
+.tier-chip.tier-silver {
+    background: color-mix(in srgb, var(--tier-silver) 25%, transparent);
+    color: #334155;
+}
+.tier-chip.tier-bronze {
+    background: color-mix(in srgb, var(--tier-bronze) 25%, transparent);
+    color: #7c3f0c;
+}
+.tier-chip.tier-rising {
+    background: color-mix(in srgb, var(--tier-rising) 25%, transparent);
+    color: #15803d;
+}
+
+.delta {
+    font-size: 11px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+.delta.up {
+    color: var(--delta-up);
+}
+.delta.down {
+    color: var(--delta-down);
+}
+
+.skeleton-row {
+    height: 56px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    border: 3px solid var(--border);
+    background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 37%, var(--skeleton-base) 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+}
+.skeleton-podium-card {
+    width: 180px;
+    border: 4px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 37%, var(--skeleton-base) 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+}
+.skeleton-podium-card.first {
+    min-height: 250px;
+    order: 2;
+}
+.skeleton-podium-card.second {
+    min-height: 210px;
+    order: 1;
+}
+.skeleton-podium-card.third {
+    min-height: 180px;
+    order: 3;
+}
+@keyframes shimmer {
+    0% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(6px);
+}
+.modal.show {
+    display: flex;
+}
+.modal-content {
+    background-color: var(--surface);
+    padding: 20px;
+    border: 4px solid var(--border);
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+    box-shadow: 0 8px 0 var(--shadow);
+}
 .modal-content h2 {
     font-family: 'Titan One', cursive;
-    margin-bottom: 12px;
-    font-size: 1.8rem;
-    color: #222;
+    font-weight: normal;
+    margin-bottom: 15px;
+    color: var(--ink);
+}
+.modal-content p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: var(--ink-soft);
+    font-weight: 800;
+}
+.close-btn {
+    background: var(--border);
+    color: white;
+    border: 3px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    box-shadow: 0 4px 0 var(--shadow);
+    transition: 0.2s;
+}
+.close-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--shadow);
 }
 
+.tooltip-container {
+    position: relative;
+    display: inline-flex;
+    cursor: help;
+    margin-left: 6px;
+}
+.custom-tooltip {
+    visibility: hidden;
+    width: 180px;
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    padding: 8px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 100;
+    bottom: 140%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border: 1px solid #444;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    font-weight: 700;
+}
+.tooltip-container:hover .custom-tooltip,
+.tooltip-container:focus-within .custom-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.section-header {
+    margin-top: 40px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+.section-header h2 {
+    font-family: 'Titan One', cursive;
+    font-weight: normal;
+    font-size: 2.2rem;
+    color: white;
+    text-shadow: 3px 3px 0 #222;
+    letter-spacing: 2px;
+}
+.section-header p {
+    color: white;
+    font-size: 1rem;
+    text-shadow: 1px 1px 0 #222;
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+.leaderboard.underrated {
+    background: var(--purple-bg);
+    border-color: var(--purple);
+    box-shadow: 0 8px 0 var(--purple);
+}
+.leaderboard.underrated a.row {
+    background: var(--purple-row);
+    border-color: var(--purple);
+    color: var(--ink);
+}
+
+[data-theme="dark"] .leaderboard.underrated a.row,
+[data-theme="winter"] .leaderboard.underrated a.row,
+[data-theme="spring"] .leaderboard.underrated a.row,
+[data-theme="independence"] .leaderboard.underrated a.row,
+[data-theme="autumn"] .leaderboard.underrated a.row,
+[data-theme="seasonal"] .leaderboard.underrated a.row {
+    color: #ffffff;
+}
+.leaderboard.underrated a.row:hover {
+    box-shadow: 0 4px 0 var(--purple);
+}
+.leaderboard.underrated .bar {
+    background: var(--purple-bar);
+}
+.leaderboard.underrated .bar.views-bar {
+    background: var(--purple-bar-alt);
+}
+.leaderboard.underrated .bar-bg {
+    border-color: var(--purple);
+}
+
+.stats-card {
+    background: var(--surface);
+    text-align: center;
+}
+.stats-card h2 {
+    color: var(--ink);
+    font-size: 32px;
+    font-family: 'Titan One', cursive;
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+.stats-name-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+}
 .stats-container {
     display: flex;
-    gap: 12px;
+    gap: 15px;
     justify-content: center;
-    margin: 16px 0;
+    margin: 20px 0 8px 0;
 }
-
 .stat-box {
-    background: #f8fafc;
-    border: 3px solid #333;
-    border-radius: 14px;
-    padding: 12px 10px;
+    background: var(--surface-alt);
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
     flex: 1;
-    box-shadow: 0 3px 0 #e2e8f0;
+    box-shadow: 0 4px 0 var(--border);
 }
-
 .stat-label {
-    font-family: 'Nunito', sans-serif;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 900;
-    color: #64748b;
+    color: var(--label-soft);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
-
 .stat-value {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 22px;
-    color: #16a34a;
-    margin-top: 4px;
+    font-family: 'Titan One', cursive;
+    font-weight: normal;
+    font-size: 26px;
+    color: var(--bar-green);
+    margin-top: 5px;
 }
-
-.stat-box:nth-child(2) .stat-value { color: #2563eb; }
-
+.stat-box:nth-child(2) .stat-value {
+    color: var(--bar-blue);
+}
+.modal-24h-change {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ink-soft);
+    margin: 2px 0 4px 0;
+}
 .modal-buttons {
     display: flex;
     gap: 10px;
     justify-content: center;
     margin-top: 20px;
+    flex-wrap: wrap;
 }
-
 .visit-btn {
-    flex: 1;
     background: #ef4444;
     color: white;
     text-decoration: none;
     border: 3px solid #991b1b;
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 10px 16px;
-    font-family: 'Nunito', sans-serif;
     font-size: 15px;
     font-weight: 900;
     box-shadow: 0 4px 0 #991b1b;
-    transition: 0.15s;
+    transition: 0.2s;
 }
-
-.visit-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #991b1b; }
-
-.close-btn {
-    background: #333;
+.visit-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #991b1b;
+}
+.copy-btn {
+    background: var(--bar-blue);
     color: white;
-    border: 3px solid #111;
-    border-radius: 12px;
-    padding: 10px 20px;
-    font-family: 'Nunito', sans-serif;
+    border: 3px solid #1d4ed8;
+    border-radius: 10px;
+    padding: 10px 16px;
     font-size: 15px;
     font-weight: 900;
+    box-shadow: 0 4px 0 #1d4ed8;
     cursor: pointer;
-    box-shadow: 0 4px 0 #111;
-    transition: 0.15s;
+    transition: 0.2s;
+    font-family: 'Nunito', sans-serif;
 }
-
-.close-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #111; }
-
-/* Terminated Card */
+.copy-btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #1d4ed8;
+}
 .terminated-card {
-    background: linear-gradient(180deg, #fff, #ffeaea);
-    border-color: #8b0000;
-    box-shadow: 0 8px 0 #8b0000;
-    max-width: 420px;
+    background: linear-gradient(180deg, var(--surface), var(--warn-bg));
+    max-width: 460px;
     padding: 0;
     overflow: hidden;
+    animation: pop .25s ease;
 }
-
 .terminated-card h2 {
-    background: #d62828;
+    background: var(--danger-deep);
     color: #fff;
-    padding: 16px;
+    padding: 18px;
     margin: 0;
-    font-size: 1.5rem;
+    text-shadow: none;
 }
-
 .terminated-card p {
-    padding: 18px 20px 10px 20px;
-    font-size: 16px;
-    line-height: 1.4;
-    font-weight: 700;
+    padding: 24px;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ink);
 }
-
 .terminated-card .close-btn {
-    margin-bottom: 20px;
-    background: #d62828;
-    border-color: #8b0000;
-    box-shadow: 0 4px 0 #8b0000;
+    margin-bottom: 22px;
+    background: var(--danger-deep);
+    border-color: var(--danger-strong);
+    box-shadow: 0 4px 0 var(--danger-strong);
+}
+@keyframes pop {
+    from {
+        transform: scale(.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
-/* Tooltip */
-.tooltip-container { position: relative; display: inline-flex; cursor: help; margin-left: 4px; }
-.custom-tooltip {
-    visibility: hidden; width: 170px; background-color: #222; color: #fff; text-align: center;
-    padding: 6px 10px; border-radius: 8px; position: absolute; z-index: 100;
-    bottom: 135%; left: 50%; transform: translateX(-50%);
-    font-size: 12px; font-weight: 700; opacity: 0; transition: opacity 0.2s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: none;
+@keyframes rowIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
-.tooltip-container:hover .custom-tooltip { visibility: visible; opacity: 1; }
+@keyframes podiumIn {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(.92);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+@keyframes valueFlash {
+    0% {
+        box-shadow: 0 0 0 0 rgba(96, 165, 250, 0);
+    }
+    25% {
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, .6);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(96, 165, 250, 0);
+    }
+}
+.row-flash {
+    animation: valueFlash 1.7s ease;
+}
+
+.modal-content {
+    animation: pop .28s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+
+.podium-container {
+    width: 100%;
+}
 
 /* ==================== CUSTOM LEADERBOARD (GEAR & MODAL) ==================== */
 .gear-btn {
@@ -1586,40 +1883,58 @@ h1 {
 
 /* ==================== MOBILE RESPONSIVENESS ==================== */
 @media (max-width: 768px) {
-    h1 { font-size: 2.5rem; margin-top: 25px; }
-    .subtitle { font-size: 1.1rem; }
-    .controls { flex-wrap: nowrap; gap: 8px; margin-bottom: 20px; }
-    .search { font-size: 15px; padding: 10px 14px; }
-    .sort-btn { font-size: 13px; padding: 10px 12px; }
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .sort-toggle {
+        justify-content: center;
+    }
+    .podium {
+        flex-wrap: wrap;
+    }
+    .podium-card {
+        width: 110px;
+        font-size: 16px;
+    }
+    .podium-name {
+        font-size: 16px;
+    }
+    .podium-subs {
+        font-size: 14px;
+    }
+    .first {
+        height: 210px;
+    }
+    .second {
+        height: 170px;
+    }
+    .third {
+        height: 150px;
+    }
+    a.row {
+        flex-wrap: wrap;
+    }
+    .name {
+        width: auto;
+        flex: 1;
+    }
+    .bar-bg {
+        width: 100%;
+        flex: none;
+    }
+}
 
-    .podium-container { max-width: 340px; margin-bottom: 22px; }
-    .podium-card.first { height: 165px; }
-    .podium-card.second { height: 140px; }
-    .podium-card.third { height: 120px; }
 
-    .podium-pfp { width: 42px; height: 42px; border-width: 2px; }
-    .medal-svg { width: 26px; height: 26px; }
-    .podium-name { font-size: 12.5px; }
-    .podium-subs { font-size: 12px; }
-
-    .row { padding: 8px 10px; gap: 8px; }
-    .rank { width: 34px; font-size: 17px; }
-    .row-pfp { width: 38px; height: 38px; }
-    .name { font-size: 16px; }
-    .subs { width: 65px; font-size: 14px; }
-
+@media (max-width: 768px) {
     .custom-page-header h1 { font-size: 2rem; }
     .custom-card { padding: 8px 10px; gap: 6px; }
     .custom-card-name { font-size: 15px; min-width: 100px; }
 }
 
-@media (max-width: 480px) {
-    .container { width: 94%; }
-    .podium-container { max-width: 310px; }
-    .podium-card { min-width: 72px; padding: 5px 2px 0 2px; }
-    .podium-name { font-size: 11.5px; }
-    .podium-subs { font-size: 11px; }
-    .sort-btn { padding: 8px 10px; font-size: 12px; }
+@media (prefers-reduced-motion: reduce) {
+    .blook, .live-dot, .skeleton-row, .skeleton-podium-card { animation: none; }
+    * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
 </style>
 </head>
@@ -1635,8 +1950,9 @@ h1 {
     </div>
     <a href="https://blooket.mathuniverse.online" class="sidebar-home-btn"><span class="sb-icon"><i class="fa-solid fa-house"></i></span> Home</a>
     <div class="sidebar-links">
-        <a href="leaderboard" data-page="leaderboard" class="active" onclick="closeSidebar(); return false;"><span class="sb-icon"><i class="fa-solid fa-trophy"></i></span> Leaderboard</a>
-        <a href="https://blooket.mathuniverse.online/guess" data-page="guess" target="_blank" rel="noopener"><span class="sb-icon"><i class="fa-solid fa-question"></i></span> Guess the Blooktuber</a>
+        <a href="leaderboard" data-page="leaderboard"><span class="sb-icon"><i class="fa-solid fa-trophy"></i></span> Leaderboard</a>
+        <a href="guess" data-page="guess"><span class="sb-icon"><i class="fa-solid fa-question"></i></span> Guess the Blooktuber</a>
+        <a href="custom" data-page="custom" class="active" onclick="closeSidebar(); return false;"><span class="sb-icon"><i class="fa-solid fa-gear"></i></span> Custom</a>
         <div class="sidebar-divider"></div>
         <a href="https://forms.gle/UdtzPTVHsx26kqJS9" target="_blank" rel="noopener"><span class="sb-icon"><i class="fa-solid fa-circle-info"></i></span> Suggestions</a>
         <a href="https://discord.gg/DkfmANQBzw" target="_blank" rel="noopener"><span class="sb-icon"><i class="fa-brands fa-discord"></i></span> Discord</a>
@@ -1657,19 +1973,25 @@ h1 {
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/unicorn.svg" alt="" aria-hidden="true" style="left:30%; width:90px; animation-duration:16s; animation-delay:-9s;">
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/mouse.svg" alt="" aria-hidden="true" style="left:68%; width:60px; animation-duration:14s; animation-delay:-15s;">
 
-<h1 id="siteTitleTrigger" role="button" tabindex="0" aria-label="Open menu" style="cursor:pointer;" onclick="openSidebar()">BlookTools</h1>
-<div class="subtitle" id="siteSubtitleDisplay">Custom Leaderboard! ⚙️</div>
+<header>
+    <h1 id="siteTitleTrigger" role="button" tabindex="0" aria-label="Open menu" style="cursor:pointer;" onclick="openSidebar()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSidebar();}">BlookTools</h1>
+    <div class="subtitle" id="siteSubtitleDisplay">Custom Leaderboard! ⚙️</div>
+    <div class="live-status" id="liveStatus" aria-live="polite">
+        <span class="live-dot loading" id="liveDot"></span>
+        <span id="liveText">Fetching live counts...</span>
+    </div>
+</header>
 
-<div class="live-status" id="liveStatus">
-    <span class="live-dot loading" id="liveDot"></span>
-    <span id="liveText">Fetching live counts...</span>
-</div>
-
-<div class="container">
-
+<main class="container">
+    <div class="stats-overview" aria-label="Board totals">
+        <div class="stat-pill"><div class="stat-pill-icon"><i class="fa-solid fa-users"></i></div><span class="stat-pill-value" id="statTracked">0</span><div class="stat-pill-label">On Your Board</div></div>
+        <div class="stat-pill"><div class="stat-pill-icon"><i class="fa-solid fa-user-group"></i></div><span class="stat-pill-value" id="statSubs">0</span><div class="stat-pill-label">Combined Subs</div></div>
+        <div class="stat-pill"><div class="stat-pill-icon"><i class="fa-solid fa-eye"></i></div><span class="stat-pill-value" id="statViews">0</span><div class="stat-pill-label">Combined Views</div></div>
+        <div class="stat-pill"><div class="stat-pill-icon"><i class="fa-solid fa-signal"></i></div><span class="stat-pill-value" id="statActive">0</span><div class="stat-pill-label">Active Blooktubers</div></div>
+    </div>
 
     <div class="controls">
-        <input type="text" id="search" class="search" placeholder="Search Blooktubers..." oninput="onSearchChange()">
+        <input type="text" id="search" class="search" placeholder="Search Blooktubers... (press / to focus)" aria-label="Search Blooktubers" oninput="onSearchChange()">
         <div class="sort-toggle">
             <button class="sort-btn active" id="sortSubs" onclick="setSort('subs')">📊 Subs</button>
             <button class="sort-btn" id="sortViews" onclick="setSort('views')">👁️ Views</button>
@@ -1678,12 +2000,17 @@ h1 {
 
     <!-- Podium Component -->
     <div class="podium-container" id="podiumContainer">
-        <div class="podium" id="podium"></div>
+        <div class="podium" id="podium">
+            <div class="skeleton-podium-card second"></div>
+            <div class="skeleton-podium-card first"></div>
+            <div class="skeleton-podium-card third"></div>
+        </div>
     </div>
 
     <!-- Leaderboard Rows -->
     <div class="leaderboard" id="leaderboard">
-        <div style="text-align:center; padding:30px; font-size:18px; font-weight:800;">Loading live counts... 🔄</div>
+        <div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div>
+        <div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div>
     </div>
 
     <!-- Underrated section -->
@@ -1692,7 +2019,7 @@ h1 {
         <p id="underratedSub">Blooktubers with under 100 subscribers</p>
     </div>
     <div class="leaderboard underrated" id="underratedBoard" style="display:none;"></div>
-</div>
+</main>
 
 <!-- Floating Gear Button -->
 <button id="adminToggleBtn" class="gear-btn" onclick="toggleAdminPanel()" title="Customize your leaderboard" aria-label="Customize your leaderboard">
@@ -1870,9 +2197,10 @@ h1 {
 
 <!-- ==================== STATS MODAL ==================== -->
 <div id="statsModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content stats-card">
         <img src="" id="modalPfp" class="modal-pfp" alt="Creator Profile Picture">
-        <h2 id="modalName">Creator Name</h2>
+        <div class="stats-name-row"><h2 id="modalName">Creator Name</h2></div>
+        <div id="modalTier" class="tier-chip" style="display:none;"></div>
         <div class="stats-container">
             <div class="stat-box">
                 <div class="stat-label">Subscribers</div>
@@ -1974,65 +2302,61 @@ const PFP_BY_NAME = {
   "Blook Master": "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FcU5e1UhyIL87C5TnQUkPcEhY6a_n21xq7LC_ZSjWXbPAzclYzArPrI0OTAD5UuHMmQhoO_azFQ%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75",
 };
 
-let inactiveCreators = ["blooket elite", "bil"];
-let terminatedCreators = [];
+let inactiveCreators = ["blooket elite", "bil", "c0mputerm4n", "mr noble wywy", "imbac", "cereal.for.blooket"];
+let terminatedCreators = ["kinkade"];
 
 let creatorList = [
-  ["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT"],
-  ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4"],
-  ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket"],
-  ["Blooket", "PlayBlooket", "https://www.youtube.com/@PlayBlooket"],
-  ["BIL", "BILBRB", "https://www.youtube.com/@BILBRB"],
-  ["Mega Bot", "MegaBot91", "https://www.youtube.com/@MegaBot91"],
-  ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked"],
-  ["Monkey Master", "MonkeyMasterYT", "https://www.youtube.com/@MonkeyMasterYT"],
-  ["Blooket Ace", "blooketace", "https://www.youtube.com/@blooketace"],
-  ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay"],
-  ["theblooketgamer", "theblooketgamer", "https://www.youtube.com/@theblooketgamer"],
-  ["Blooket Gods", "BlooketGodsYT", "https://www.youtube.com/@BlooketGodsYT"],
-  ["Slade2", "theslade2", "https://www.youtube.com/@theslade2"],
-  ["Blooket Life", "BlooketLifeYT", "https://www.youtube.com/@BlooketLifeYT"],
-  ["JustaPanda", "JustaPanda888", "https://www.youtube.com/@JustaPanda888"],
-  ["Blooket Insane", "blooketinsane", "https://www.youtube.com/@blooketinsane"],
-  ["KoolKid", "ImAwesome0703", "https://www.youtube.com/@ImAwesome0703"],
-  ["notRIC", "playblacket", "https://www.youtube.com/@playblacket"],
-  ["SRN Games", "srngameslol", "https://www.youtube.com/@srngameslol"],
-  ["BlooketBam", "BlooketBAM", "https://www.youtube.com/@BlooketBAM"],
-  ["Blook Master", "BlookMasterYT", "https://www.youtube.com/@BlookMasterYT"],
-  ["Twisted Bread", "TwistedBread", "https://www.youtube.com/@TwistedBread/"],
-  ["Pig55", "Pig_55", "https://www.youtube.com/@Pig_55"],
-  ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries"],
-  ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT"],
-  ["TheBlooketDude", "TheBlooketDude", "https://www.youtube.com/@TheBlooketDude"],
-  ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT"],
-  ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT"],
-  ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook"],
-  ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer"],
-  ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan"],
-  ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT"],
-  ["Freedo", "TheRealFreedoBlox", "https://www.youtube.com/@TheRealFreedoBlox"],
-  ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw"],
-  ["Blooket Galaxy", "BlooketGalaxy", "https://www.youtube.com/@BlooketGalaxy"],
-  ["TheBlooketBro", "theblooketbro", "https://www.youtube.com/@theblooketbro"],
-  ["XpBlooket32", "XPgamer32Blooket", "https://www.youtube.com/@XPgamer32Blooket"],
-  ["Blooket Gael", "UCOhGtij6ftod4pJ6mhU-skQ", "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ"],
-  ["c0mputerm4n", "c0mputerm4n-yt", "https://www.youtube.com/@c0mputerm4n-yt"],
-  ["Blooket Blitz", "BlooketBiltzYT", "https://www.youtube.com/@BlooketBiltzYT"],
-  ["BlookFun", "blookfun", "https://www.youtube.com/@blookfun"]
+  ["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT", "https://yt3.googleusercontent.com/fpVQ5VoYlN-UptRogESSqHnxEX61T-7YW1YNGObVrFX2w_1jBO-njl76kt-6vkPF_2cC9x66kQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket", "https://yt3.googleusercontent.com/OmDwNKSgt4mxydmndADjlva5mWYKLVpm2BGLrzMlU7GWIRTgE3eReMX40s147P31K4Z1k51Phg=s800-c-k-c0x00ffffff-no-rj"],
+  ["BIL", "BILBRB", "https://www.youtube.com/@BILBRB", "https://yt3.googleusercontent.com/vWuC0e00QIpkpWhkt30Vfc8ogrOL2ego-TH_B55U-EC4Xf-WmiInutIW7gLvtrLmUs6yt4eZPNg=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket", "PlayBlooket", "https://www.youtube.com/@PlayBlooket", "https://yt3.googleusercontent.com/ytc/AIdro_n9MuS8YZrvKTzvVPJhLaRlgDjUouMy9flhM8rbKox6epI=s800-c-k-c0x00ffffff-no-rj"],            ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked", "https://yt3.googleusercontent.com/w_Hs7-L_VL_uZGxhSfncFe7aZfhRjkP5O1BF2NjukAKYbGfSeFcLeCYTDfyfNnRH95l32Aj6DA=s800-c-k-c0x00ffffff-no-rj"],
+  ["Monkey Master", "MonkeyMasterYT", "https://www.youtube.com/@MonkeyMasterYT", "https://yt3.ggpht.com/vHPdt2TV8_lN5eYY6ODGprTOb2rLt9Z0PHCA8I5n0vwvcvzrFCo-0ZC3B9MR7M16hyZMcIgT4miW-w=s400-c-fcrop64=1,38000000c7ffffff-rw-nd-v1"],
+  ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4", "https://yt3.googleusercontent.com/sGMDSWtF1ljfF1LvdvSfWvvHUaDFY7xiqhNZHawJ-Kz-pLvMcd2sf3HkX3ojPe7XIAOHxgAzkm4=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Ace", "blooketace", "https://www.youtube.com/@blooketace", "https://yt3.googleusercontent.com/qfQMmUYa3shmyhWigiZwO0T-shBfKTJ09Nv1L9W3dUQWuIhlNGk6ZGGC14Yqz1uaMmLmrm25=s800-c-k-c0x00ffffff-no-rj"],
+  ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay", "https://yt3.googleusercontent.com/VuM8z5VYXi_TIw7dr0z5mg9O6fwzy8lzOGUFTR63zmciyPMVzB8ORpnSAwdcs_AUISyBHH0K=s800-c-k-c0x00ffffff-no-rj"],
+  ["theblooketgamer", "theblooketgamer", "https://www.youtube.com/@theblooketgamer", "https://yt3.googleusercontent.com/IbwGyfwHd4-lH4gA69Uns3iHqwO9VnyM4azJEca1sjiRn2yEzZf5vDBbs0zC4hjvEzK4en3L=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Gods", "BlooketGodsYT", "https://www.youtube.com/@BlooketGodsYT", "https://yt3.googleusercontent.com/f0PsafM-0nW8e0CGsGMZnwfpmHeBJ48AO3GQEoJRALPjI95md4n8VFiN8Q1aQ_prZHPjXY8YfQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["Slade2", "theslade2", "https://www.youtube.com/@theslade2", "https://yt3.googleusercontent.com/xcACNowE58NcX9Cvp7bHHhnOwJdmPMYgm1KnWD1I4UKARwl7hQw_QJYWOHRpIkdtLNjVVaRexg=s120-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Life", "BlooketLifeYT", "https://www.youtube.com/@BlooketLifeYT", "https://yt3.googleusercontent.com/HxCKe0ddw-6wBwSAXONowZ6eEokbrh3qhN-J4ZvNJXGtMEMMseFp-wXALCIxPnORl86wjeJn5w=s800-c-k-c0x00ffffff-no-rj"],
+  ["JustaPanda", "JustaPanda888", "https://www.youtube.com/@JustaPanda888", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2Fkkz1dMJi7Lbnv4QbrCOEOlGGwjslE8emd3jHpNpT4JayVESMM1CMM0LvzC2L_Iw2R457266n%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["Blooket Insane", "blooketinsane", "https://www.youtube.com/@blooketinsane", "https://ac.blooket.com/marketassets/blooks/timthealien.svg"],
+  ["notRIC", "playblacket", "https://www.youtube.com/@playblacket", "https://yt3.googleusercontent.com/qC52cG4ReXALa5C8j_pgLnFDX_cYQv9q4Ps8Ldp0kMFgbRyYPdGCGjUmn4Rx0LYt2aYOEChP=s800-c-k-c0x00ffffff-no-rj"],
+  ["SRN Games", "srngameslol", "https://www.youtube.com/@srngameslol", "https://yt3.googleusercontent.com/JsVykeiTKj9vJGwD1iNvzE2znEaVwdiCcbrgtNb8-HLfB4CFW24AeQwXkw87NNY8znH2lmwi=s800-c-k-c0x00ffffff-no-rj"],
+  ["BlooketBam", "BlooketBAM", "https://www.youtube.com/@BlooketBAM", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FaFNdNrcYHFMPYonDeyBJ_kiEtYcinQ4UtemafkNBwprzM4bBmDlfkWOGHLDaqcvE6yhGfnYrFQ%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["Twisted Bread", "TwistedBread", "https://www.youtube.com/@TwistedBread/", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FRFzqZI0f0iEEDVO7eub262ajY7d_AHG0TaYHvG_AF19tecRVqelU4WVgF2DPLYHE6AGDzPkG8bY%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["Pig55", "Pig_55", "https://www.youtube.com/@Pig_55", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FD8v4jgmppYAy3lseL7_c_TUXZLiKKEiTe2j_xNbQW1EW9l57wGHuNvlPoB4k6r9OukttkjGiy3I%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FdK4xmnwEWzflE11UaFoy_KMR5amTBVofIz02wbU5KgiI1DVJpKnZcU2I6buwgbmLtckYi1zv9g%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT", "https://mathuniverse.online/turtelix.png"],
+  ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2F5HAD5jYBrkxa1xkRDbAYULmxszJQprUc-nPkjIJL1ImCQdrIuxb_2Y4MwIgwV_JDt2J2Ab2wUw%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT", "https://yt3.googleusercontent.com/it5rmpwxDWxJktHp4E3KWslikkQQ9xuWFpJ-kvVAQdnEAy_aTriFrRthtJmV_LzfZ1ib_--rOg=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blookbread", "Breadblook", "https://www.youtube.com/@Breadblook", "https://yt3.googleusercontent.com/YBrBVXBLRqRpFFiLvJGgfnjboHu7I2rW572cTDhgdXHKLqTIh3pzVgalhAIOq8FsUOaOMMdP=s800-c-k-c0x00ffffff-no-rj"],
+  ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer", "https://yt3.googleusercontent.com/DZTf5N836Mzg_Rs3xm7RC93lW1mdmAy4mdcuGeaVaaPnTDnIT8-MaBMJSqhKHYgF0GDWYacYkQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan", "https://yt3.googleusercontent.com/VUW4XPzxbAW7jvsmJwvrIxCnYZ4ZFzGYjo87k7k2SvuOmMONcNcv4dzz2RvOV40D7vEkklJmCBs=s800-c-k-c0x00ffffff-no-rj"],
+  ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT", "https://yt3.googleusercontent.com/XupwnkZIgVmXhVelkGEtqKPSbwtRlQrmF3a1gqk1w4qhzJkfOllwwMQX0Egiss2cMPhfoFbMBQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["Freedo", "TheRealFreedoBlox", "https://www.youtube.com/@TheRealFreedoBlox", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FXQJuP7Lx7GXcsmQvOSgHroXzz0pRSwhNaIpLFs3oDUKJQkZMZ04kW1dJMPiQp6VCTmP7punAOA%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["Cosmic Dragon", "UCGkvZdya3AgXj7nAf54lTBw", "https://www.youtube.com/channel/UCGkvZdya3AgXj7nAf54lTBw", "https://yt3.googleusercontent.com/WDhBu9_C1_Li24ytFNwDMqN_eqPeXTHXCJ4I2fbAWyHMLjmIrpm4ivIqwRnwWjoX_wstQVq0sio=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Galaxy", "BlooketGalaxy", "https://www.youtube.com/@BlooketGalaxy", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FDlKJDVFV9cJbxZtwsV6p0WkRuXvUiDweVQJ13vNYV7zNxbTteYaGfgoiv6iqmkxe5Izisd1_Ig%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["TheBlooketBro", "theblooketbro", "https://www.youtube.com/@theblooketbro", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FKLRrnSMPbo59fJaqFBr8t0MHVKdcOdXS_qR0MMkXeccqUPmakVF5RzruPfEO0pr51YOkviyP1sE%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["XpBlooket32", "XPgamer32Blooket", "https://www.youtube.com/@XPgamer32Blooket", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FvaQMF1KimpHRD-2losjh2OAomw_AoHLxz3as9n7RtdpT1F9HLhWCVXd3a1RnobFd1CJyaFOz%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["Blooket Gael", "UCOhGtij6ftod4pJ6mhU-skQ", "https://www.youtube.com/channel/UCOhGtij6ftod4pJ6mhU-skQ", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FaMyLWneN3YaSsnLenjyLgCtiNXB3rWQS5xEN9bJhzwbWaMlyYTBgcKr5cuw_CoDCDfFRRgQ9hw%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["BlookFun", "blookfun", "https://www.youtube.com/@blookfun", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2F88v-cl3OgDOYElVCrELzSCIvnMf_cPFm7_Y-jqzQaMnA19Yacibr-Tw718y53sWxgvdbbYiWOQ%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["TheBlooketDude", "TheBlooketDude", "https://www.youtube.com/@TheBlooketDude", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2F3gDy-EvuADRawQGXUqjLPiBEKYqDjKpfUfWuV0s6UnTPWOME-WKbbA7Mlex0UtKU7jYkIHEX7A%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["Blooket Blitz", "BlooketBlitzYT", "https://www.youtube.com/@BlooketBlitzYT", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FiC2Iy2Ru5-wGjnRf949EXWhTyhb0Mzb08LrAHP9_MhPLr-CkwMDUQ3AvPkcl167FZyQGeLcMHw%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["KoolKid", "ImAwesome0703", "https://www.youtube.com/@ImAwesome0703", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FDbDqelZlcX3qzPbMhluKY-6rG3_K9xgnfpVyL7RpLxJ-2Oruyx9AzO51ZHvPEFPCDGcSEe92zQ%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["Panda Blooket", "UCJG4i4gLaFuD3KXb3Li3hpA", "https://www.youtube.com/channel/UCJG4i4gLaFuD3KXb3Li3hpA", "https://yt3.googleusercontent.com/c6Th0sFvyGAZNY4XR6kV0DTw3vu0r8IMO4zceBYMNQv6uIGXSu_loDtYCnecfeeVFmo3MF38=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooklet", "UC3wFnO6_35H4oPd1SfLO8QQ", "https://www.youtube.com/channel/UC3wFnO6_35H4oPd1SfLO8QQ", "https://yt3.googleusercontent.com/qrfdS1J5B9t4JkMwgpY9UTzxdDltBCDFdcOUHnCvYd_TYTApVxwzEqgyROeDwjyLtpE_ehVk=s800-c-k-c0x00ffffff-no-rj"],
+  ["Caterpillar9", "UCl_46vdPleB7nIcQ2uRrRYg", "https://www.youtube.com/channel/UCl_46vdPleB7nIcQ2uRrRYg", "https://yt3.googleusercontent.com/Z_gfa-nheOPveNJSeraE6o1jaIKwZr10b67_pSYudbMmihoYJ_e1yiMdTINNmxgYnz54E9tPKMw=s800-c-k-c0x00ffffff-no-rj"],
+  ["Alber", "UCl_46vdPleB7nIcQ2uRrRYg", "https://www.youtube.com/channel/UCl_46vdPleB7nIcQ2uRrRYg", "https://yt3.googleusercontent.com/EE6fJchL76dOZAOgzV5x8ZRd4_zrWxq26eYtjSG3aiX7QVPPEcE7C2ViL7wA4AyN7TwWwv68bA=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Studio", "UCwqPS5F9gWK-dLJ1F3xn-9Q", "https://www.youtube.com/channel/UCwqPS5F9gWK-dLJ1F3xn-9Q", "https://yt3.googleusercontent.com/cipU1kNo9hXwrbFvGUGr6SuMxfaxdL4iHLHTqbNC2KC7qzNh4IIUfo6UcxbLA4MCEcv08UG-CA=s800-c-k-c0x00ffffff-no-rj"],
+  ["Mr noble wywy", "UCWUlc91RBPRbytSQfL2P6Vw", "https://www.youtube.com/channel/UCWUlc91RBPRbytSQfL2P6Vw", "https://yt3.googleusercontent.com/dRi2fR45zyViyRwN5hek0j3KLfmk5L1kzpbLht_ey0jOAp4QsKIMfwtnkG_qxJOPPpanpJjCqQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["imbac", "UCa6fkBCzarr4hmRvOg_562g", "https://www.youtube.com/channel/UCa6fkBCzarr4hmRvOg_562g", "https://yt3.googleusercontent.com/m8wXh9fT6lDwuMjW9SER4YvY-qCTzGGMjHjA3HxHjDHxDfIhmDgzr4Nlb9gGXgHKFM7Y3ac-gg=s800-c-k-c0x00ffffff-no-rj"],
+  ["Cereal.For.Blooket", "UCygcI2_f5hzFrjkv9L2zA_g", "https://www.youtube.com/channel/UCygcI2_f5hzFrjkv9L2zA_g", "https://yt3.googleusercontent.com/iwc7v3Qc_OFfWVp9EFcHu6q0yIfzcqqoVHRpgjLAZlYCdjsqusUFmV8wX3JeGLOTo66Ynn3r=s3840-c-k-c0x00ffffff-no-rj"],
+  ["Blook Master", "UCZ2Bp5W7CbKCB5WdiWlz3XQ", "https://ytlarge.com/_next/image?url=https%3A%2F%2Fyt3.googleusercontent.com%2FcU5e1UhyIL87C5TnQUkPcEhY6a_n21xq7LC_ZSjWXbPAzclYzArPrI0OTAD5UuHMmQhoO_azFQ%3Ds900-c-k-c0x00ffffff-no-rj&w=256&q=75"],
+  ["Matt Lett", "UCb0J7cF503Y6lW_O3yW2ktQ", "https://www.youtube.com/channel/UCZ2Bp5W7CbKCB5WdiWlz3XQ", "https://yt3.googleusercontent.com/-bZqhGl9eXQcj9b8SAGJ6a1XFH3kfcAU47gB4GAFXoLF_-4v70dd8y93lQPWT6Z45JmeYfeJ=s800-c-k-c0x00ffffff-no-rj"],
+  ["KingTurtleYT", "UCFmqaohAzhhC2kC5_kVr25Q", "https://mathuniverse.online/idk.png"],
 ];
 
-let fallbackSubs = {
-  "Waymore": 150000, "Lag0n": 42500, "iBlooket": 35200, "Blooket": 31300,
-  "BIL": 31200, "Mega Bot": 27100, "Unblooked": 26900, "Monkey Master": 24000,
-  "Blooket Ace": 15400, "FastyJay": 12900, "theblooketgamer": 6250, "Blooket Gods": 4740,
-  "Slade2": 3690, "Blooket Life": 3620, "JustaPanda": 2990, "Blooket Insane": 2900,
-  "KoolKid": 2800, "notRIC": 2740, "SRN Games": 2650, "BlooketBam": 2430, "Blook Master": 2200,
-  "Twisted Bread": 2060, "Pig55": 1520, "Blooket Elite": 1500, "Turtelix": 1420,
-  "TheBlooketDude": 1410, "Green astronaut": 1100, "Blooket Warrior": 1020, "Blookbread": 1010,
-  "TOBP Blooket": 852, "YouLostMan": 660, "Peetwick": 396, "Freedo": 289,
-  "Cosmic Dragon": 69, "Blooket Galaxy": 66, "TheBlooketBro": 65, "XpBlooket32": 45,
-  "Blooket Gael": 36, "c0mputerm4n": 27, "Blooket Blitz": 18, "BlookFun": 6
-};
+let fallbackSubs = { "Waymore": 150000, "iBlooket": 34900, "Lag0n": 34900, "BIL": 31100, "Blooket": 31600, "Unblooked": 26900, "Monkey Master": 23700, "Blooket Ace": 15300, "FastyJay": 23900, "theblooketgamer": 6270, "Blooket Gods": 4870, "Slade2": 3680, "Blooket Life": 10100, "JustaPanda": 2980, "Blooket Insane": 2940, "notRIC": 2730, "KoolKid": 2770, "SRN Games": 2690, "Blook Master": 2170, "BlooketBam": 2440, "Twisted Bread": 2130, "Pig55": 1520, "Blooket Elite": 1500, "Turtelix": 1430, "Green astronaut": 1370, "Blooket Warrior": 1010, "Blookbread": 1660, "TOBP Blooket": 860, "YouLostMan": 657, "Kinkade": 0, "Peetwick": 454, "Freedo": 283, "Cosmic Dragon": 83, "Blooket Galaxy": 75, "TheBlooketBro": 80, "XpBlooket32": 54, "Blooket Gael": 40, "BlookFun": 15, "TheBlooketDude": 1410, "Blooket Blitz": 45, "Panda Blooket": 588, "Blooklet": 281, "Caterpillar9": 2450, "Alber": 7, "Blooket Studio": 948, "Mr noble wywy": 3120, "imbac": 2930, "Cereal.For.Blooket": 1030, "Matt Lett": 627, "KingTurtleYT": 941 };
 
 let creators = [];
 let lastUpdated = null;
@@ -2141,7 +2465,7 @@ function updateCustomSubtitle(val) {
 }
 
 function applyThemeColor(color, save = true) {
-    document.body.style.backgroundColor = color;
+    document.documentElement.style.setProperty('--bg-main', color);
     const page = document.getElementById('customPage');
     if (page) page.style.backgroundColor = color;
     const inp = document.getElementById('customThemeColorInput');
@@ -2262,7 +2586,14 @@ function toggleSidebar() {
     }
 }
 
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSidebar(); });
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeSidebar(); return; }
+    const tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(tag)) {
+        e.preventDefault();
+        document.getElementById('search')?.focus();
+    }
+});
 
 function isInactiveCreator(name) {
     const k = keyOf(name);
@@ -2293,13 +2624,140 @@ function buildCreators(statsData) {
         });
 }
 
+function escHtml(str) {
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 function formatSubs(num) {
     if (num === "-" || num === null || num === undefined) return "-";
     const val = typeof num === 'string' ? parseFloat(num) : num;
     if (isNaN(val)) return "-";
-    if (val >= 1000000) return (val / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    if (val >= 1000) return (val / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    if (val >= 1000000) return parseFloat((val / 1000000).toFixed(2)) + 'M';
+    if (val >= 1000) return parseFloat((val / 1000).toFixed(2)) + 'K';
     return val.toLocaleString();
+}
+
+function formatDelta(delta) {
+    const abs = Math.abs(delta);
+    return (delta > 0 ? '+' : '−') + formatSubs(abs);
+}
+
+function currentMetric() { return sortMode === 'views' ? 'views' : 'subs'; }
+
+const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let previousSnapshot = {};
+
+function animateNumber(el, fromValue, toValue) {
+    const displayVal = (toValue === "-" || toValue == null) ? "-" : formatSubs(toValue);
+    if (reduceMotion || typeof fromValue !== 'number' || typeof toValue !== 'number' || fromValue === toValue) {
+        el.textContent = displayVal;
+        return;
+    }
+    const duration = 650;
+    const start = performance.now();
+    function step(now) {
+        const p = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = formatSubs(Math.round(fromValue + (toValue - fromValue) * eased));
+        if (p < 1) requestAnimationFrame(step);
+        else el.textContent = displayVal;
+    }
+    requestAnimationFrame(step);
+}
+
+function applyRowMotion(el, index, delta, isInitial) {
+    if (reduceMotion) return;
+    if (isInitial) {
+        el.style.animation = 'rowIn .4s ease both';
+        el.style.animationDelay = Math.min(index * 18, 260) + 'ms';
+    } else if (delta) {
+        el.classList.add('row-flash');
+    }
+}
+
+const TIERS = [
+    { key: 'diamond', min: 100000, label: 'Diamond', icon: 'fa-gem' },
+    { key: 'platinum', min: 25000, label: 'Platinum', icon: 'fa-crown' },
+    { key: 'gold', min: 10000, label: 'Gold', icon: 'fa-trophy' },
+    { key: 'silver', min: 1000, label: 'Silver', icon: 'fa-shield-halved' },
+    { key: 'bronze', min: 100, label: 'Bronze', icon: 'fa-award' }
+];
+
+function getTier(subs) {
+    if (subs === "-" || subs == null || typeof subs !== 'number' || isNaN(subs)) return null;
+    for (const tier of TIERS) { if (subs >= tier.min) return tier; }
+    return { key: 'rising', min: 0, label: 'Rising', icon: 'fa-seedling' };
+}
+
+function tierThresholdText(tier) {
+    if (!tier) return '';
+    if (tier.key === 'rising') return `Under ${formatSubs(TIERS[TIERS.length - 1].min)} subs`;
+    return `${formatSubs(tier.min)}+ subs`;
+}
+
+function tierBadgeHtml(subs) {
+    const tier = getTier(subs);
+    if (!tier) return '';
+    return `<span class="tier-badge tier-${tier.key}" title="${tier.label} Tier — ${tierThresholdText(tier)}"><i class="fa-solid ${tier.icon}"></i></span>`;
+}
+
+function deltaHtmlFor(creator, metricVal) {
+    const prev = previousSnapshot[creator.name];
+    const metric = currentMetric();
+    const delta = (!creator.terminated && prev && typeof prev[metric] === 'number' && typeof metricVal === 'number') ? metricVal - prev[metric] : 0;
+    const html = delta !== 0 ? `<span class="delta ${delta > 0 ? 'up' : 'down'}">${delta > 0 ? '▲' : '▼'} ${formatDelta(delta)}</span>` : '';
+    return { delta, html };
+}
+
+function snapshotPrevious() {
+    creators.forEach(c => { previousSnapshot[c.name] = { subs: c.subs, views: c.views }; });
+}
+
+let lastStatsTotals = { tracked: 0, subs: 0, views: 0, active: 0 };
+
+function renderStatsOverview() {
+    let totalSubs = 0, totalViews = 0, active = 0;
+    creators.forEach(c => {
+        if (c.terminated) return;
+        if (typeof c.subs === 'number') totalSubs += c.subs;
+        if (typeof c.views === 'number') totalViews += c.views;
+        if (!isInactiveCreator(c.name)) active += 1;
+    });
+    const next = { tracked: creators.length, subs: totalSubs, views: totalViews, active };
+    const setVal = (id, key) => { const el = document.getElementById(id); if (el) animateNumber(el, lastStatsTotals[key], next[key]); };
+    setVal('statTracked', 'tracked');
+    setVal('statSubs', 'subs');
+    setVal('statViews', 'views');
+    setVal('statActive', 'active');
+    lastStatsTotals = next;
+}
+
+let lastFetchDate = null;
+let liveState = 'loading';
+let tickIntervalId = null;
+
+function tickLastUpdated() {
+    if (liveState !== 'live' || !lastFetchDate) return;
+    const secs = Math.max(0, Math.floor((Date.now() - lastFetchDate.getTime()) / 1000));
+    let label;
+    if (secs < 5) label = 'just now';
+    else if (secs < 60) label = `${secs}s ago`;
+    else label = `${Math.floor(secs / 60)}m ${secs % 60}s ago`;
+    const textEl = document.getElementById('liveText');
+    if (textEl) {
+        textEl.textContent = `Live • Updated ${label}`;
+        textEl.title = lastFetchDate.toLocaleString();
+    }
+}
+
+function startTicker() {
+    if (tickIntervalId) clearInterval(tickIntervalId);
+    tickIntervalId = setInterval(tickLastUpdated, 1000);
+}
+
+function getFilteredCreators() {
+    const searchVal = (document.getElementById('search')?.value || '').toLowerCase();
+    return creators.filter(c => c.name.toLowerCase().includes(searchVal));
 }
 
 function setSort(mode) {
@@ -2309,8 +2767,7 @@ function setSort(mode) {
     if (btnSubs) btnSubs.classList.toggle('active', mode === 'subs');
     if (btnViews) btnViews.classList.toggle('active', mode === 'views');
 
-    const searchVal = (document.getElementById('search')?.value || '').toLowerCase();
-    const filtered = creators.filter(c => c.name.toLowerCase().includes(searchVal));
+    const filtered = getFilteredCreators();
     renderBoard(filtered);
     renderUnderrated(filtered);
     renderPodium(getSorted(creators, false));
@@ -2371,6 +2828,8 @@ async function fetchAllSubs() {
     if (btn) btn.disabled = true;
 
     if (pollTimeoutId) clearTimeout(pollTimeoutId);
+    const isInitialLoad = creators.length === 0;
+    if (creators.length) snapshotPrevious();
 
     try {
         const controller = new AbortController();
@@ -2394,14 +2853,19 @@ async function fetchAllSubs() {
         creators.forEach((c, i) => c.rank = i + 1);
 
         lastUpdated = new Date(data.updatedAt || Date.now());
+        lastFetchDate = lastUpdated;
+        liveState = 'live';
         if (dot) dot.className = "live-dot";
-        if (text) text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
-        renderPodium(getSorted(creators, false));
-        renderBoard(creators);
-        renderUnderrated(creators);
+        tickLastUpdated();
+        startTicker();
+        renderStatsOverview();
+        renderPodium(getSorted(creators, false), isInitialLoad);
+        renderBoard(getFilteredCreators(), isInitialLoad);
+        renderUnderrated(getFilteredCreators(), isInitialLoad);
         renderAdminList();
     } catch (err) {
         console.warn("API request failed:", err.message);
+        liveState = 'error';
         if (dot) dot.className = "live-dot error";
         if (text) text.textContent = lastStatsData ? `⚠️ API offline — showing cached counts` : "⚠️ API offline — showing counts";
         
@@ -2409,9 +2873,10 @@ async function fetchAllSubs() {
         creators = buildCreators(lastStatsData);
         creators = getSorted(creators, true);
         creators.forEach((c, i) => c.rank = i + 1);
-        renderPodium(getSorted(creators, false));
-        renderBoard(creators);
-        renderUnderrated(creators);
+        renderStatsOverview();
+        renderPodium(getSorted(creators, false), isInitialLoad);
+        renderBoard(getFilteredCreators(), isInitialLoad);
+        renderUnderrated(getFilteredCreators(), isInitialLoad);
         renderAdminList();
     } finally {
         if (btn) btn.disabled = false;
@@ -2421,54 +2886,39 @@ async function fetchAllSubs() {
 }
 
 /* ==================== PODIUM RENDERING ==================== */
-function getMedalSvg(rank) {
-    const coinColor = rank === 1 ? '#FFD700' : (rank === 2 ? '#E2E8F0' : '#CD7F32');
-    const coinBorder = rank === 1 ? '#D97706' : (rank === 2 ? '#94A3B8' : '#92400E');
-    const ribbon = '#0284C7';
-    const ribbonDark = '#0369A1';
-    return `
-    <svg class="medal-svg" viewBox="0 0 36 36">
-        <path d="M12 4 L8 14 L14 14 Z" fill="${ribbon}" />
-        <path d="M24 4 L28 14 L22 14 Z" fill="${ribbon}" />
-        <path d="M14 6 L18 13 L22 6 Z" fill="${ribbonDark}" />
-        <circle cx="18" cy="20" r="11" fill="${coinColor}" stroke="${coinBorder}" stroke-width="2.5" />
-        <circle cx="18" cy="20" r="8.5" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" />
-        <text x="18" y="24" text-anchor="middle" fill="#1E293B" font-size="11" font-weight="900" font-family="'Titan One', 'Nunito', sans-serif">${rank}</text>
-    </svg>`;
-}
-
-function renderPodium(data) {
+function renderPodium(data, isInitial) {
     const podium = document.getElementById("podium");
     if (!podium) return;
     if (data.length < 3) { podium.innerHTML = ""; return; }
 
-    const isViews = sortMode === 'views';
-    const first = data[0];
-    const second = data[1];
-    const third = data[2];
+    const medals = ["🥇", "🥈", "🥉"];
+    const classes = ["first", "second", "third"];
+    const metric = currentMetric();
+    podium.innerHTML = "";
 
-    const slots = [
-        { creator: second, rank: 2, cls: "second" },
-        { creator: first, rank: 1, cls: "first" },
-        { creator: third, rank: 3, cls: "third" }
-    ];
+    [0, 1, 2].forEach(i => {
+        const creator = data[i];
+        const card = document.createElement("div");
+        card.className = `podium-card ${classes[i]}`;
+        if (isInitial && !reduceMotion) {
+            card.style.animation = 'podiumIn .5s cubic-bezier(.34,1.56,.64,1) both';
+            card.style.animationDelay = (i * 100) + 'ms';
+        }
+        const link = document.createElement("a");
+        link.href = "#";
+        link.className = "podium-link";
+        link.addEventListener('click', (e) => { e.preventDefault(); openCreatorStats(creator.name); });
+        link.innerHTML = `<span class="podium-medal">${medals[i]}</span><img src="${escHtml(creator.pfp)}" class="podium-pfp${isBlookAsset(creator.pfp) ? ' no-avatar-border' : ''}" alt="${escHtml(creator.name)}" onerror="this.src='${defaultImage}'"><span class="podium-name">${escHtml(creator.name)}</span>`;
+        const subsSpan = document.createElement('span');
+        subsSpan.className = 'podium-subs';
+        link.appendChild(subsSpan);
+        card.appendChild(link);
+        podium.appendChild(card);
 
-    podium.innerHTML = slots.map(slot => {
-        const c = slot.creator;
-        if (!c) return '';
-        const metric = isViews ? c.views : c.subs;
-        const safeName = c.name.replace(/'/g, "\\'");
-        return `
-        <div class="podium-card ${slot.cls}" onclick="openCreatorStats('${safeName}')">
-            <div class="medal-badge">${getMedalSvg(slot.rank)}</div>
-            <div class="podium-pfp-wrap">
-                <img src="${c.pfp}" class="podium-pfp${isBlookAsset(c.pfp) ? ' no-avatar-border' : ''}" alt="${c.name}" onerror="this.src='${defaultImage}'">
-            </div>
-            <div class="podium-name">${c.name}</div>
-            <div class="podium-subs">${formatSubs(metric)}</div>
-            <div class="podium-base-bar"></div>
-        </div>`;
-    }).join("");
+        const prev = previousSnapshot[creator.name];
+        const fromVal = prev && typeof prev[metric] === 'number' ? prev[metric] : 0;
+        animateNumber(subsSpan, fromVal, creator[metric]);
+    });
 }
 
 function getSpecialEmojisHtml(name) {
@@ -2478,7 +2928,7 @@ function getSpecialEmojisHtml(name) {
         htmlParts.push(" ⛔");
     }
     if (customBadges[k]) {
-        htmlParts.push(`<span class="custom-badge-pill">${customBadges[k]}</span>`);
+        htmlParts.push(`<span class="custom-badge-pill">${escHtml(customBadges[k])}</span>`);
     }
     return htmlParts.join("");
 }
@@ -2490,11 +2940,35 @@ function onSearchChange() {
     renderUnderrated(filtered);
 }
 
-function renderBoard(data) {
+function buildRow(creator, metricVal, maxVal, idx, isInitial, opts = {}) {
+    const row = document.createElement("a");
+    row.href = "#";
+    row.className = "row";
+    row.onclick = (e) => {
+        e.preventDefault();
+        if (creator.terminated) showTerminatedModal();
+        else openCreatorStats(creator.name);
+    };
+    if (opts.highlight && keyOf(creator.name) === "fastyjay") row.classList.add("fastyjay");
+    if (creator.terminated) row.classList.add("terminated");
+    const isInactive = isInactiveCreator(creator.name);
+    if (isInactive && !creator.terminated) row.classList.add("inactive");
+
+    const barWidth = creator.terminated ? 0 : Math.min(100, (Number(metricVal) / Number(maxVal)) * 100);
+    const barClass = sortMode === 'views' ? "bar views-bar" : "bar";
+    const { delta, html: deltaHtml } = deltaHtmlFor(creator, metricVal);
+
+    row.innerHTML = `<div class="rank">#${creator.globalRank}</div><img src="${escHtml(creator.pfp)}" class="row-pfp${isBlookAsset(creator.pfp) ? ' no-avatar-border' : ''}" alt="${escHtml(creator.name)}" onerror="this.src='${defaultImage}'"><div class="name">${creator.terminated ? '' : tierBadgeHtml(creator.subs)}<span class="name-text">${escHtml(creator.name)}</span>${isInactive && !creator.terminated ? ' 🕊️' : ''}${getSpecialEmojisHtml(creator.name)}</div><div class="subs">${formatSubs(creator.terminated ? "-" : metricVal)}${deltaHtml}</div><div class="bar-bg"><div class="${barClass}" style="width: ${barWidth}%"></div></div>`;
+    applyRowMotion(row, idx, delta, isInitial);
+    return row;
+}
+
+function renderBoard(data, isInitial) {
     const board = document.getElementById("leaderboard");
     if (!board) return;
     board.innerHTML = "";
-    const isViews = sortMode === 'views';
+    const metric = currentMetric();
+    const isViews = metric === 'views';
 
     const allSorted = getSorted(creators, true);
     allSorted.forEach((c, i) => c.globalRank = i + 1);
@@ -2505,54 +2979,27 @@ function renderBoard(data) {
     }), true);
 
     if (mainData.length === 0) {
-        board.innerHTML = "<div style='text-align:center; padding:25px; font-size:18px; font-weight:800;'>No Blooktubers found! 😭</div>";
+        board.innerHTML = `<div style="text-align:center; padding: 30px 20px; font-size: 18px;">No Blooktubers found! 😭</div>`;
         return;
     }
 
-    const eligible = creators.filter(c => !c.terminated && (isViews ? c.views >= 20000 : c.subs >= 100));
-    const maxVal = isViews
-        ? (Math.max(...eligible.map(c => Number(c.views) || 0)) || 1)
-        : (getSorted(eligible, true)[0]?.subs || 1);
+    const maxPool = creators.filter(c => !c.terminated && c[metric] !== "-" && c[metric] >= (isViews ? 20000 : 100));
+    const maxVal = Math.max(...maxPool.map(c => Number(c[metric]) || 0), 1);
 
-    mainData.forEach((creator) => {
-        const row = document.createElement("div");
-        row.className = "row";
-        if (keyOf(creator.name) === "fastyjay") row.classList.add("fastyjay");
-        if (creator.terminated) row.classList.add("terminated");
-
-        const isInactive = isInactiveCreator(creator.name);
-        if (isInactive && !creator.terminated) row.classList.add("inactive");
-
-        const metricVal = creator.terminated ? 0 : (isViews ? creator.views : creator.subs);
-        const barWidth = creator.terminated ? 0 : Math.min(100, Math.max(2, (Number(metricVal) / Number(maxVal)) * 100));
-        const barClass = isViews ? "bar views-bar" : "bar";
-
-        row.onclick = () => {
-            if (creator.terminated) showTerminatedModal();
-            else openCreatorStats(creator.name);
-        };
-
-        row.innerHTML = `
-            <div class="rank">#${creator.globalRank}</div>
-            <img src="${creator.pfp}" class="row-pfp${isBlookAsset(creator.pfp) ? ' no-avatar-border' : ''}" alt="${creator.name}" onerror="this.src='${defaultImage}'">
-            <div class="row-content">
-                <div class="row-top">
-                    <span class="name">${creator.name}${isInactive && !creator.terminated ? ' 🕊️' : ''}${getSpecialEmojisHtml(creator.name)}</span>
-                </div>
-                <div class="bar-bg"><div class="${barClass}" style="width:${barWidth}%"></div></div>
-            </div>
-            <div class="subs">${formatSubs(creator.terminated ? "-" : metricVal)}</div>`;
-        board.appendChild(row);
+    mainData.forEach((creator, idx) => {
+        const metricVal = creator.terminated ? 0 : creator[metric];
+        board.appendChild(buildRow(creator, metricVal, maxVal, idx, isInitial, { highlight: true }));
     });
 }
 
-function renderUnderrated(data) {
+function renderUnderrated(data, isInitial) {
     const header = document.getElementById("underratedHeader");
     const board = document.getElementById("underratedBoard");
     const subText = document.getElementById("underratedSub");
     if (!header || !board) return;
 
-    const isViews = sortMode === 'views';
+    const metric = currentMetric();
+    const isViews = metric === 'views';
     const allSorted = getSorted(creators, true);
     allSorted.forEach((c, i) => c.globalRank = i + 1);
 
@@ -2573,32 +3020,9 @@ function renderUnderrated(data) {
     board.style.display = "block";
     board.innerHTML = "";
 
-    const maxVal = isViews
-        ? (Math.max(...underrated.map(c => Number(c.views) || 0)) || 1)
-        : (underrated[0]?.subs || 1);
-
-    underrated.forEach((creator) => {
-        const row = document.createElement("div");
-        row.className = "row";
-        row.onclick = () => openCreatorStats(creator.name);
-
-        if (isInactiveCreator(creator.name)) row.classList.add("inactive");
-
-        const metricVal = isViews ? creator.views : creator.subs;
-        const barWidth = Math.min(100, Math.max(2, (Number(metricVal) / Number(maxVal)) * 100));
-        const barClass = isViews ? "bar views-bar" : "bar";
-
-        row.innerHTML = `
-            <div class="rank">#${creator.globalRank}</div>
-            <img src="${creator.pfp}" class="row-pfp${isBlookAsset(creator.pfp) ? ' no-avatar-border' : ''}" alt="${creator.name}" onerror="this.src='${defaultImage}'">
-            <div class="row-content">
-                <div class="row-top">
-                    <span class="name">${creator.name}${getSpecialEmojisHtml(creator.name)}</span>
-                </div>
-                <div class="bar-bg"><div class="${barClass}" style="width:${barWidth}%"></div></div>
-            </div>
-            <div class="subs">${formatSubs(metricVal)}</div>`;
-        board.appendChild(row);
+    const maxVal = Math.max(...underrated.map(c => Number(c[metric]) || 0), 1);
+    underrated.forEach((creator, idx) => {
+        board.appendChild(buildRow(creator, creator[metric], maxVal, idx, isInitial));
     });
 }
 
@@ -2613,8 +3037,18 @@ function openCreatorStats(name) {
     }
     currentStatsModalCreator = creator.name;
     document.getElementById("modalName").textContent = creator.name;
-    document.getElementById("modalSubs").textContent = formatSubs(creator.subs);
-    document.getElementById("modalViews").textContent = formatSubs(creator.views);
+    animateNumber(document.getElementById("modalSubs"), 0, creator.subs);
+    animateNumber(document.getElementById("modalViews"), 0, creator.views);
+    const tier = getTier(creator.subs);
+    const tierEl = document.getElementById('modalTier');
+    if (tier) {
+        tierEl.style.display = 'inline-flex';
+        tierEl.className = `tier-chip tier-${tier.key}`;
+        tierEl.title = tierThresholdText(tier);
+        tierEl.innerHTML = `<i class="fa-solid ${tier.icon}"></i> ${tier.label} Tier`;
+    } else {
+        tierEl.style.display = 'none';
+    }
     const modalPfpEl = document.getElementById("modalPfp");
     modalPfpEl.src = creator.pfp || defaultImage;
     modalPfpEl.classList.toggle('no-avatar-border', isBlookAsset(creator.pfp));
@@ -2680,8 +3114,8 @@ function refreshAfterAdminChange() {
     creators = buildCreators(lastStatsData);
     creators = getSorted(creators, true);
     creators.forEach((c, i) => c.rank = i + 1);
-    const searchVal = (document.getElementById('search')?.value || '').toLowerCase();
-    const filtered = creators.filter(c => c.name.toLowerCase().includes(searchVal));
+    const filtered = getFilteredCreators();
+    renderStatsOverview();
     renderPodium(getSorted(creators, false));
     renderBoard(filtered);
     renderUnderrated(filtered);
