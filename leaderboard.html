@@ -3567,7 +3567,7 @@ const fallbackSubs = { "Waymore": 150000, "iBlooket": 34900, "Lag0n": 34900, "BI
             renderUnderrated(filtered); const sortedFiltered = getSorted(filtered, false); if (sortedFiltered.length >= 3 && !showFavoritesOnly) { renderPodium(sortedFiltered); } else { document.getElementById("podium").innerHTML = ""; }
             updateCompareUI(); }
 
-        function getSpecialEmojisHtml(name) { const htmlParts = []; if (terminatedCreators.includes(name.toLowerCase())) htmlParts.push(" ⛔"); if (name === "Lag0n") { htmlParts.push(`<span class="tooltip-container"><img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/fire_1f525.gif" style="width: 20px; vertical-align: middle;" alt=""><span class="custom-tooltip">Rapidly growing Blooktuber!</span></span>`); } return htmlParts.join(""); }
+        function getSpecialEmojisHtml(name) { const htmlParts = []; if (terminatedCreators.includes(name.toLowerCase())) htmlParts.push(" ⛔"); if (name === "SRN Games") { htmlParts.push(`<span class="tooltip-container"><img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/fire_1f525.gif" style="width: 20px; vertical-align: middle;" alt=""><span class="custom-tooltip">Rapidly growing Blooktuber!</span></span>`); } return htmlParts.join(""); }
 
         function renderPodium(data, isInitial) { const podium = document.getElementById("podium"); if (data.length < 3) { podium.innerHTML = ""; return; } const medals = ["🥇", "🥈", "🥉"]; const classes = ["first", "second", "third"]; const metric = currentMetric();
             podium.innerHTML = ""; [0, 1, 2].forEach(i => { const creator = data[i]; const metricVal = metric === 'views' ? creator.views : creator.subs; const card = document.createElement("div");
