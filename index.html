@@ -553,6 +553,50 @@ body::before {
 }
 .seasonal-submenu.show { display: flex; }
 .theme-swatch.seasonal-sub { background: linear-gradient(135deg, #14264f, #b22234); font-size: 11px; }
+
+/* ── DOGGIE VERIFIED BADGE ── */
+.verified-badge {
+    position: relative;
+    display: inline-block;
+    margin-top: 22px;
+    padding: 14px 28px;
+    font-family: 'Titan One', cursive;
+    font-size: clamp(1.1rem, 3.5vw, 1.7rem);
+    letter-spacing: 2px;
+    color: #fff;
+    background: linear-gradient(135deg, #ffb703, #fb8500);
+    border: 3px solid rgba(255,255,255,0.7);
+    border-radius: 18px;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.35);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    animation: badgePop 0.6s 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both,
+               badgeWiggle 3s 1.2s ease-in-out infinite;
+}
+.verified-badge span { font-family: 'Titan One', cursive; }
+.vb-confetti {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.vb-piece {
+    position: absolute;
+    top: 0;
+    font-size: 1.4rem;
+    animation: confettiFall linear forwards;
+}
+
+@keyframes badgePop {
+    from { opacity: 0; transform: scale(0.3) rotate(-10deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes badgeWiggle {
+    0%, 100% { transform: rotate(-2deg) scale(1); }
+    50%      { transform: rotate(2deg) scale(1.04); }
+}
+@keyframes confettiFall {
+    0%   { transform: translateY(-10px) rotate(0deg) scale(0.6); opacity: 1; }
+    100% { transform: translateY(160px) translateX(var(--drift)) rotate(540deg) scale(1); opacity: 0; }
+}
 </style>
 </head>
 <body class="">
@@ -611,6 +655,10 @@ body::before {
 <div class="hero">
     <h1 id="siteTitleTrigger" role="button" tabindex="0" aria-label="Open menu">BlookTools</h1>
     <p id="hero-subtitle">Your #1 hub for Blooket content creator info &amp; games! 🎮</p>
+    <div class="verified-badge">
+        <span>🐶 DOGGIE VERIFIED GRIEF! 🐶</span>
+        <div class="vb-confetti" id="vbConfetti"></div>
+    </div>
 </div>
 
 <div class="container">
@@ -947,6 +995,26 @@ const common=["🎮 Your #1 hub for Blooket content creator info & games!","🔷
 const tips=["💡 Did you know? Guess the Blooktubers has dozens of creators!","💡 Did you know? You can create your own custom leaderboard.","💡 Did you know? Subscriber counts update dynamically!"];
 const rare=['😜 Type "crazy chicken" in Guess the Blooktuber!',"🤫 You're one of the lucky visitors today!","👀 You found a rare subtitle!","🍀 Lucky! This appears only 1% of the time.","🎉This subtitle is as rare as pulling the King in Blooket!"];
 (()=> {const p=document.getElementById('hero-subtitle');let a=Math.random()<0.01?rare:(Math.random()<0.19?tips:common);p.textContent=a[Math.floor(Math.random()*a.length)];})();
+
+/* ── Confetti for the Doggie badge ── */
+(function () {
+    const box = document.getElementById('vbConfetti');
+    if (!box) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const pieces = ['🎉', '🎊', '✨', '🥳', '🐾'];
+
+    setInterval(() => {
+        const el = document.createElement('span');
+        el.className = 'vb-piece';
+        el.textContent = pieces[Math.floor(Math.random() * pieces.length)];
+        el.style.left = Math.random() * 100 + '%';
+        el.style.setProperty('--drift', (Math.random() * 80 - 40) + 'px');
+        const dur = Math.random() * 1.5 + 1.5;
+        el.style.animationDuration = dur + 's';
+        box.appendChild(el);
+        setTimeout(() => el.remove(), dur * 1000);
+    }, 180);
+})();
 </script>
 </body>
 </html>
