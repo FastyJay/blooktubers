@@ -3409,26 +3409,45 @@ const fallbackSubs = { "Waymore": 167000, "iBlooket": 34600, "Lag0n": 34700, "BI
             `;
         }
 
+        // ---- FIXED: always projects the smaller creator catching the bigger one ----
         function renderProjection(creatorA, creatorB) {
             const container = document.getElementById('compareProjectionText');
             if (!container) return;
-            const catchUp = computeCatchUp(creatorA, creatorB);
-            if (catchUp && catchUp.days !== null && catchUp.days > 0) {
-                container.innerHTML = `Based on 7‑day trends, <b>${escHtml(creatorA.name)}</b> will overtake <b>${escHtml(creatorB.name)}</b> in approximately <b>${catchUp.days} days</b>.`;
-            } else if (catchUp && catchUp.days === 0) {
-                container.innerHTML = `<b>${escHtml(creatorA.name)}</b> is already ahead of <b>${escHtml(creatorB.name)}</b>!`;
-            } else if (catchUp && catchUp.message) {
-                container.innerHTML = catchUp.message;
-            } else {
-                const catchUpReverse = computeCatchUp(creatorB, creatorA);
-                if (catchUpReverse && catchUpReverse.days !== null && catchUpReverse.days > 0) {
-                    container.innerHTML = `Based on 7‑day trends, <b>${escHtml(creatorB.name)}</b> will overtake <b>${escHtml(creatorA.name)}</b> in approximately <b>${catchUpReverse.days} days</b>.`;
-                } else if (catchUpReverse && catchUpReverse.days === 0) {
-                    container.innerHTML = `<b>${escHtml(creatorB.name)}</b> is already ahead of <b>${escHtml(creatorA.name)}</b>!`;
-                } else {
-                    container.innerHTML = 'No clear catch‑up projection (insufficient data or similar growth rates).';
-                }
+
+            if (typeof creatorA.subs !== 'number' || typeof creatorB.subs !== 'number') {
+                container.textContent = 'No projection available for this matchup.';
+                return;
             }
+
+            // Always project the smaller creator catching the bigger one
+            const [smaller, bigger] = creatorA.subs <= creatorB.subs
+                ? [creatorA, creatorB]
+                : [creatorB, creatorA];
+
+            const gap = bigger.subs - smaller.subs;
+            if (gap === 0) {
+                container.innerHTML = `<b>${escHtml(smaller.name)}</b> and <b>${escHtml(bigger.name)}</b> are tied right now!`;
+                return;
+            }
+
+            const gS = getGrowthSince(smaller.name, 168, smaller.subs, smaller.views);
+            const gB = getGrowthSince(bigger.name, 168, bigger.subs, bigger.views);
+            if (!gS || !gB || gS.subsDelta === null || gB.subsDelta === null) {
+                container.innerHTML = `<b>${escHtml(smaller.name)}</b> is <b>${formatSubs(gap)}</b> subs behind <b>${escHtml(bigger.name)}</b>. Not enough history yet to project a catch-up.`;
+                return;
+            }
+
+            const sDaily = gS.subsDelta / gS.daysSpanned;
+            const bDaily = gB.subsDelta / gB.daysSpanned;
+            const diff = sDaily - bDaily;
+
+            if (diff <= 0) {
+                container.innerHTML = `<b>${escHtml(smaller.name)}</b> is <b>${formatSubs(gap)}</b> subs behind <b>${escHtml(bigger.name)}</b> and isn't growing faster (${formatSubs(Math.round(sDaily))}/d vs ${formatSubs(Math.round(bDaily))}/d), so they won't catch up at the current 7‑day pace.`;
+                return;
+            }
+
+            const days = Math.ceil(gap / diff);
+            container.innerHTML = `Based on 7‑day trends, <b>${escHtml(smaller.name)}</b> will overtake <b>${escHtml(bigger.name)}</b> in approximately <b>${days} days</b>.`;
         }
 
         function closeCompareModal() { document.getElementById('compareModal').classList.remove('show'); if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') { lastFocusedElement.focus(); } }
