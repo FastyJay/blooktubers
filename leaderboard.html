@@ -3446,8 +3446,11 @@ const fallbackSubs = { "Waymore": 167000, "iBlooket": 34600, "Lag0n": 34700, "BI
                 return;
             }
 
-            const days = Math.ceil(gap / diff);
-            container.innerHTML = `Based on 7‑day trends, <b>${escHtml(smaller.name)}</b> will overtake <b>${escHtml(bigger.name)}</b> in approximately <b>${days} days</b>.`;
+            const days = Math.max(1, Math.ceil(gap / diff));
+            const years = days / 365;
+            const dayText = `${days.toLocaleString()} ${days === 1 ? 'day' : 'days'}`;
+            const extra = years >= 1 ? ` (about ${years.toFixed(1)} years)` : '';
+            container.innerHTML = `At current 7‑day growth, <b>${escHtml(smaller.name)}</b> will pass <b>${escHtml(bigger.name)}</b> in about <b>${dayText}</b>${extra}. They're <b>${formatSubs(gap)}</b> subs behind and gaining <b>${formatSubs(Math.round(diff))}</b> more subs per day.`;
         }
 
         function closeCompareModal() { document.getElementById('compareModal').classList.remove('show'); if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') { lastFocusedElement.focus(); } }
