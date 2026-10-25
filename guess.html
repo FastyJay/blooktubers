@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Guess the Blooktuber</title>
 <link rel="icon" type="image/png" href="https://blooket.mathuniverse.online/blooktools.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Titan+One&display=swap">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -76,6 +77,8 @@ body::before {
   from { transform: scale(0.8) translateY(20px); opacity: 0; }
   to   { transform: scale(1) translateY(0); opacity: 1; }
 }
+
+/* ── Wordle-specific animations ── */
 @keyframes wordlePop {
   0%   { transform: scale(0.85); }
   40%  { transform: scale(1.08); }
@@ -113,6 +116,7 @@ body::before {
   100% { transform: scale(1); }
 }
 
+/* ── Layout ── */
 h1 {
   font-family: 'Titan One', cursive;
   font-size: clamp(1.8rem, 5vw, 3.5rem);
@@ -122,7 +126,7 @@ h1 {
   animation: slideUpFade 0.6s ease-out;
 }
 .title-link { color: white; text-decoration: none; text-shadow: 4px 4px 0 #222; transition: filter .15s; }
-.title-link:hover { filter: brightness(1.1); }
+.title-link:hover { filter: brightness(1.1); cursor:pointer; }
 
 .subtitle {
   text-align: center; color: white; font-size: 1rem; font-weight: 800;
@@ -139,6 +143,7 @@ h1 {
 .live-dot.loading { background:#fbbf24; animation:pulse .7s infinite; }
 .live-dot.error   { background:#f87171; animation:none; }
 
+/* ── Score + streak bar ── */
 .top-bar {
   display: none;
   justify-content: center;
@@ -158,10 +163,17 @@ h1 {
   padding: 6px 14px; font-size: 15px; font-weight: 900; color: #333;
   display: flex; align-items: center; gap: 6px;
 }
-.flame { font-size: 18px; transition: transform .2s; }
+.flame {
+  font-size: 18px;
+  transition: transform .2s;
+}
 .flame.pop { animation: flamePop .3s ease-out; }
 
-.timer-wrap { margin-bottom: 12px; display: none; }
+/* ── Timer bar ── */
+.timer-wrap {
+  margin-bottom: 12px;
+  display: none;
+}
 .timer-wrap.active { display: block; }
 .timer-track {
   height: 10px; background: #e5e7eb; border-radius: 8px;
@@ -171,9 +183,13 @@ h1 {
   height: 100%; background: #3cb529; border-radius: 8px;
   transition: width .1s linear, background .3s;
 }
-.timer-label { font-size: 13px; font-weight: 900; color: #555; text-align: right; margin-top: 3px; }
+.timer-label {
+  font-size: 13px; font-weight: 900; color: #555;
+  text-align: right; margin-top: 3px;
+}
 .timer-label.urgent { color: #e53935; animation: timerPulse .5s infinite; }
 
+/* ── Card ── */
 .container { max-width: 600px; margin: 0 auto; }
 .card {
   background: white; border: 4px solid #333; border-radius: 20px;
@@ -188,6 +204,7 @@ h1 {
 .loading-spinner { font-size:2.5rem; animation:spin 1s linear infinite; display:block; margin-bottom:12px; }
 .loading-msg { font-weight:900; color:#444; font-size:15px; }
 
+/* ── Clues ── */
 .clue-label { font-family:'Titan One',cursive; font-size:15px; color:#0bc2cf; letter-spacing:1px; margin-bottom:12px; }
 .clue {
   background:#f0f9ff; border:3px solid #333; border-radius:12px;
@@ -203,6 +220,7 @@ h1 {
 .clue-num { background:#0bc2cf; color:white; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; flex-shrink:0; }
 .clue-num-hidden { background:#555; border-radius:50%; width:28px; height:28px; flex-shrink:0; }
 
+/* ── Trivia ── */
 .trivia-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
 .trivia-btn { font-family:'Nunito',sans-serif; font-weight:900; font-size:16px; color:white; border:3px solid #222; border-radius:12px; padding:16px; cursor:pointer; transition:all .1s ease; text-align:center; }
 .trivia-btn:nth-child(1) { background:#e53935; box-shadow:0 4px 0 #b71c1c; }
@@ -214,6 +232,7 @@ h1 {
 .trivia-btn.correct-flash { background: #16a34a !important; box-shadow: 0 4px 0 #14532d !important; transform: scale(1.05) !important; }
 .trivia-btn.wrong-flash   { background: #991b1b !important; box-shadow: none !important; opacity: .7; }
 
+/* ── Input ── */
 input[type="text"] {
   width:100%; padding:12px 16px; border:3px solid #333; border-radius:12px;
   font-family:'Nunito',sans-serif; font-size:15px; font-weight:800; outline:none;
@@ -226,6 +245,7 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 .feedback.correct { color:#16a34a; animation:popInSoft .4s ease-out; }
 .feedback.wrong   { color:#dc2626; animation:popInSoft .4s ease-out; }
 
+/* ── Buttons ── */
 .btn {
   display:block; width:100%; font-family:'Titan One',cursive; font-size:17px; color:white;
   border:3px solid #222; border-radius:12px; box-shadow:0 5px 0 #222;
@@ -240,86 +260,141 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 .btn-blue   { background:#0bc2cf; }
 .btn-purple { background:#8b5cf6; }
 
-.answer-box { text-align:center; margin-top:20px; display:none; }
+/* ── Answer card (profile reveal) ── */
+.answer-box {
+  text-align:center; margin-top:20px; display:none;
+}
 .answer-box.revealed { animation: cardReveal .55s cubic-bezier(.175,.885,.32,1.275) forwards; }
-.answer-img { width:90px; height:90px; border-radius:50%; border:4px solid #333; object-fit:cover; margin-bottom:10px; }
+.answer-img {
+  width:90px; height:90px; border-radius:50%; border:4px solid #333;
+  object-fit:cover; margin-bottom:10px;
+}
 .answer-name { font-family:'Titan One',cursive; font-size:24px; color:#111; letter-spacing:1px; }
 .answer-desc { font-size:13px; color:#555; font-weight:800; margin-top:6px; line-height:1.5; }
 
-/* ── WORDLE ── */
+/* ══════════════════════════════════════════════════════════════
+   WORDLE MODE — redesigned
+   ══════════════════════════════════════════════════════════════ */
 .wordle-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 4px;
-  width: 100%;
 }
 
 .wordle-board {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   margin-bottom: 14px;
   perspective: 600px;
-  width: 100%;
-  max-width: 100%;
-  overflow: visible;
 }
-
 .wordle-row {
   display: flex;
-  gap: 5px;
+  gap: 6px;
   justify-content: center;
-  width: 100%;
 }
 .wordle-row.shake { animation: wordleShake .42s ease-in-out; }
 
 .wordle-tile {
-  width: var(--tile-sz, 42px);
-  height: var(--tile-sz, 42px);
-  min-width: 0;
-  flex-shrink: 0;
-  border-radius: 7px;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
   border: 2.5px solid #d1d5db;
   background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Nunito', sans-serif;
-  font-size: var(--tile-font, 17px);
+  font-size: 19px;
   font-weight: 900;
   color: #333;
   text-transform: uppercase;
   transition: border-color .12s, transform .12s, background .12s;
   backface-visibility: hidden;
 }
-.wordle-tile.filled  { border-color: #9ca3af; animation: wordlePop .12s ease-out; }
-.wordle-tile.green   { background:#16a34a; border-color:#16a34a; color:#fff; animation: wordleFlip .5s ease; }
-.wordle-tile.yellow  { background:#f59e0b; border-color:#f59e0b; color:#fff; animation: wordleFlip .5s ease; }
-.wordle-tile.gray    { background:#6b7280; border-color:#6b7280; color:#fff; animation: wordleFlip .5s ease; }
-.wordle-tile.empty   { opacity: .55; }
-.wordle-tile.bounce  { animation: wordleBounce .5s ease .15s; }
+.wordle-tile.filled {
+  border-color: #9ca3af;
+  animation: wordlePop .12s ease-out;
+}
+.wordle-tile.green  { background:#16a34a; border-color:#16a34a; color:#fff; animation: wordleFlip .5s ease; }
+.wordle-tile.yellow { background:#f59e0b; border-color:#f59e0b; color:#fff; animation: wordleFlip .5s ease; }
+.wordle-tile.gray   { background:#6b7280; border-color:#6b7280; color:#fff; animation: wordleFlip .5s ease; }
+.wordle-tile.empty  { opacity: .55; }
+.wordle-tile.bounce { animation: wordleBounce .5s ease .15s; }
 
-.wordle-status-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-.wordle-attempts-pill { background: #f0f9ff; border: 2.5px solid #333; border-radius: 10px; padding: 5px 14px; font-size: 12.5px; font-weight: 900; color: #0bc2cf; }
-.wordle-len-pill { background: #fff7e6; border: 2.5px solid #333; border-radius: 10px; padding: 5px 14px; font-size: 12.5px; font-weight: 900; color: #b45309; }
+/* stagger the flip per tile via inline animation-delay set in JS */
+
+.wordle-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.wordle-attempts-pill {
+  background: #f0f9ff; border: 2.5px solid #333; border-radius: 10px;
+  padding: 5px 14px; font-size: 12.5px; font-weight: 900; color: #0bc2cf;
+}
+.wordle-len-pill {
+  background: #fff7e6; border: 2.5px solid #333; border-radius: 10px;
+  padding: 5px 14px; font-size: 12.5px; font-weight: 900; color: #b45309;
+}
 
 .wordle-toast {
-  position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
-  background: #222; color: #fff; font-weight: 900; font-size: 13px;
-  padding: 9px 18px; border-radius: 8px; white-space: nowrap; z-index: 20;
-  box-shadow: 0 4px 0 rgba(0,0,0,.2); animation: toastIn .18s ease-out forwards;
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  font-weight: 900;
+  font-size: 13px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  white-space: nowrap;
+  z-index: 20;
+  box-shadow: 0 4px 0 rgba(0,0,0,.2);
+  animation: toastIn .18s ease-out forwards;
 }
 .wordle-toast.hide { animation: toastOut .18s ease-in forwards; }
-.wordle-toast-anchor { position: relative; height: 0; }
+.wordle-toast-anchor {
+  position: relative;
+  height: 0;
+}
 
-.wordle-keyboard { display: flex; flex-direction: column; gap: 7px; margin-bottom: 6px; user-select: none; width: 100%; }
-.wordle-key-row { display: flex; gap: 5px; justify-content: center; }
+/* On-screen keyboard */
+.wordle-keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 6px;
+  user-select: none;
+}
+.wordle-key-row {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
 .wordle-key {
-  font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 12.5px; color: #333;
-  background: #e5e7eb; border: none; border-radius: 6px; height: 40px; min-width: 28px;
-  flex: 1; max-width: 34px; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: filter .1s, transform .08s; text-transform: uppercase;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 12.5px;
+  color: #333;
+  background: #e5e7eb;
+  border: none;
+  border-radius: 6px;
+  height: 40px;
+  min-width: 28px;
+  flex: 1;
+  max-width: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: filter .1s, transform .08s;
+  text-transform: uppercase;
 }
 .wordle-key:hover { filter: brightness(.95); }
 .wordle-key:active, .wordle-key.pressed { animation: keyPress .12s ease; }
@@ -329,25 +404,40 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 .wordle-key.yellow { background:#f59e0b; color:#fff; }
 .wordle-key.gray   { background:#9ca3af; color:#fff; }
 
-.wordle-hint { text-align: center; font-size: 12.5px; font-weight: 800; color: #888; margin-bottom: 10px; }
+.wordle-hint {
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #888;
+  margin-bottom: 10px;
+}
 
-.wordle-result { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin: 10px 0 4px; }
+/* ── Wordle result grid (in popup) ── */
+.wordle-result {
+  display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;
+  margin: 10px 0 4px;
+}
 .wordle-box {
   width: 28px; height: 28px; border-radius: 6px; border: 2px solid #333;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 900; color: white; transition: transform .15s;
+  font-size: 13px; font-weight: 900; color: white;
+  transition: transform .15s;
 }
 .wordle-box.green  { background: #16a34a; }
 .wordle-box.yellow { background: #f59e0b; }
 .wordle-box.gray   { background: #6b7280; }
-.wordle-share-text { font-size: 12px; font-weight: 800; color: #555; text-align: center; margin-bottom: 8px; }
+.wordle-share-text {
+  font-size: 12px; font-weight: 800; color: #555; text-align: center; margin-bottom: 8px;
+}
 .wordle-copy-btn {
   font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900;
   background: #333; color: white; border: none; border-radius: 8px;
-  padding: 6px 14px; cursor: pointer; margin: 0 auto 10px; display: block; transition: .15s;
+  padding: 6px 14px; cursor: pointer; margin: 0 auto 10px; display: block;
+  transition: .15s;
 }
 .wordle-copy-btn:hover { background: #555; }
 
+/* ── Popup ── */
 .popup-overlay {
   display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
   backdrop-filter:blur(3px); z-index:100; align-items:center; justify-content:center;
@@ -380,21 +470,219 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 .popup-name { font-family:"Titan One",cursive; font-size:1.4rem; color:#111; letter-spacing:1px; margin-bottom:4px; }
 .popup-desc { font-size:13px; color:#666; font-weight:800; margin-bottom:14px; line-height:1.5; }
 
-#confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 200; }
+/* ── Confetti canvas ── */
+#confetti-canvas {
+  position: fixed; inset: 0; pointer-events: none; z-index: 200;
+}
 
+/* ── Easter egg ── */
 .easter-egg { display:none; position:fixed; inset:0; z-index:999; align-items:center; justify-content:center; background:rgba(0,0,0,.6); opacity:0; transition:opacity .4s ease; }
 .easter-egg.show { display:flex; }
 .easter-egg.visible { opacity:1; }
 .easter-egg img { max-width:80%; max-height:80%; border-radius:20px; border:5px solid white; box-shadow:0 0 40px rgba(255,255,255,.4); }
 
 @media (max-width: 420px) {
+  .wordle-tile { width: 34px; height: 34px; font-size: 16px; }
   .wordle-key { height: 36px; font-size: 11px; }
 }
+
+/* Full-screen logo loader: transparent black scrim, centered spinner. */
+#loading-overlay{position:fixed;inset:0;z-index:5000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.58);backdrop-filter:blur(2px)}
+#loading-overlay.show{display:flex}
+#loading-overlay .logo-spinner img{width:88px;height:88px;filter:drop-shadow(0 0 18px rgba(255,255,255,.35))}
+
+</style>
+
+<style id="blooktools-shared-guess-style">
+:root{--bg-top:#0bc2cf;--bg-bottom:#349aef;--accent:#9a49aa;--accent-dark:#7a039d;--up-bg:#6d28d9;transition:--bg-top .6s,--bg-bottom .6s,--accent .6s,--accent-dark .6s}
+[data-theme="dark"]{--bg-top:#14161f;--bg-bottom:#1e2130;--accent:#7c3aed;--accent-dark:#5b21b6}
+[data-theme="winter"]{--bg-top:#0b192c;--bg-bottom:#2b5f8f;--accent:#3b82b8;--accent-dark:#1e5483}
+[data-theme="spring"]{--bg-top:#1f7a55;--bg-bottom:#52b788;--accent:#d9619a;--accent-dark:#a53a70}
+[data-theme="autumn"]{--bg-top:#43281c;--bg-bottom:#b5651d;--accent:#c4571a;--accent-dark:#8f3d0f}
+[data-theme="independence"]{--bg-top:#0a1a3f;--bg-bottom:#b22234;--accent:#1f3d91;--accent-dark:#142a66}
+body{background:linear-gradient(165deg,var(--bg-top),var(--bg-bottom)) fixed!important;padding-top:28px;padding-left:18px;padding-right:18px;isolation:isolate}
+body::before{display:none!important}
+.guess-background{position:fixed;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(165deg,var(--bg-top),var(--bg-bottom))}
+.guess-bg-pattern{position:fixed;top:50%;left:50%;width:300%;height:300%;transform:translate(-50%,-50%) rotate(15deg);z-index:-1;pointer-events:none;background:url('https://ac.blooket.com/dashboard/65a43218fd1cabe52bdf1cda34613e9e.png') repeat;background-size:1200px 1200px;opacity:.10;animation:guessPatternScroll 40s linear infinite}
+@keyframes guessPatternScroll{to{background-position:1200px 1200px}}
+.container{position:relative;z-index:2;width:min(92%,760px);max-width:760px;margin:4px auto 0;padding-top:20px}
+.container>h1{font-size:clamp(2.7rem,7vw,4rem);line-height:1.15;margin-top:4px}
+.title-link{text-shadow:3px 3px 0 rgba(0,0,0,.2)}
+.live-status{min-height:34px;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:8px;margin-bottom:18px}
+.logo-spinner{display:inline-flex;align-items:center;justify-content:center;animation:guessLogoSpin 1.05s linear infinite}
+.logo-spinner img{display:block;object-fit:contain;width:74px;height:74px;filter:drop-shadow(0 3px 5px rgba(0,0,0,.18))}
+.logo-spinner.small img{width:32px;height:32px}
+@keyframes guessLogoSpin{to{transform:rotate(360deg)}}
+.loading-card{padding:36px 10px;min-height:145px;display:flex;align-items:center;justify-content:center}
+.loading-spinner,.loading-msg{display:none!important}
+.card{position:relative;background:var(--accent);border:6px solid rgba(255,255,255,.2);border-radius:16px;box-shadow:4px 4px rgba(0,0,0,.2);color:#fff;transition:background .4s,border-color .3s}
+.menu-title,.scoreboard-title{color:#fff;text-shadow:2px 2px rgba(0,0,0,.15)}
+.mode-info{color:rgba(255,255,255,.86)}
+.popup-box{background:var(--accent);border:6px solid rgba(255,255,255,.2);border-radius:16px;box-shadow:4px 6px rgba(0,0,0,.25);color:#fff}
+.popup-box .menu-title,.popup-box .scoreboard-title{color:#fff}
+.popup-box p{color:rgba(255,255,255,.9)!important}
+.scoreboard-section{border-top-color:rgba(255,255,255,.3)}
+.score-row{background:rgba(0,0,0,.18);border-color:rgba(255,255,255,.15);color:#fff}
+.score-rank{background:rgba(0,0,0,.32)}
+.popup-title{color:#86efac}
+.answer-name,.popup-name{color:#fff}
+.answer-desc,.popup-desc,.wordle-share-text{color:rgba(255,255,255,.82)}
+.answer-img,.popup-img{border-color:rgba(255,255,255,.35)}
+.btn{font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;letter-spacing:0;border:6px solid rgba(255,255,255,.2);border-radius:12px;box-shadow:4px 4px rgba(0,0,0,.18);transition:transform .2s cubic-bezier(.34,1.56,.64,1),background .25s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:4px 7px rgba(0,0,0,.2)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px rgba(0,0,0,.15)}
+/* Restore the original colorful game buttons instead of recoloring every mode to the theme accent. */
+.btn-green{background:#3cb529!important;color:#fff!important;box-shadow:0 5px 0 #247a15!important}
+.btn-green:hover{background:#329b22!important;box-shadow:0 7px 0 #247a15!important}
+.btn-yellow{background:#f59e0b!important;color:#fff!important;box-shadow:0 5px 0 #b45309!important}
+.btn-yellow:hover{background:#e88d00!important;box-shadow:0 7px 0 #b45309!important}
+.btn-red{background:#e53935!important;color:#fff!important;box-shadow:0 5px 0 #b71c1c!important}
+.btn-red:hover{background:#d32f2f!important;box-shadow:0 7px 0 #b71c1c!important}
+.btn-blue{background:#0bc2cf!important;color:#fff!important;box-shadow:0 5px 0 #00838f!important}
+.btn-blue:hover{background:#09aeb9!important;box-shadow:0 7px 0 #00838f!important}
+.btn-purple{background:#8b5cf6!important;color:#fff!important;box-shadow:0 5px 0 #5b21b6!important}
+.btn-purple:hover{background:#7c3aed!important;box-shadow:0 7px 0 #5b21b6!important}
+.clue-label{color:#fff;text-shadow:2px 2px rgba(0,0,0,.15)}
+.clue-num{background:var(--accent)}
+input[type="text"]{border:3px solid rgba(255,255,255,.28);border-radius:12px}
+input[type="text"]:focus{box-shadow:0 0 0 4px rgba(255,255,255,.2)}
+
+.guess-fab{position:fixed;top:16px;left:16px;width:48px;height:48px;border:0;border-radius:50%;background:var(--accent);color:#fff;box-shadow:0 5px 0 var(--accent-dark);cursor:pointer;font-size:18px;z-index:1600;transition:transform .2s,background .3s}
+.guess-fab:hover{transform:translateY(-2px)}
+.guess-fab:active{transform:translateY(2px);box-shadow:0 2px 0 var(--accent-dark)}
+.guess-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1700;opacity:0;pointer-events:none;transition:opacity .25s}
+.guess-overlay.show{opacity:1;pointer-events:auto}
+.guess-sidebar{position:fixed;top:0;left:-310px;width:270px;max-width:88vw;height:100dvh;background:var(--accent);border-right:4px solid var(--accent-dark);z-index:1800;transition:left .3s ease;display:flex;flex-direction:column;box-shadow:6px 0 20px rgba(0,0,0,.3);overflow-y:auto;color:#fff}
+.guess-sidebar.show{left:0}
+.guess-sidebar-head{display:flex;justify-content:space-between;align-items:center;padding:18px 16px 12px 20px}
+.guess-sidebar-head h3{font-family:'Titan One',cursive;font-weight:400;font-size:1.55rem;color:#fff;text-shadow:2px 2px 0 var(--accent-dark)}
+.guess-sidebar-head button{width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.2);color:#fff;cursor:pointer}
+.guess-home{margin:4px 18px 14px;padding:12px;background:#22d3c5;border:none;border-radius:14px;box-shadow:0 4px 0 #17a89d;color:#fff;text-decoration:none;text-align:center;font-weight:900;font-size:16px}
+.guess-sidebar-links{padding:0 12px;display:flex;flex-direction:column;gap:4px}
+.guess-sidebar-links a{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;text-decoration:none;color:rgba(255,255,255,.92);font-size:15px;font-weight:900;transition:background .2s,transform .2s}
+.guess-sidebar-links a:hover{background:rgba(255,255,255,.12);transform:translateX(3px)}
+.guess-sidebar-links a.active{background:#fff;color:var(--accent)}
+.guess-sidebar-links i{width:24px;text-align:center}
+.guess-sidebar-divider{height:1px;background:rgba(255,255,255,.25);margin:10px 8px}
+.guess-themes{padding:16px 18px 24px;border-top:1px solid rgba(255,255,255,.25);margin-top:auto;color:#fff}
+.guess-themes h4{font-family:'Titan One',cursive;font-weight:400;font-size:.85rem;margin-bottom:10px}
+.guess-theme-grid{display:flex;gap:8px;flex-wrap:wrap}
+.guess-swatch{flex:1 1 calc(50% - 8px);min-width:0;padding:10px 6px;border-radius:12px;border:3px solid rgba(0,0,0,.22);cursor:pointer;text-align:center;font:900 12px 'Nunito',sans-serif;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-dark));transition:transform .2s}
+.guess-swatch:hover{transform:translateY(-2px)}.guess-swatch.active{outline:3px solid #ffd700;outline-offset:2px}
+.guess-swatch.normal{background:linear-gradient(135deg,#0bc2cf,#349aef)}.guess-swatch.dark{background:linear-gradient(135deg,#3a3d4d,#23263a)}.guess-swatch.season{background:linear-gradient(135deg,#f72585,#b5179e)}.guess-swatch.custom{flex-basis:100%;background:linear-gradient(135deg,#0bc2cf,#9a49aa,#fbbf24)}
+.guess-submenu{display:none;flex:1 0 100%;padding:8px 0 4px 10px;border-left:3px solid rgba(255,255,255,.3);gap:8px;flex-direction:column}.guess-submenu.show{display:flex}.guess-submenu .guess-swatch{width:100%;background:linear-gradient(135deg,#14264f,#b22234)}
+.guess-custom-panel{display:none;flex:1 0 100%;padding:12px;background:rgba(0,0,0,.17);border:2px solid rgba(255,255,255,.18);border-radius:12px;gap:8px;flex-direction:column}.guess-custom-panel.show{display:flex}
+.guess-custom-panel label{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#fff;font-size:12px;font-weight:900}.guess-custom-panel input[type=color]{width:40px;height:28px;border:2px solid rgba(255,255,255,.35);border-radius:6px;background:transparent;padding:0}.guess-custom-panel select{max-width:120px;background:rgba(0,0,0,.25);border:2px solid rgba(255,255,255,.25);border-radius:7px;color:#fff;padding:5px;font:800 11px 'Nunito',sans-serif}.guess-custom-panel option{background:#fff;color:#111}
+.guess-custom-actions{display:flex;gap:8px}.guess-custom-actions button{flex:1;padding:8px;border-radius:9px;border:0;background:rgba(0,0,0,.25);color:#fff;font:900 12px 'Nunito',sans-serif;cursor:pointer}
+#guess-theme-fx{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}#guess-theme-fx .gparticle{position:absolute;top:-8vh;left:var(--x);width:var(--s);height:var(--s);font-size:var(--s);line-height:1;animation:gparticleFall var(--d) linear forwards;will-change:transform}
+#guess-theme-fx .gparticle.snow{background:#fff;border-radius:50%;box-shadow:0 0 6px rgba(255,255,255,.8)}#guess-theme-fx .gparticle img{width:100%;display:block;opacity:.35}
+@keyframes gparticleFall{0%{transform:translate3d(0,0,0) rotate(0);opacity:0}8%{opacity:.9}100%{transform:translate3d(var(--dx),112vh,0) rotate(var(--r));opacity:.8}}
+#guess-theme-fx{z-index:-1}
+@media(max-width:600px){body{padding-top:20px}.container{width:96%;padding-top:30px}.container>h1{font-size:clamp(2.4rem,11vw,3.3rem)}.guess-fab{width:44px;height:44px;top:12px;left:12px}.card{padding:20px 16px}.popup-box{padding:25px 18px}}
+</style>
+
+<style id="guess-polish">
+:root{--ink:#2a1b3d;--cream:#fff8e7;--sun:#ffd23f}
+body{-webkit-font-smoothing:antialiased}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.title-link{text-shadow:0 5px 0 rgba(0,0,0,.22)}
+.subtitle{font-size:1.1rem}
+.card{border-radius:24px;padding:28px;box-shadow:0 10px 0 rgba(0,0,0,.2),inset 0 2px 0 rgba(255,255,255,.18)}
+.top-bar{gap:10px}
+.score-pill,.streak-pill,.best-pill{border:3px solid rgba(255,255,255,.3);border-radius:999px;padding:7px 18px;font-weight:900;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.best-pill{background:rgba(0,0,0,.25);color:#fff}
+#welcome-message p,#error-view p{color:rgba(255,255,255,.92)!important}
+#error-view .menu-title{color:#fecaca!important}
+.timer-track{background:rgba(0,0,0,.25);border-color:rgba(255,255,255,.25)}
+.timer-label{color:#fff}.timer-label.urgent{color:#fecaca}
+.clue-label{font-size:17px;line-height:1.3;margin-bottom:14px}
+.clue{background:var(--cream);border:0;border-radius:14px;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+.clue-hidden{background:rgba(0,0,0,.2);border:2px dashed rgba(255,255,255,.3);border-radius:14px;color:transparent}
+.clue-num-hidden{background:rgba(255,255,255,.25)}
+input[type=text]{background:#fff;color:var(--ink);border-radius:14px;padding:14px 16px;font-size:16px}
+input[type=text]::placeholder{color:#8a7a99}
+.feedback.correct,.feedback.wrong{padding:9px 14px;border-radius:12px;background:rgba(0,0,0,.24)}
+.feedback.correct{color:#86efac}.feedback.wrong{color:#fecaca}
+.trivia-btn{border:0;border-radius:16px;padding:18px 12px;transition:transform .15s,box-shadow .15s}
+.trivia-btn:hover:not(:disabled){transform:translateY(-3px)}
+.answer-box{background:rgba(0,0,0,.2);border-radius:18px;padding:20px}
+.popup-pts{color:#fff;font-size:1.3rem}
+.popup-box{border-radius:24px}
+.wordle-hint{color:rgba(255,255,255,.8)}
+.wordle-len-pill,.wordle-attempts-pill{background:rgba(0,0,0,.24);color:#fff;border-color:rgba(255,255,255,.2)}
+.wordle-tile{width:min(46px,calc((min(100vw - 140px,640px) - (var(--n,6) - 1)*6px)/var(--n,6)));height:auto;aspect-ratio:1/1;font-size:clamp(11px,4.2vw,20px);color:var(--ink)}
+.wordle-tile.empty{opacity:1;background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.28)}
+.wordle-tile.filled{animation:none;border-color:#fff}
+.wordle-tile.pop{animation:wordlePop .12s ease-out}
+.wordle-tile.green,.wordle-tile.yellow,.wordle-tile.gray{animation:none;color:#fff}
+.wordle-tile.reveal{animation:wordleFlip .5s ease both}
+.wordle-tile.bounce{animation:wordleBounce .5s ease .15s}
+.wordle-gap{width:12px;flex:none}
+.wordle-key{background:#fff;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+.hl-board{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;margin-top:6px}
+.hl-vs{align-self:center;width:48px;height:48px;border-radius:50%;background:var(--sun);color:var(--ink);font:400 17px 'Titan One',cursive;display:grid;place-items:center;box-shadow:0 4px 0 rgba(0,0,0,.25);z-index:1}
+.hl-card{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 10px;background:var(--cream);color:var(--ink);border:0;border-radius:20px;box-shadow:0 6px 0 rgba(0,0,0,.25);cursor:pointer;font-family:inherit;transition:transform .15s,box-shadow .15s,background .25s}
+.hl-card:hover{transform:translateY(-3px);box-shadow:0 9px 0 rgba(0,0,0,.25)}
+.hl-card img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:4px solid var(--ink);background:#fff}
+.hl-name{font:400 19px 'Titan One',cursive;line-height:1.15;word-break:break-word}
+.hl-subs{font-weight:900;font-size:22px;min-height:30px;color:#7a039d}
+.hl-board.locked .hl-card{pointer-events:none}
+.hl-card.win{background:#bbf7d0}.hl-card.win .hl-subs{color:#166534}
+.hl-card.lose{background:#fecaca;opacity:.88}.hl-card.lose .hl-subs{color:#991b1b}
+.hl-card.picked{outline:4px solid var(--sun);outline-offset:3px}
+@media(max-width:560px){.card{padding:20px 14px}.hl-board{grid-template-columns:1fr}.hl-vs{margin:-20px auto}.hl-card{flex-direction:row;text-align:left;padding:14px}.hl-card img{width:64px;height:64px}.hl-subs{margin-left:auto}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@keyframes dropIn { from { transform: translateY(-60px) scale(.6) rotate(-8deg); opacity: 0; } }
+.container > h1.title { font-family:'Titan One',cursive; font-weight:400; font-size:48px; line-height:normal; letter-spacing:0; margin:28px 0 6px; padding:0; animation:none; color:#fff; text-shadow:3px 3px 0 rgba(0,0,0,.2); user-select:none; }
+.title .title-link { font-family:'Titan One',cursive; font-weight:400; letter-spacing:0; text-shadow:3px 3px 0 rgba(0,0,0,.2); }
+.title-letter { display:inline-block; font-family:'Titan One',cursive; font-weight:400; letter-spacing:0; animation:dropIn .7s cubic-bezier(.34,1.56,.64,1) backwards; animation-delay:calc(var(--i) * 60ms); transition:transform .25s cubic-bezier(.34,1.56,.64,1); }
+.title-letter:hover { transform:translateY(-8px) rotate(-6deg) scale(1.15); }
+@media (max-width:768px){ .container > h1.title { font-size:36px; } }
 </style>
 </head>
 <body>
 
+<div class="guess-background" aria-hidden="true"></div>
+<div class="guess-bg-pattern" aria-hidden="true"></div>
+<div id="guess-theme-fx" aria-hidden="true"></div>
+<div id="sidebarOverlay" class="guess-overlay"></div>
+<nav id="siteSidebar" class="guess-sidebar" aria-label="Site navigation">
+  <div class="guess-sidebar-head"><h3>BlookTools</h3><button id="sidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button></div>
+  <a class="guess-home" href="https://blooket.mathuniverse.online/"><i class="fa-solid fa-house"></i> Home</a>
+  <div class="guess-sidebar-links">
+    <a href="leaderboard"><i class="fa-solid fa-trophy"></i> Leaderboard</a>
+    <a href="guess" class="active"><i class="fa-solid fa-question"></i> Guess the Blooktuber</a>
+    <a href="custom"><i class="fa-solid fa-gear"></i> Custom</a>
+    <div class="guess-sidebar-divider"></div>
+    <a href="https://forms.gle/UdtzPTVHsx26kqJS9" target="_blank" rel="noopener"><i class="fa-solid fa-lightbulb"></i> Suggestions</a>
+    <a href="https://discord.gg/DkfmANQBzw" target="_blank" rel="noopener"><i class="fa-brands fa-discord"></i> Discord</a>
+  </div>
+  <div class="guess-themes">
+    <h4>THEME</h4>
+    <div class="guess-theme-grid">
+      <button type="button" class="guess-swatch normal active" data-theme="normal">☀️ Normal</button>
+      <button type="button" class="guess-swatch dark" data-theme="dark">🌙 Dark</button>
+      <button type="button" class="guess-swatch season" id="guessSeasonToggle">🍂 Seasonal ▾</button>
+      <div class="guess-submenu" id="guessSeasonSub">
+        <button type="button" class="guess-swatch" data-theme="winter">❄️ Winter</button>
+        <button type="button" class="guess-swatch" data-theme="spring">🌸 Spring</button>
+        <button type="button" class="guess-swatch" data-theme="autumn">🍂 Autumn</button>
+        <button type="button" class="guess-swatch" data-theme="independence">🎆 Independence</button>
+      </div>
+      <button type="button" class="guess-swatch custom" data-theme="custom">🎨 Custom</button>
+      <div class="guess-custom-panel" id="guessCustomPanel">
+        <label>Background top <input type="color" id="guessCustomTop" value="#0bc2cf"></label>
+        <label>Background bottom <input type="color" id="guessCustomBottom" value="#349aef"></label>
+        <label>Card color <input type="color" id="guessCustomAccent" value="#9a49aa"></label>
+        <label>Effect <select id="guessCustomEffect"><option value="none">None</option><option value="snow">❄️ Snow</option><option value="petals">🌸 Petals</option><option value="leaves">🍂 Leaves</option><option value="fireworks">🎆 Fireworks</option><option value="blooks">🐥 Blooks</option></select></label>
+        <div class="guess-custom-actions"><button type="button" id="guessCustomRandom">🎲 Random</button><button type="button" id="guessCustomReset">Reset</button></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
 <canvas id="confetti-canvas"></canvas>
+<div id="loading-overlay" aria-label="Loading BlookTools data" role="status"><span class="logo-spinner"><img src="https://blooket.mathuniverse.online/blooktools.png" alt="Loading"></span></div>
 
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/chick.svg"   alt="" aria-hidden="true" style="left:5%;  width:80px;  animation-duration:16s; animation-delay:-2s;">
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/dragon.svg"  alt="" aria-hidden="true" style="left:75%; width:100px; animation-duration:20s; animation-delay:-8s;">
@@ -408,34 +696,39 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/frog.svg"    alt="" aria-hidden="true" style="left:50%; width:110px; animation-duration:22s; animation-delay:-18s;">
 
 <div class="container">
-  <h1><a href="https://blooket.mathuniverse.online" class="title-link">BlookTools</a></h1>
+  <h1 class="title"><a href="#" id="title-menu-trigger" class="title-link" role="button" tabindex="0" aria-label="Open site navigation">BlookTools</a></h1>
   <p class="subtitle">Guess the Blooktuber! 🎮</p>
 
-  <div class="live-status" id="live-status">
-    <span class="live-dot loading" id="live-dot"></span>
-    <span id="live-text">Fetching live subscriber counts...</span>
+  <div class="live-status" id="live-status" aria-live="polite">
+    <span class="logo-spinner small" id="live-loading-logo"><img src="https://blooket.mathuniverse.online/blooktools.png" alt="Loading"></span>
+    <span class="live-dot loading" id="live-dot" style="display:none"></span>
+    <span id="live-text"></span>
   </div>
 
+  <!-- Score + Streak bar -->
   <div class="top-bar" id="top-bar">
     <div class="score-pill">Score: <span id="score">0</span> pts</div>
     <div class="streak-pill">
       <span class="flame" id="flame-icon">🔥</span>
       Streak: <span id="streak-count">0</span>
     </div>
+    <div class="best-pill">Best: <span id="best-count">0</span></div>
   </div>
 
   <div class="card">
-    <div id="loading-view" class="loading-card">
-      <span class="loading-spinner">🔄</span>
-      <div class="loading-msg">Fetching live YouTube data...<br>This takes just a moment!</div>
+    <!-- Loading -->
+    <div id="loading-view" class="loading-card" aria-label="Loading Blooktuber data">
+      <span class="logo-spinner large"><img src="https://blooket.mathuniverse.online/blooktools.png" alt="Loading"></span>
     </div>
 
+    <!-- Welcome -->
     <div id="welcome-message" style="display:none; text-align:center; padding:20px 0;">
       <div class="menu-title" style="margin-bottom:12px;">Welcome to Guess the Blook!</div>
       <p style="font-weight:800; color:#444; margin-bottom:20px;">Select many gamemodes and try to guess the blooktuber! Start playing by clicking the button below!</p>
       <button class="btn btn-yellow" onclick="openModePopup()">Choose Game Mode</button>
     </div>
 
+    <!-- Error fallback -->
     <div id="error-view" style="display:none; text-align:center; padding:20px 0;">
       <div style="font-size:2rem; margin-bottom:10px;">⚠️</div>
       <div class="menu-title" style="margin-bottom:8px; color:#e53935;">API Error</div>
@@ -443,8 +736,10 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
       <button class="btn btn-yellow" onclick="openModePopup()">Choose Game Mode</button>
     </div>
 
+    <!-- Game area -->
     <div id="game-area" style="display:none;">
 
+      <!-- Timer -->
       <div class="timer-wrap" id="timer-wrap">
         <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
         <div class="timer-label" id="timer-label">30s</div>
@@ -452,6 +747,7 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 
       <div class="clue-label" id="clue-label">CLUE 1 OF 3</div>
 
+      <!-- Wordle board (only shown in wordle mode) -->
       <div class="wordle-wrap" id="wordle-wrap" style="display:none;">
         <div class="wordle-toast-anchor" id="wordle-toast-anchor"></div>
         <div class="wordle-board" id="wordle-board"></div>
@@ -465,16 +761,21 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 
       <div id="clues-container"></div>
       <div id="trivia-container" class="trivia-grid" style="display:none;"></div>
+      <div id="hl-wrap" style="display:none;">
+        <div class="hl-board" id="hl-board"></div>
+        <button class="btn btn-green" id="hl-next" onclick="nextRound()" style="display:none;">Next pair ▶</button>
+      </div>
 
       <div id="classic-input-container">
         <input type="text" id="guess-input" placeholder="Type your guess here…" />
-        <button class="btn btn-green" id="guess-btn" onclick="checkGuessRouted()">Submit Guess</button>
+        <button class="btn btn-green" id="guess-btn"   onclick="checkGuessRouted()">Submit Guess</button>
         <button class="btn btn-red"   id="give-up-btn" onclick="giveUp()">Give Up & Reveal</button>
       </div>
 
       <div class="feedback" id="feedback"></div>
-      <button class="btn btn-blue" onclick="openModePopup()" style="margin-top:12px;">Change Game Mode</button>
+      <button class="btn btn-blue" id="change-mode-btn" onclick="openModePopup()" style="margin-top:12px;">Change Game Mode</button>
 
+      <!-- Answer reveal card -->
       <div class="answer-box" id="answer-box">
         <img class="answer-img" id="answer-img" src="" alt="Blooktuber profile picture" />
         <div class="answer-name" id="answer-name"></div>
@@ -484,6 +785,7 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
     </div>
   </div>
 
+  <!-- Mode picker popup -->
   <div class="popup-overlay" id="mode-popup-overlay">
     <div class="popup-box" style="text-align:left;">
       <div class="menu-title" style="margin-bottom:15px;">Choose Game Mode</div>
@@ -501,29 +803,24 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 
           <button class="btn" style="background:#e91e63; box-shadow:0 5px 0 #222;" onclick="clickMode('wordle')">Play Wordle Mode</button>
           <div class="mode-info">6 letter-by-letter guesses. Share your result like Wordle!</div>
+
+          <button class="btn" style="background:#ff7a1a; box-shadow:0 5px 0 #b34700;" onclick="clickMode('higher')">Play Higher or Lower</button>
+          <div class="mode-info">Two Blooktubers appear. Guess which one has more subscribers and build a streak!</div>
         </div>
         <button class="btn btn-red" onclick="closeModePopup()" style="margin-top:15px; padding:8px;">Cancel</button>
       </div>
 
-      <div id="popup-scoreboard-view" style="display:none;">
-        <div id="selected-mode-title" class="menu-title" style="font-size:20px; color:#0bc2cf;"></div>
-        <div class="scoreboard-section">
-          <div class="scoreboard-title">🏆 Live Sub Count Rankings</div>
-          <div style="font-size:12px; font-weight:800; color:#888; margin-bottom:8px;" id="scoreboard-timestamp"></div>
-          <div class="score-list" id="scoreboard-data-list"></div>
-        </div>
-        <button class="btn btn-green" id="start-game-btn" style="margin-top:14px;">Start Game ▶</button>
-        <button class="btn btn-blue"  onclick="backToModeSelect()" style="margin-top:8px; padding:8px;">◀ Back to Modes</button>
-      </div>
     </div>
   </div>
 
+  <!-- Correct popup -->
   <div class="popup-overlay" id="popup-overlay">
     <div class="popup-box">
       <div class="popup-emoji">🎉</div>
       <div class="popup-title">Correct!</div>
       <div class="popup-pts"    id="popup-pts"></div>
       <div class="popup-streak" id="popup-streak" style="display:none;"></div>
+      <!-- Wordle result inside popup -->
       <div id="wordle-result-area" style="display:none;">
         <div class="wordle-result" id="popup-wordle-grid"></div>
         <div class="wordle-share-text" id="wordle-share-text"></div>
@@ -542,97 +839,92 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 </div>
 
 <script>
-// All YouTube stats now come from the Cloudflare Worker, which caches
-// results in KV for 30 minutes — no API key needed on the client side.
-const STATS_API_URL = "https://blooktools-api.fastyjayden.workers.dev/";
+// ── YouTube API ──────────────────────────────────────────────────────────────
+const API_KEY = "AIzaSyBUj3qxFbI2-IWeRU1EEa4w_ChFoZgSjUE";
 
 const creatorList = [
-  ["Waymore",          "WaymoreYT",                    "https://www.youtube.com/@WaymoreYT",                    "https://yt3.googleusercontent.com/fpVQ5VoYlN-UptRogESSqHnxEX61T-7YW1YNGObVrFX2w_1jBO-njl76kt-6vkPF_2cC9x66kQ=s800-c-k-c0x00ffffff-no-rj"],
-  ["LeonBlox",         "LeonBloxOfficial",             "https://www.youtube.com/@LeonBloxOfficial",             "https://yt3.googleusercontent.com/IVhsWHLcVbC1983DmOiSRYNd2QMIU7R6eHOAHrpk_sT6dBBJj4CWAWyTAJoI_CySgNRcrb6HQQ=s800-c-k-c0x00ffffff-no-rj"],
-  ["iBlooket",         "iBlooket",                     "https://www.youtube.com/@iBlooket",                     "https://yt3.googleusercontent.com/OmDwNKSgt4mxydmndADjlva5mWYKLVpm2BGLrzMlU7GWIRTgE3eReMX40s147P31K4Z1k51Phg=s800-c-k-c0x00ffffff-no-rj"],
-  ["BIL",              "BILBRB",                       "https://www.youtube.com/@BILBRB",                       null],
-  ["Blooket",          "PlayBlooket",                  "https://www.youtube.com/@PlayBlooket",                  "https://yt3.googleusercontent.com/ytc/AIdro_n9MuS8YZrvKTzvVPJhLaRlgDjUouMy9flhM8rbKox6epI=s800-c-k-c0x00ffffff-no-rj"],
-  ["Mega Bot",         "MATHBOARDOM",                  "https://www.youtube.com/MATHBOARDOM",                   "https://yt3.googleusercontent.com/FNAGuNPpY_GZyYDCck-3L_Zd31u90SBJuzcc4hXG9N94_D7vt7PM9iU2GZ43ndU01jUygXjn=s800-c-k-c0x00ffffff-no-rj"],
-  ["Unblooked",        "unblooked",                    "https://www.youtube.com/@unblooked",                    "https://yt3.googleusercontent.com/w_Hs7-L_VL_uZGxhSfncFe7aZfhRjkP5O1BF2NjukAKYbGfSeFcLeCYTDfyfNnRH95l32Aj6DA=s800-c-k-c0x00ffffff-no-rj"],
-  ["Monkey Master",    "MonkeyMasterYT",               "https://www.youtube.com/@MonkeyMasterYT",               "https://yt3.ggpht.com/vHPdt2TV8_lN5eYY6ODGprTOb2rLt9Z0PHCA8I5n0vwvcvzrFCo-0ZC3B9MR7M16hyZMcIgT4miW-w=s400-c-fcrop64=1,38000000c7ffffff-rw-nd-v1"],
-  ["Lag0n",            "Lag0n4",                       "https://www.youtube.com/@Lag0n4",                       "https://yt3.googleusercontent.com/sGMDSWtF1ljfF1LvdvSfWvvHUaDFY7xiqhNZHawJ-Kz-pLvMcd2sf3HkX3ojPe7XIAOHxgAzkm4=s800-c-k-c0x00ffffff-no-rj"],
-  ["Blooket Ace",      "blooketace",                   "https://www.youtube.com/@blooketace",                   null],
-  ["FastyJay",         "FastyJay",                     "https://www.youtube.com/@FastyJay",                     "https://yt3.googleusercontent.com/VuM8z5VYXi_TIw7dr0z5mg9O6fwzy8lzOGUFTR63zmciyPMVzB8ORpnSAwdcs_AUISyBHH0K=s800-c-k-c0x00ffffff-no-rj"],
-  ["the blooket gamer","theblooketgamer",              "https://www.youtube.com/@theblooketgamer",              "https://yt3.googleusercontent.com/IbwGyfwHd4-lH4gA69Uns3iHqwO9VnyM4azJEca1sjiRn2yEzZf5vDBbs0zC4hjvEzK4en3L=s800-c-k-c0x00ffffff-no-rj"],
-  ["Blooket Gods",     "BlooketGodsYT",                "https://www.youtube.com/@BlooketGodsYT",                null],
-  ["Slade2",           "theslade2",                    "https://www.youtube.com/@theslade2",                    null],
-  ["Blooket Life",     "BlooketLifeYT",                "https://www.youtube.com/@BlooketLifeYT",                null],
-  ["JustaPanda",       "JustaPanda888",                "https://www.youtube.com/@JustaPanda888",                null],
-  ["Blooket Insane",   "blooketinsane",                "https://www.youtube.com/@blooketinsane",                null],
-  ["notRIC",           "playblacket",                  "https://www.youtube.com/@playblacket",                  null],
-  ["SRN Games",        "srngameslol",                  "https://www.youtube.com/@srngameslol",                  null],
-  ["BlooketBam",       "BlooketBAM",                   "https://www.youtube.com/@BlooketBAM",                   null],
-  ["Blook Master",     "BlookMasterYT",                "https://www.youtube.com/@BlookMasterYT",                null],
-  ["Twisted Bread",    "TwistedBread",                 "https://www.youtube.com/@TwistedBread/",                null],
-  ["Pig55",            "Pig_55",                       "https://www.youtube.com/@Pig_55",                       null],
-  ["Blooket Elite",    "BlooketEliteIsEatingYourFries","https://www.youtube.com/@BlooketEliteIsEatingYourFries",null],
-  ["Turtelix",         "TurtelixYT",                   "https://www.youtube.com/@TurtelixYT",                   null],
-  ["The green astronaut",  "ThegreenastronautYT",      "https://www.youtube.com/@ThegreenastronautYT",          "https://yt3.googleusercontent.com/jqSEQqOe03q2My36l3Khz09hh8qmrhDGkbD-VsLGrW-ESIbSneCIfSeYVravW7BwhlKfiaUPpg=s800-c-k-c0x00ffffff-no-rj"],
-  ["Blooket Warrior",  "BlooketWarriorYT",             "https://www.youtube.com/@BlooketWarriorYT",             null],
-  ["Blookbread",       "Breadblook",                   "https://www.youtube.com/@Breadblook",                   null],
-  ["TOBP Blooket",     "ThatOneBlooketPlayer",         "https://www.youtube.com/@ThatOneBlooketPlayer",         null],
-  ["YouLostMan",       "YouLostMan",                   "https://www.youtube.com/@YouLostMan",                   null],
-  ["Kinkade",          "ItzKinkade",                   "https://www.youtube.com/@ItzKinkade",                   null],
-  ["Peetwick",         "PeetWickYT",                   "https://www.youtube.com/@PeetWickYT",                   null],
-  ["Freedo",           "TheRealFreedoBlox",            "https://www.youtube.com/@TheRealFreedoBlox",            null]
+  ["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT", "https://yt3.googleusercontent.com/fpVQ5VoYlN-UptRogESSqHnxEX61T-7YW1YNGObVrFX2w_1jBO-njl76kt-6vkPF_2cC9x66kQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket", "https://yt3.googleusercontent.com/OmDwNKSgt4mxydmndADjlva5mWYKLVpm2BGLrzMlU7GWIRTgE3eReMX40s147P31K4Z1k51Phg=s800-c-k-c0x00ffffff-no-rj"],
+  ["BIL", "BILBRB", "https://www.youtube.com/@BILBRB", "https://yt3.googleusercontent.com/vWuC0e00QIpkpWhkt30Vfc8ogrOL2ego-TH_B55U-EC4Xf-WmiInutIW7gLvtrLmUs6yt4eZPNg=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket", "PlayBlooket", "https://www.youtube.com/@PlayBlooket", "https://yt3.googleusercontent.com/ytc/AIdro_n9MuS8YZrvKTzvVPJhLaRlgDjUouMy9flhM8rbKox6epI=s800-c-k-c0x00ffffff-no-rj"],
+  ["Unblooked", "unblooked", "https://www.youtube.com/@unblooked", "https://yt3.googleusercontent.com/w_Hs7-L_VL_uZGxhSfncFe7aZfhRjkP5O1BF2NjukAKYbGfSeFcLeCYTDfyfNnRH95l32Aj6DA=s800-c-k-c0x00ffffff-no-rj"],
+  ["Monkey Master", "MonkeyMasterYT", "https://www.youtube.com/@MonkeyMasterYT", "https://yt3.ggpht.com/vHPdt2TV8_lN5eYY6ODGprTOb2rLt9Z0PHCA8I5n0vwvcvzrFCo-0ZC3B9MR7M16hyZMcIgT4miW-w=s400-c-fcrop64=1,38000000c7ffffff-rw-nd-v1"],
+  ["Lag0n", "Lag0n4", "https://www.youtube.com/@Lag0n4", "https://yt3.googleusercontent.com/sGMDSWtF1ljfF1LvdvSfWvvHUaDFY7xiqhNZHawJ-Kz-pLvMcd2sf3HkX3ojPe7XIAOHxgAzkm4=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Ace", "blooketace", "https://www.youtube.com/@blooketace", "https://yt3.googleusercontent.com/qfQMmUYa3shmyhWigiZwO0T-shBfKTJ09Nv1L9W3dUQWuIhlNGk6ZGGC14Yqz1uaMmLmrm25=s800-c-k-c0x00ffffff-no-rj"],
+  ["FastyJay", "FastyJay", "https://www.youtube.com/@FastyJay", "https://yt3.googleusercontent.com/VuM8z5VYXi_TIw7dr0z5mg9O6fwzy8lzOGUFTR63zmciyPMVzB8ORpnSAwdcs_AUISyBHH0K=s800-c-k-c0x00ffffff-no-rj"],
+  ["theblooketgamer", "theblooketgamer", "https://www.youtube.com/@theblooketgamer", "https://yt3.googleusercontent.com/IbwGyfwHd4-lH4gA69Uns3iHqwO9VnyM4azJEca1sjiRn2yEzZf5vDBbs0zC4hjvEzK4en3L=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Gods", "BlooketGodsYT", "https://www.youtube.com/@BlooketGodsYT", "https://yt3.googleusercontent.com/f0PsafM-0nW8e0CGsGMZnwfpmHeBJ48AO3GQEoJRALPjI95md4n8VFiN8Q1aQ_prZHPjXY8YfQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["Slade2", "theslade2", "https://www.youtube.com/@theslade2", "https://yt3.googleusercontent.com/xcACNowE58NcX9Cvp7bHHhnOwJdmPMYgm1KnWD1I4UKARwl7hQw_QJYWOHRpIkdtLNjVVaRexg=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Life", "BlooketLifeYT", "https://www.youtube.com/@BlooketLifeYT", "https://yt3.googleusercontent.com/HxCKe0ddw-6wBwSAXONowZ6eEokbrh3qhN-J4ZvNJXGtMEMMseFp-wXALCIxPnORl86wjeJn5w=s800-c-k-c0x00ffffff-no-rj"],
+  ["JustaPanda", "JustaPanda888", "https://www.youtube.com/@JustaPanda888", "https://yt3.googleusercontent.com/kkz1dMJi7Lbnv4QbrCOEOlGGwjslE8emd3jHpNpT4JayVESMM1CMM0LvzC2L_Iw2R457266n=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Insane", "blooketinsane", "https://www.youtube.com/@blooketinsane", "https://ac.blooket.com/marketassets/blooks/timthealien.svg"],
+  ["notRIC", "playblacket", "https://www.youtube.com/@playblacket", "https://yt3.googleusercontent.com/qC52cG4ReXALa5C8j_pgLnFDX_cYQv9q4Ps8Ldp0kMFgbRyYPdGCGjUmn4Rx0LYt2aYOEChP=s800-c-k-c0x00ffffff-no-rj"],
+  ["SRN Games", "srngameslol", "https://www.youtube.com/@srngameslol", "https://yt3.googleusercontent.com/JsVykeiTKj9vJGwD1iNvzE2znEaVwdiCcbrgtNb8-HLfB4CFW24AeQwXkw87NNY8znH2lmwi=s800-c-k-c0x00ffffff-no-rj"],
+  ["BlooketBam", "BlooketBAM", "https://www.youtube.com/@BlooketBAM", "https://yt3.googleusercontent.com/aFNdNrcYHFMPYonDeyBJ_kiEtYcinQ4UtemafkNBwprzM4bBmDlfkWOGHLDaqcvE6yhGfnYrFQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["Twisted Bread", "TwistedBread", "https://www.youtube.com/@TwistedBread", "https://yt3.googleusercontent.com/RFzqZI0f0iEEDVO7eub262ajY7d_AHG0TaYHvG_AF19tecRVqelU4WVgF2DPLYHE6AGDzPkG8bY=s800-c-k-c0x00ffffff-no-rj"],
+  ["Pig55", "Pig_55", "https://www.youtube.com/@Pig_55", "https://yt3.googleusercontent.com/D8v4jgmppYAy3lseL7_c_TUXZLiKKEiTe2j_xNbQW1EW9l57wGHuNvlPoB4k6r9OukttkjGiy3I=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Elite", "BlooketEliteIsEatingYourFries", "https://www.youtube.com/@BlooketEliteIsEatingYourFries", "https://yt3.googleusercontent.com/dK4xmnwEWzflE11UaFoy_KMR5amTBVofIz02wbU5KgiI1DVJpKnZcU2I6buwgbmLtckYi1zv9g=s800-c-k-c0x00ffffff-no-rj"],
+  ["Turtelix", "TurtelixYT", "https://www.youtube.com/@TurtelixYT", "https://mathuniverse.online/turtelix.png"],
+  ["Green astronaut", "ThegreenastronautYT", "https://www.youtube.com/@ThegreenastronautYT", "https://yt3.googleusercontent.com/5HAD5jYBrkxa1xkRDbAYULmxszJQprUc-nPkjIJL1ImCQdrIuxb_2Y4MwIgwV_JDt2J2Ab2wUw=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Warrior", "BlooketWarriorYT", "https://www.youtube.com/@BlooketWarriorYT", "https://yt3.googleusercontent.com/it5rmpwxDWxJktHp4E3KWslikkQQ9xuWFpJ-kvVAQdnEAy_aTriFrRthtJmV_LzfZ1ib_--rOg=s800-c-k-c0x00ffffff-no-rj"],
+  ["Breadblook", "Breadblook", "https://www.youtube.com/@Breadblook", "https://yt3.googleusercontent.com/nloz_XYdmGgSjso0JL6s_jMuSvCFsHHFIaIO3Arp3QkCJ8fWqRLGzWApLCjy3eiq2kEniTH7u9I=s800-c-k-c0x00ffffff-no-rj"],
+  ["TOBP Blooket", "ThatOneBlooketPlayer", "https://www.youtube.com/@ThatOneBlooketPlayer", "https://yt3.googleusercontent.com/ehoKyf4WeApkzFwTBx5jlB1CkZb5EejtkVvWMZGaVm41HAd7qBog2pmhhPtSI6ceH2WZWOREcqU=s800-c-k-c0x00ffffff-no-rj"],
+  ["YouLostMan", "YouLostMan", "https://www.youtube.com/@YouLostMan", "https://yt3.googleusercontent.com/VUW4XPzxbAW7jvsmJwvrIxCnYZ4ZFzGYjo87k7k2SvuOmMONcNcv4dzz2RvOV40D7vEkklJmCBs=s800-c-k-c0x00ffffff-no-rj"],
+  ["Peetwick", "PeetWickYT", "https://www.youtube.com/@PeetWickYT", "https://yt3.googleusercontent.com/XupwnkZIgVmXhVelkGEtqKPSbwtRlQrmF3a1gqk1w4qhzJkfOllwwMQX0Egiss2cMPhfoFbMBQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["TheBlooketDude", "TheBlooketDude", "https://www.youtube.com/@TheBlooketDude", "https://yt3.googleusercontent.com/3gDy-EvuADRawQGXUqjLPiBEKYqDjKpfUfWuV0s6UnTPWOME-WKbbA7Mlex0UtKU7jYkIHEX7A=s800-c-k-c0x00ffffff-no-rj"],
+  ["KoolKid", "ImAwesome0703", "https://www.youtube.com/@ImAwesome0703", "https://yt3.googleusercontent.com/DbDqelZlcX3qzPbMhluKY-6rG3_K9xgnfpVyL7RpLxJ-2Oruyx9AzO51ZHvPEFPCDGcSEe92zQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["Panda Blooket", "UCJG4i4gLaFuD3KXb3Li3hpA", "https://www.youtube.com/channel/UCJG4i4gLaFuD3KXb3Li3hpA", "https://yt3.googleusercontent.com/c6Th0sFvyGAZNY4XR6kV0DTw3vu0r8IMO4zceBYMNQv6uIGXSu_loDtYCnecfeeVFmo3MF38=s800-c-k-c0x00ffffff-no-rj"],
+  ["Caterpillar9", "UCl_46vdPleB7nIcQ2uRrRYg", "https://www.youtube.com/channel/UCl_46vdPleB7nIcQ2uRrRYg", "https://yt3.googleusercontent.com/Z_gfa-nheOPveNJSeraE6o1jaIKwZr10b67_pSYudbMmihoYJ_e1yiMdTINNmxgYnz54E9tPKMw=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blooket Studio", "UCwqPS5F9gWK-dLJ1F3xn-9Q", "https://www.youtube.com/channel/UCwqPS5F9gWK-dLJ1F3xn-9Q", "https://yt3.googleusercontent.com/cipU1kNo9hXwrbFvGUGr6SuMxfaxdL4iHLHTqbNC2KC7qzNh4IIUfo6UcxbLA4MCEcv08UG-CA=s800-c-k-c0x00ffffff-no-rj"],
+  ["Mr noble wywy", "UCWUlc91RBPRbytSQfL2P6Vw", "https://www.youtube.com/channel/UCWUlc91RBPRbytSQfL2P6Vw", "https://yt3.googleusercontent.com/dRi2fR45zyViyRwN5hek0j3KLfmk5L1kzpbLht_ey0jOAp4QsKIMfwtnkG_qxJOPPpanpJjCqQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["imbac", "UCa6fkBCzarr4hmRvOg_562g", "https://www.youtube.com/channel/UCa6fkBCzarr4hmRvOg_562g", "https://yt3.googleusercontent.com/m8wXh9fT6lDwuMjW9SER4YvY-qCTzGGMjHjA3HxHjDHxDfIhmDgzr4Nlb9gGXgHKFM7Y3ac-gg=s800-c-k-c0x00ffffff-no-rj"],
+  ["Cereal.For.Blooket", "UCygcI2_f5hzFrjkv9L2zA_g", "https://www.youtube.com/channel/UCygcI2_f5hzFrjkv9L2zA_g", "https://yt3.googleusercontent.com/iwc7v3Qc_OFfWVp9EFcHu6q0yIfzcqqoVHRpgjLAZlYCdjsqusUFmV8wX3JeGLOTo66Ynn3r=s800-c-k-c0x00ffffff-no-rj"],
+  ["Blook Master", "UCZ2Bp5W7CbKCB5WdiWlz3XQ", "https://www.youtube.com/channel/UCZ2Bp5W7CbKCB5WdiWlz3XQ", "https://yt3.googleusercontent.com/cU5e1UhyIL87C5TnQUkPcEhY6a_n21xq7LC_ZSjWXbPAzclYzArPrI0OTAD5UuHMmQhoO_azFQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["Matt Lett", "UCb0J7cF503Y6lW_O3yW2ktQ", "https://www.youtube.com/channel/UCb0J7cF503Y6lW_O3yW2ktQ", "https://yt3.googleusercontent.com/-bZqhGl9eXQcj9b8SAGJ6a1XFH3kfcAU47gB4GAFXoLF_-4v70dd8y93lQPWT6Z45JmeYfeJ=s800-c-k-c0x00ffffff-no-rj"],
+  ["KingTurtleYT", "UCFmqaohAzhhC2kC5_kVr25Q", "https://www.youtube.com/channel/UCFmqaohAzhhC2kC5_kVr25Q", "https://mathuniverse.online/idk.png"],
+  ["Abejonio", "AbejonioTheBee", "https://www.youtube.com/@AbejonioTheBee", "https://yt3.googleusercontent.com/fxgDklcq49L_cY40ThnT07yrCUJYOM_1rc_OonAgwQNVlgafrNTKyMXNeGIi7Hc73QuK0r5cIA=s800-c-k-c0x00ffffff-no-rj"],
+  ["devydude", "devydudeisthegoat", "https://www.youtube.com/@devydudeisthegoat", "https://yt3.googleusercontent.com/82_-eeP7esEr9yAUwH5ptM3Wdt5a5orlAVOTXIxfdDUqCT8UMTBzzZEzcozNuAtBNbXNpSTUXQ=s800-c-k-c0x00ffffff-no-rj"],
+  ["Ben Stewart", "benstewart6020", "https://www.youtube.com/@benstewart6020", "https://yt3.googleusercontent.com/iLsJ4N_a5ngPBxnuueywuzSAhjcNWKs_EcvI5bmX0fG7c0a_8jQeCBsLApuGg5hK9zJ0ax5MSw=s800-c-k-c0x00ffffff-no-rj"],
+  ["GilbyWorldYT 2.0", "GilbyWorldYT2.0", "https://www.youtube.com/@GilbyWorldYT2.0", "https://yt3.googleusercontent.com/cyIz-Lnb2HL-jsEvcm8uukB5RqGY7ECnGEzToTu5-UgRcpzmA56ME6m-SbE2hLPh4SLMXr2dMg=s800-c-k-c0x00ffffff-no-rj"],
+  ["Proking", "Prokingplaysblooket", "https://www.youtube.com/@Prokingplaysblooket", "https://yt3.googleusercontent.com/fREe0n3uTWXkFTzeYjMWIuGgb4OqGS4I9LZ9-eAz86bN-fqAaB_8T3vWzuLW1sDB05CFI4dW1g=s800-c-k-c0x00ffffff-no-rj"]
 ];
 
-const inactiveCreators = ["kinkade", "blooket elite", "bil"];
-const fallbackSubs = {
-  "Waymore":150000,"LeonBlox":79400,"iBlooket":35200,"BIL":31200,"Blooket":31300,
-  "Mega Bot":27100,"Unblooked":26900,"Monkey Master":24000,"Lag0n":23800,"Blooket Ace":15400,
-  "FastyJay":12900,"the blooket gamer":6250,"Blooket Gods":4740,"Slade2":3690,"Blooket Life":3620,
-  "JustaPanda":2990,"Blooket Insane":2900,"notRIC":2740,"SRN Games":2650,"BlooketBam":2430,
-  "Blook Master":2100,"Twisted Bread":2060,"Pig55":1520,"Blooket Elite":1500,"Turtelix":1420,
-  "The green astronaut":1100,"Blooket Warrior":1020,"Blookbread":1010,"TOBP Blooket":852,
-  "YouLostMan":660,"Kinkade":525,"Peetwick":396,"Freedo":289
-};
+const inactiveCreators = ["blooket elite", "bil", "mr noble wywy", "imbac", "cereal.for.blooket", "ben stewart", "panda blooket"];
+const fallbackSubs = {"Waymore":167000,"iBlooket":34600,"BIL":31200,"Blooket":34200,"Unblooked":27600,"Monkey Master":23900,"Lag0n":34700,"Blooket Ace":15700,"FastyJay":24000,"theblooketgamer":6560,"Blooket Gods":7260,"Slade2":3750,"Blooket Life":10400,"JustaPanda":3030,"Blooket Insane":2930,"notRIC":2810,"SRN Games":3280,"BlooketBam":2500,"Twisted Bread":2540,"Pig55":1530,"Blooket Elite":1510,"Turtelix":1640,"Green astronaut":2420,"Blooket Warrior":1020,"Breadblook":2800,"TOBP Blooket":1000,"YouLostMan":672,"Peetwick":504,"TheBlooketDude":1400,"KoolKid":2790,"Panda Blooket":599,"Caterpillar9":2520,"Blooket Studio":983,"Mr noble wywy":3130,"imbac":3040,"Cereal.For.Blooket":1030,"Blook Master":2620,"Matt Lett":674,"KingTurtleYT":1410,"Abejonio":1800,"devydude":616,"Ben Stewart":2240,"GilbyWorldYT 2.0":4690,"Proking":954};
 const defaultImage = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fyt3.googleusercontent.com%2Fytc%2FAIdro_l1w6Mc5WEokWWYbrNNP_5BEshKUO25cIZVOqiU6AojVw%3Ds900-c-k-c0x00ffffff-no-rj&f=1&nofb=1&ipt=9e9827da110a3ddd46c8388025131ce04094fdaa5ea06308022c4c6612b4d6ff";
 
-// ── State ─────────────────────────────────────────────────────────────────────
+// ── State ────────────────────────────────────────────────────────────────────
 let loadedCreators = [], lastUpdated = null;
 let currentGameMode = 'classic';
 let activePool = [], current = null;
 let lastBlooktuber = null, lastFirstClue = null;
 let shuffledClues = [], revealedCount = 0;
 let score = 0, streak = 0;
-let gameStarted = false;
+let gameHasStarted = false;
+const $ = id => document.getElementById(id);
+const FALLBACK_IMG = 'https://ac.blooket.com/marketassets/blooks/chick.svg';
+function sfx(url) { try { new Audio(url).play().catch(() => {}); } catch (e) {} }
+let bestStreak = 0; try { bestStreak = +localStorage.getItem('guess_best_streak') || 0; } catch (e) {}
+let roundToken = 0, wordleRevealRow = -1, wordlePopIdx = -1, wordleGaps = new Set();
 
 // Timer state
 const TIMER_SECONDS = 30;
 let timerInterval = null, timerRemaining = 0;
 
 // Wordle state
-let wordleGuesses = [], wordleAnswer = "", wordleAttempt = 0;
+let wordleGuesses = [];   // array of {guess, colors}
+let wordleAnswer  = "";
+let wordleAttempt = 0;
 const WORDLE_MAX = 6;
-let wordleShareStr = "", wordleLocked = false, wordleKeyState = {};
-let wordleToastTimeout = null, wordleCurrentGuess = '';
+let wordleShareStr = "";
+let wordleLocked = false;
+let wordleKeyState = {}; // letter -> 'green' | 'yellow' | 'gray'
+let wordleToastTimeout = null;
 
-// Confetti
+// Confetti state
 let confettiParticles = [], confettiRAF = null;
 
-// ── Tile size calculator ───────────────────────────────────────────────────────
-function calcTileSize(wordLen) {
-  const cardWidth = Math.min(600, window.innerWidth) - 40 - 52;
-  const totalGap = (wordLen - 1) * 5;
-  const raw = Math.floor((cardWidth - totalGap) / wordLen);
-  return Math.max(20, Math.min(42, raw));
-}
-
-function applyTileSize(wordLen) {
-  const sz = calcTileSize(wordLen);
-  const fontSize = Math.max(10, Math.floor(sz * 0.44));
-  const board = document.getElementById('wordle-board');
-  board.style.setProperty('--tile-sz', sz + 'px');
-  board.style.setProperty('--tile-font', fontSize + 'px');
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────────────────────────────
 function formatSubs(n) {
   if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M';
   if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K';
@@ -647,75 +939,111 @@ function shuffle(arr) {
   return a;
 }
 
-// ── Confetti ──────────────────────────────────────────────────────────────────
+// ── Confetti ─────────────────────────────────────────────────────────────────
 function launchConfetti() {
   const canvas = document.getElementById('confetti-canvas');
   const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
+  canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight;
+
   const colors = ['#f59e0b','#3cb529','#0bc2cf','#e53935','#8b5cf6','#ffe066','#fff'];
   confettiParticles = Array.from({length: 120}, () => ({
-    x: Math.random()*canvas.width, y: -10-Math.random()*80,
-    r: 5+Math.random()*7, d: 1.5+Math.random()*3,
+    x: Math.random() * canvas.width,
+    y: -10 - Math.random() * 80,
+    r: 5 + Math.random() * 7,
+    d: 1.5 + Math.random() * 3,
     color: colors[Math.floor(Math.random()*colors.length)],
-    tilt: Math.random()*10-5, tiltAngle: 0,
-    tiltSpeed: 0.05+Math.random()*0.1, opacity: 1
+    tilt: Math.random() * 10 - 5,
+    tiltAngle: 0,
+    tiltSpeed: 0.05 + Math.random() * 0.1,
+    opacity: 1
   }));
+
   if (confettiRAF) cancelAnimationFrame(confettiRAF);
+
   let elapsed = 0;
   function draw() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     elapsed++;
     confettiParticles.forEach(p => {
-      p.tiltAngle += p.tiltSpeed; p.y += p.d; p.tilt = Math.sin(p.tiltAngle)*12;
+      p.tiltAngle += p.tiltSpeed;
+      p.y += p.d;
+      p.tilt = Math.sin(p.tiltAngle) * 12;
       if (elapsed > 80) p.opacity -= 0.012;
-      ctx.save(); ctx.globalAlpha = Math.max(0,p.opacity); ctx.fillStyle = p.color;
-      ctx.beginPath(); ctx.ellipse(p.x+p.tilt, p.y, p.r, p.r*0.4, p.tiltAngle, 0, Math.PI*2);
-      ctx.fill(); ctx.restore();
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.ellipse(p.x + p.tilt, p.y, p.r, p.r * 0.4, p.tiltAngle, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
     });
-    if (confettiParticles.some(p => p.opacity > 0)) confettiRAF = requestAnimationFrame(draw);
-    else ctx.clearRect(0,0,canvas.width,canvas.height);
+    if (confettiParticles.some(p => p.opacity > 0)) {
+      confettiRAF = requestAnimationFrame(draw);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
   }
   draw();
 }
 
-// ── Streak ────────────────────────────────────────────────────────────────────
+// ── Streak ───────────────────────────────────────────────────────────────────
 function updateStreak(correct) {
-  if (correct) streak++; else streak = 0;
+  if (correct) {
+    streak++;
+  } else {
+    streak = 0;
+  }
   const countEl = document.getElementById('streak-count');
   const flameEl = document.getElementById('flame-icon');
   countEl.textContent = streak;
-  flameEl.textContent = streak < 3 ? '🔥' : streak < 6 ? '🔥🔥' : '🔥🔥🔥';
+  if (streak > bestStreak) { bestStreak = streak; try { localStorage.setItem('guess_best_streak', bestStreak); } catch (e) {} }
+  $('best-count').textContent = bestStreak;
+
+  // Update flame emoji based on streak
+  if (streak === 0)      flameEl.textContent = '🔥';
+  else if (streak < 3)   flameEl.textContent = '🔥';
+  else if (streak < 6)   flameEl.textContent = '🔥🔥';
+  else                   flameEl.textContent = '🔥🔥🔥';
+
+  // Pop animation
   flameEl.classList.remove('pop');
   void flameEl.offsetWidth;
   if (correct) flameEl.classList.add('pop');
 }
 
-// ── Timer ─────────────────────────────────────────────────────────────────────
+// ── Timer ────────────────────────────────────────────────────────────────────
 function startTimer() {
   clearInterval(timerInterval);
   timerRemaining = TIMER_SECONDS;
   document.getElementById('timer-wrap').classList.add('active');
   updateTimerUI();
+
   timerInterval = setInterval(() => {
     timerRemaining--;
     updateTimerUI();
-    if (timerRemaining <= 0) { clearInterval(timerInterval); timerExpired(); }
+    if (timerRemaining <= 0) {
+      clearInterval(timerInterval);
+      timerExpired();
+    }
   }, 1000);
 }
+
 function stopTimer() {
   clearInterval(timerInterval);
   document.getElementById('timer-wrap').classList.remove('active');
 }
+
 function updateTimerUI() {
-  const fill = document.getElementById('timer-fill');
+  const fill  = document.getElementById('timer-fill');
   const label = document.getElementById('timer-label');
-  const pct = (timerRemaining/TIMER_SECONDS)*100;
-  fill.style.width = pct+'%';
-  fill.style.background = timerRemaining<=8 ? '#e53935' : timerRemaining<=15 ? '#f59e0b' : '#3cb529';
-  label.textContent = timerRemaining+'s';
-  label.className = 'timer-label'+(timerRemaining<=8 ? ' urgent' : '');
+  const pct   = (timerRemaining / TIMER_SECONDS) * 100;
+  fill.style.width = pct + '%';
+  fill.style.background = timerRemaining <= 8 ? '#e53935' : timerRemaining <= 15 ? '#f59e0b' : '#3cb529';
+  label.textContent = timerRemaining + 's';
+  label.className = 'timer-label' + (timerRemaining <= 8 ? ' urgent' : '');
 }
+
 function timerExpired() {
   const fb = document.getElementById('feedback');
   fb.textContent = "⏱ Time's up!";
@@ -723,96 +1051,132 @@ function timerExpired() {
   updateStreak(false);
   revealAnswer();
 }
-function getTimerBonus() { return Math.floor((timerRemaining/TIMER_SECONDS)*20); }
 
-// ── Live data via Cloudflare Worker ───────────────────────────────────────────
-// Replaces the old direct YouTube API calls. The Worker handles YouTube API
-// requests server-side and caches results in KV for 30 minutes, so this
-// fetch is cheap and never exposes an API key to the client.
+function getTimerBonus() {
+  // up to +20 bonus for fast answer
+  return Math.floor((timerRemaining / TIMER_SECONDS) * 20);
+}
+
+// ── YouTube API ───────────────────────────────────────────────────────────────
+const idCache = {};
+async function resolveHandle(handle) {
+  if (handle.startsWith("UC")) return handle;
+  if (idCache[handle]) return idCache[handle];
+  try {
+    const res  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${encodeURIComponent(handle)}&key=${API_KEY}`);
+    const data = await res.json();
+    return (idCache[handle] = data.items?.[0]?.id || null);
+  } catch (e) { return null; }
+}
+
+async function fetchSubsBatch(ids) {
+  try {
+    const res  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${ids.join(',')}&key=${API_KEY}`);
+    const data = await res.json();
+    const map  = {};
+    data.items?.forEach(item => { const n = Number.parseInt(item.statistics?.subscriberCount, 10); if (Number.isFinite(n)) map[item.id] = n; });
+    return map;
+  } catch (e) { return {}; }
+}
+
 async function loadLiveData() {
   const dot = document.getElementById('live-dot'), text = document.getElementById('live-text');
-  dot.className = 'live-dot loading';
-  text.textContent = 'Fetching live subscriber counts…';
+  if (!loadedCreators.length) {
+    document.getElementById('loading-overlay')?.classList.add('show');
+    dot.style.display = 'none';
+    document.getElementById('live-loading-logo').style.display = 'inline-flex';
+    text.textContent = '';
+  }
   try {
-    const res = await fetch(STATS_API_URL);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
+    const resolvedIds = await Promise.all(creatorList.map(([,h]) => resolveHandle(h)));
+    const subMap = {};
+    const validIds = resolvedIds.filter(Boolean);
+    for (let i = 0; i < validIds.length; i += 50)
+      Object.assign(subMap, await fetchSubsBatch(validIds.slice(i, i+50)));
 
-    loadedCreators = creatorList.map(([name,,url,img]) => {
-      const stats = data.stats ? data.stats[name] : null;
-      const subs = stats ? stats.subs : (fallbackSubs[name] || 0);
-      return {
-        name, url,
-        subs,
-        status: inactiveCreators.includes(name.toLowerCase()) ? 'Inactive' : 'Active',
-        image: img || defaultImage
-      };
-    });
+    const liveCount = Object.keys(subMap).length;
+    loadedCreators = creatorList.map(([name,,url,img], idx) => {
+      const cid = resolvedIds[idx];
+      const liveSubs = cid && Number.isFinite(subMap[cid]) ? subMap[cid] : null;
+      const subs = liveSubs !== null ? liveSubs : (fallbackSubs[name] || 0);
+      return { name, url, subs, status: inactiveCreators.includes(name.toLowerCase()) ? 'Inactive' : 'Active', image: img || defaultImage };
+    }).filter(c => Number.isFinite(c.subs) && c.subs > 500);
     loadedCreators.sort((a,b) => b.subs - a.subs);
-    lastUpdated = new Date(data.updatedAt || Date.now());
+    lastUpdated = new Date();
+    document.getElementById('live-loading-logo').style.display = 'none';
+    dot.style.display = 'inline-block';
+    dot.style.display = liveCount ? 'inline-block' : 'none';
     dot.className = 'live-dot';
-    text.textContent = `Live • Last updated ${lastUpdated.toLocaleTimeString()}`;
+    text.textContent = liveCount ? `Live counts • Updated ${lastUpdated.toLocaleTimeString()}` : '';
     document.getElementById('loading-view').style.display = 'none';
-    if (!gameStarted) {
+    document.getElementById('loading-overlay')?.classList.remove('show');
+    // Refreshing live counts in the background must never interrupt an active game.
+    if (!gameHasStarted) {
       document.getElementById('welcome-message').style.display = 'block';
+      document.getElementById('error-view').style.display = 'none';
     }
-    // Refresh every 5 minutes — cheap since the Worker caches for 30 min
-    setTimeout(loadLiveData, 5 * 60 * 1000);
+    setTimeout(loadLiveData, 5*60*1000);
   } catch(e) {
-    dot.className = 'live-dot error';
-    text.textContent = '⚠️ API error — using last known counts';
-    loadedCreators = creatorList.map(([name,,url,img]) => ({
-      name, url,
-      subs: fallbackSubs[name] || 0,
+    document.getElementById('live-loading-logo').style.display = 'none';
+    dot.style.display = 'none';
+    text.textContent = '';
+    setTimeout(loadLiveData, 60*1000);
+    if (!loadedCreators.length) loadedCreators = creatorList.map(([name,,url,img]) => ({
+      name, url, subs: fallbackSubs[name]||0,
       status: inactiveCreators.includes(name.toLowerCase()) ? 'Inactive' : 'Active',
-      image: img || defaultImage
-    }));
+      image: img||defaultImage
+    })).filter(c => Number.isFinite(c.subs) && c.subs > 500);
     loadedCreators.sort((a,b) => b.subs - a.subs);
     document.getElementById('loading-view').style.display = 'none';
-    if (!gameStarted) {
+    document.getElementById('loading-overlay')?.classList.remove('show');
+    if (!gameHasStarted) {
+      document.getElementById('welcome-message').style.display = 'none';
       document.getElementById('error-view').style.display = 'block';
     }
   }
 }
 
 // ── Mode popup ────────────────────────────────────────────────────────────────
-function openModePopup()  { backToModeSelect(); document.getElementById('mode-popup-overlay').classList.add('show'); }
-function closeModePopup() { document.getElementById('mode-popup-overlay').classList.remove('show'); }
+function openModePopup() {
+  sfx('https://blooket.mathuniverse.online/select.ogg');
+  // Mode changes are available during gameplay; no subscriber ranking preview is shown.
+  document.getElementById('popup-menu-view').style.display = 'block';
+  const scoreView = document.getElementById('popup-scoreboard-view');
+  if (scoreView) scoreView.style.display = 'none';
+  document.getElementById('mode-popup-overlay').classList.add('show');
+}
+function closeModePopup() {
+  document.getElementById('mode-popup-overlay').classList.remove('show');
+}
 function backToModeSelect() {
   document.getElementById('popup-menu-view').style.display = 'block';
-  document.getElementById('popup-scoreboard-view').style.display = 'none';
+  const scoreView = document.getElementById('popup-scoreboard-view');
+  if (scoreView) scoreView.style.display = 'none';
 }
 
 function clickMode(mode) {
-  currentGameMode = mode;
-  document.getElementById('popup-menu-view').style.display = 'none';
-  document.getElementById('popup-scoreboard-view').style.display = 'block';
-  const labels = { classic:'Classic Mode', trivia:'Trivia Mode', timer:'⏱ Timer Mode', wordle:'🟩 Wordle Mode' };
-  document.getElementById('selected-mode-title').textContent = labels[mode] || mode;
-  document.getElementById('start-game-btn').onclick = () => selectMode(mode);
-  const tsEl = document.getElementById('scoreboard-timestamp');
-  tsEl.innerHTML = lastUpdated
-    ? `<span class="live-badge">LIVE</span> Updated ${lastUpdated.toLocaleTimeString()}`
-    : 'Using fallback counts';
-  const listEl = document.getElementById('scoreboard-data-list');
-  listEl.innerHTML = '';
-  loadedCreators.forEach((item, i) => {
-    const row = document.createElement('div');
-    row.className = 'score-row';
-    const inactive = inactiveCreators.includes(item.name.toLowerCase());
-    row.innerHTML = `<span><span class="score-rank">#${i+1}</span> ${item.name}${inactive?' 🕊️':''}</span><span>${formatSubs(item.subs)} subs</span>`;
-    listEl.appendChild(row);
-  });
+  if (!['classic','trivia','timer','wordle','higher'].includes(mode)) return;
+  sfx('https://blooket.mathuniverse.online/compare.ogg');
+  selectMode(mode);
 }
 
 function selectMode(mode) {
+  if (!['classic','trivia','timer','wordle','higher'].includes(mode)) return;
+  const firstStart = !gameHasStarted;
+  currentGameMode = mode;
+  stopTimer();
   closeModePopup();
-  gameStarted = true;
-  document.getElementById('welcome-message').style.display = 'none';
-  document.getElementById('error-view').style.display = 'none';
-  document.getElementById('game-area').style.display = 'block';
-  document.getElementById('top-bar').classList.add('show');
-  activePool = loadedCreators.map(c => ({
+  document.getElementById('popup-overlay').classList.remove('show');
+
+  if (firstStart) {
+    gameHasStarted = true;
+    document.getElementById('welcome-message').style.display = 'none';
+    document.getElementById('error-view').style.display = 'none';
+    document.getElementById('game-area').style.display = 'block';
+    document.getElementById('top-bar').classList.add('show');
+  }
+
+  activePool = loadedCreators.filter(c => c.subs > 500).map(c => ({
     ...c,
     desc: `${formatSubs(c.subs)} subscribers • ${c.status}`,
     clues: [
@@ -827,37 +1191,55 @@ function selectMode(mode) {
 // ── Round ─────────────────────────────────────────────────────────────────────
 function startRound() {
   stopTimer();
-  let pool = activePool.length > 1 ? activePool.filter(b => b.name !== (lastBlooktuber?.name)) : activePool;
+  let pool = activePool.length > 1
+    ? activePool.filter(b => b.name !== (lastBlooktuber?.name))
+    : activePool;
   current = pool[Math.floor(Math.random()*pool.length)];
   lastBlooktuber = current;
+
   document.getElementById('feedback').textContent = '';
   document.getElementById('feedback').className = 'feedback';
   const ab = document.getElementById('answer-box');
   ab.style.display = 'none';
   ab.classList.remove('revealed');
   document.getElementById('wordle-result-area').style.display = 'none';
-  if (currentGameMode === 'wordle') startWordleRound();
-  else if (currentGameMode === 'trivia') startTriviaRound();
-  else { startClassicRound(); if (currentGameMode === 'timer') startTimer(); }
+
+  roundToken++;
+  $('hl-wrap').style.display = 'none';
+  if (currentGameMode === 'higher') {
+    startHigherLowerRound();
+  } else if (currentGameMode === 'wordle') {
+    startWordleRound();
+  } else if (currentGameMode === 'trivia') {
+    startTriviaRound();
+  } else {
+    startClassicRound();
+    if (currentGameMode === 'timer') startTimer();
+  }
 }
 
-// ── Classic / Timer ───────────────────────────────────────────────────────────
+// ── Classic / Timer round ─────────────────────────────────────────────────────
 function startClassicRound() {
   document.getElementById('wordle-wrap').style.display = 'none';
   document.getElementById('trivia-container').style.display = 'none';
   document.getElementById('classic-input-container').style.display = 'block';
   document.getElementById('clues-container').style.display = 'block';
   document.getElementById('clue-label').style.display = 'block';
+
   const input = document.getElementById('guess-input');
-  input.classList.remove('locked'); input.disabled = false; input.placeholder = 'Type your guess here…';
+  input.classList.remove('locked');
+  input.disabled = false;
+  input.placeholder = 'Type your guess here…';
+
   let attempts = 0;
   do { shuffledClues = shuffle(current.clues); attempts++; }
   while (shuffledClues[0] === lastFirstClue && attempts < 10);
   lastFirstClue = shuffledClues[0];
   revealedCount = 1;
+
   document.getElementById('guess-input').value = '';
   document.getElementById('guess-btn').textContent = 'Submit Guess';
-  document.getElementById('guess-btn').disabled = false;
+  document.getElementById('guess-btn').disabled   = false;
   document.getElementById('give-up-btn').disabled = false;
   renderClues();
 }
@@ -882,20 +1264,22 @@ function renderClues() {
 
 function checkGuess() {
   const input = document.getElementById('guess-input').value.trim().toLowerCase();
-  const fb = document.getElementById('feedback');
+  const fb    = document.getElementById('feedback');
   if (!input) return;
   if (input === 'crazy chicken') { triggerEasterEgg(); return; }
-  if (input === current.name.toLowerCase()) {
-    new Audio('https://mathuniverse.online/correctanswer.MP3').play();
+
+  const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (norm(input) === norm(current.name)) {
+    sfx('https://mathuniverse.online/correctanswer.MP3');
     stopTimer();
-    let pts = Math.max(10, 40-(revealedCount-1)*10);
+    let pts = Math.max(10, 40 - (revealedCount-1)*10);
     if (currentGameMode === 'timer') pts += getTimerBonus();
     score += pts;
     document.getElementById('score').textContent = score;
     updateStreak(true);
     showCorrectPopup(pts);
   } else {
-    new Audio('https://mathuniverse.online/wrong.MP3').play();
+    sfx('https://blooket.mathuniverse.online/wrong2.MP3');
     if (revealedCount < shuffledClues.length) {
       revealedCount++;
       renderClues();
@@ -904,6 +1288,8 @@ function checkGuess() {
       fb.textContent = 'No more clues! Give up?';
     }
     fb.className = 'feedback wrong';
+    $('guess-input').value = '';
+    $('guess-input').focus();
   }
 }
 
@@ -915,7 +1301,7 @@ function giveUp() {
   revealAnswer();
 }
 
-// ── Trivia ────────────────────────────────────────────────────────────────────
+// ── Trivia round ──────────────────────────────────────────────────────────────
 function startTriviaRound() {
   document.getElementById('wordle-wrap').style.display = 'none';
   document.getElementById('classic-input-container').style.display = 'none';
@@ -929,21 +1315,23 @@ function generateTriviaQuestion() {
   const tc = document.getElementById('trivia-container');
   tc.innerHTML = '';
   const types = ['exact_subs','status_pool','name_structure'];
-  const type = types[Math.floor(Math.random()*types.length)];
+  const type  = types[Math.floor(Math.random()*types.length)];
   const correct = current.name;
   let wrongs = [], qText = '';
+
   if (type === 'exact_subs') {
-    qText = `Which creator has approximately ${formatSubs(current.subs)} subscribers?`;
-    wrongs = [...loadedCreators].filter(c=>c.name!==correct).sort((a,b)=>Math.abs(a.subs-current.subs)-Math.abs(b.subs-current.subs)).map(c=>c.name);
+    qText  = `Which creator has approximately ${formatSubs(current.subs)} subscribers?`;
+    wrongs = [...loadedCreators].filter(c=>c.name!==correct&&formatSubs(c.subs)!==formatSubs(current.subs)).sort((a,b)=>Math.abs(a.subs-current.subs)-Math.abs(b.subs-current.subs)).map(c=>c.name).slice(0,8);
   } else if (type === 'status_pool') {
-    qText = `Which of these is an "${current.status}" Blooktuber?`;
+    qText  = `Which of these is an "${current.status}" Blooktuber?`;
     wrongs = loadedCreators.filter(c=>c.status!==current.status).map(c=>c.name);
     if (wrongs.length < 3) wrongs = loadedCreators.filter(c=>c.name!==correct).map(c=>c.name);
   } else {
-    qText = `Which creator has exactly ${current.name.length} characters and starts with "${current.name.charAt(0)}"?`;
-    wrongs = loadedCreators.filter(c=>c.name!==correct).map(c=>c.name);
+    qText  = `Which creator has exactly ${current.name.length} characters and starts with "${current.name.charAt(0)}"?`;
+    wrongs = loadedCreators.filter(c=>c.name!==correct && !(c.name.length===current.name.length && c.name[0].toLowerCase()===current.name[0].toLowerCase())).map(c=>c.name);
   }
   document.getElementById('clue-label').textContent = qText;
+
   wrongs = [...new Set(wrongs)];
   let choices = [correct, ...shuffle(wrongs).slice(0,3)];
   while (choices.length < 4) {
@@ -966,15 +1354,18 @@ function checkTriviaAnswer(btn, selected, correct) {
     else if (b === btn && selected !== correct) b.classList.add('wrong-flash');
   });
   if (selected === correct) {
-    new Audio('https://mathuniverse.online/correctanswer.MP3').play();
+    sfx('https://mathuniverse.online/correctanswer.MP3');
     score += 20;
     document.getElementById('score').textContent = score;
     updateStreak(true);
-    setTimeout(() => showCorrectPopup(20), 400);
+    const t1 = roundToken;
+    setTimeout(() => { if (t1 === roundToken) showCorrectPopup(20); }, 400);
   } else {
-    new Audio('https://mathuniverse.online/wrong.MP3').play();
+    sfx('https://blooket.mathuniverse.online/wrong2.MP3');
     updateStreak(false);
+    const t2 = roundToken;
     setTimeout(() => {
+      if (t2 !== roundToken) return;
       document.getElementById('feedback').textContent = `Incorrect! The answer was ${correct}.`;
       document.getElementById('feedback').className = 'feedback wrong';
       revealAnswer();
@@ -982,25 +1373,48 @@ function checkTriviaAnswer(btn, selected, correct) {
   }
 }
 
-// ── Wordle ────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+// WORDLE MODE — rebuilt
+// ══════════════════════════════════════════════════════════════════════════
+
+// Only consider real letters when computing the "length" of a name for Wordle
+// purposes — spaces are kept as fixed, pre-filled, non-guessable tiles.
+function wordleCells(name) {
+  return name.toLowerCase().split('');
+}
+
 function startWordleRound() {
-  wordleAnswer = current.name.toLowerCase();
-  wordleGuesses = []; wordleAttempt = 0; wordleShareStr = '';
-  wordleLocked = false; wordleKeyState = {}; wordleCurrentGuess = '';
+  wordleAnswer   = current.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+  wordleCurrentGuess = ''; wordleRevealRow = -1; wordlePopIdx = -1; wordleGaps = new Set();
+  { let n = 0; for (const ch of current.name.toLowerCase()) { if (/[a-z0-9]/.test(ch)) n++; else if (n) wordleGaps.add(n); } }
+  wordleGuesses  = [];
+  wordleAttempt  = 0;
+  wordleShareStr = '';
+  wordleLocked   = false;
+  wordleKeyState = {};
+
   document.getElementById('classic-input-container').style.display = 'none';
   document.getElementById('trivia-container').style.display = 'none';
   document.getElementById('clues-container').style.display = 'none';
   document.getElementById('clue-label').style.display = 'block';
-  document.getElementById('clue-label').textContent = `YOU HAVE ${WORDLE_MAX} GUESSES TO NAME THIS BLOOKTUBER`;
-  document.getElementById('wordle-wrap').style.display = 'flex';
+  document.getElementById('clue-label').textContent = `🟩 WORDLE MODE — ${WORDLE_MAX} guesses to name this Blooktuber`;
+
+  const wrap = document.getElementById('wordle-wrap');
+  wrap.style.display = 'flex';
+
   document.getElementById('wordle-len-pill').textContent = `${wordleAnswer.length} LETTERS`;
   updateAttemptsPill();
-  document.getElementById('wordle-hint').textContent = 'Type a guess, then press Enter or hit Guess';
+  document.getElementById('wordle-hint').textContent = /[^a-z0-9]/i.test(current.name) ? 'Gaps mark spaces and punctuation, so just type the letters' : 'Type a guess, then press Enter';
   document.getElementById('feedback').textContent = '';
   document.getElementById('feedback').className = 'feedback';
-  applyTileSize(wordleAnswer.length);
+
   renderWordleBoard();
   renderWordleKeyboard();
+
+  // Reuse the classic input box as the typing field for wordle mode too,
+  // but make it feel native to wordle: hide it and drive everything from
+  // the on-screen keyboard + a hidden capture field for physical keyboards.
+  document.getElementById('classic-input-container').style.display = 'none';
 }
 
 function updateAttemptsPill() {
@@ -1008,27 +1422,40 @@ function updateAttemptsPill() {
   document.getElementById('wordle-attempts-pill').textContent = `${left} GUESS${left===1?'':'ES'} LEFT`;
 }
 
+// current in-progress guess (not yet submitted)
+let wordleCurrentGuess = '';
+
 function renderWordleBoard() {
   const board = document.getElementById('wordle-board');
   board.innerHTML = '';
   const len = wordleAnswer.length;
-  applyTileSize(len);
+  board.style.setProperty('--n', len);
+
   for (let r = 0; r < WORDLE_MAX; r++) {
     const rowEl = document.createElement('div');
-    rowEl.className = 'wordle-row'; rowEl.id = `wordle-row-${r}`;
+    rowEl.className = 'wordle-row';
+    rowEl.id = `wordle-row-${r}`;
     const g = wordleGuesses[r];
     const isCurrentRow = (r === wordleAttempt) && !g;
+
     for (let c = 0; c < len; c++) {
+      if (c && wordleGaps.has(c)) { const sp = document.createElement('span'); sp.className = 'wordle-gap'; rowEl.appendChild(sp); }
       const tile = document.createElement('div');
       tile.className = 'wordle-tile';
       if (g) {
         tile.classList.add(g.colors[c]);
-        tile.textContent = g.guess[c] === ' ' ? '·' : (g.guess[c]||'').toUpperCase();
-        tile.style.animationDelay = `${c*0.12}s`;
+        if (r === wordleRevealRow) tile.classList.add('reveal');
+        tile.textContent = g.guess[c] === ' ' ? '·' : (g.guess[c] || '').toUpperCase();
+        tile.style.animationDelay = `${c * 0.12}s`;
       } else if (isCurrentRow) {
         const ch = wordleCurrentGuess[c];
-        if (ch) { tile.classList.add('filled'); tile.textContent = ch === ' ' ? '·' : ch.toUpperCase(); }
-        else tile.classList.add('empty');
+        if (ch) {
+          tile.classList.add('filled');
+          if (c === wordlePopIdx) tile.classList.add('pop');
+          tile.textContent = ch === ' ' ? '·' : ch.toUpperCase();
+        } else {
+          tile.classList.add('empty');
+        }
       } else {
         tile.classList.add('empty');
       }
@@ -1041,33 +1468,43 @@ function renderWordleBoard() {
 function renderWordleKeyboard() {
   const kb = document.getElementById('wordle-keyboard');
   kb.innerHTML = '';
+
   const needsDigits = /[0-9]/.test(wordleAnswer);
-  const needsSpace = wordleAnswer.includes(' ');
+  const needsSpace  = false;
+
   const rows = [];
   if (needsDigits) rows.push(['1','2','3','4','5','6','7','8','9','0']);
   rows.push(['q','w','e','r','t','y','u','i','o','p']);
   rows.push(['a','s','d','f','g','h','j','k','l']);
-  rows.push(['ENTER','z','x','c','v','b','n','m','⌫']);
+  const lastRow = ['ENTER','z','x','c','v','b','n','m','⌫'];
+  rows.push(lastRow);
+
   rows.forEach(rowKeys => {
     const rowEl = document.createElement('div');
     rowEl.className = 'wordle-key-row';
     rowKeys.forEach(key => {
       const btn = document.createElement('button');
-      btn.type = 'button'; btn.className = 'wordle-key';
+      btn.type = 'button';
+      btn.className = 'wordle-key';
       if (key === 'ENTER' || key === '⌫') btn.classList.add('wide');
       btn.textContent = key === 'ENTER' ? 'Enter' : key;
-      const stateKey = (key === 'ENTER' || key === '⌫') ? null : key;
-      if (stateKey && wordleKeyState[stateKey]) btn.classList.add(wordleKeyState[stateKey]);
+      const stateKey = key === 'ENTER' || key === '⌫' ? null : key;
+      if (stateKey && wordleKeyState[stateKey]) {
+        btn.classList.add(wordleKeyState[stateKey]);
+      }
+      btn.onmousedown = ev => ev.preventDefault();
       btn.onclick = () => handleWordleKey(key === 'ENTER' ? 'Enter' : (key === '⌫' ? 'Backspace' : key));
       rowEl.appendChild(btn);
     });
     kb.appendChild(rowEl);
   });
+
   if (needsSpace) {
     const spaceRow = document.createElement('div');
     spaceRow.className = 'wordle-key-row';
     const spaceBtn = document.createElement('button');
-    spaceBtn.type = 'button'; spaceBtn.className = 'wordle-key wordle-spacebar';
+    spaceBtn.type = 'button';
+    spaceBtn.className = 'wordle-key wordle-spacebar';
     spaceBtn.textContent = 'space';
     if (wordleKeyState[' ']) spaceBtn.classList.add(wordleKeyState[' ']);
     spaceBtn.onclick = () => handleWordleKey(' ');
@@ -1081,8 +1518,10 @@ function showWordleToast(msg, opts = {}) {
   clearTimeout(wordleToastTimeout);
   anchor.innerHTML = '';
   const toast = document.createElement('div');
-  toast.className = 'wordle-toast'; toast.textContent = msg;
+  toast.className = 'wordle-toast';
+  toast.textContent = msg;
   anchor.appendChild(toast);
+
   const duration = opts.duration || 1300;
   wordleToastTimeout = setTimeout(() => {
     toast.classList.add('hide');
@@ -1093,59 +1532,100 @@ function showWordleToast(msg, opts = {}) {
 function shakeCurrentRow() {
   const rowEl = document.getElementById(`wordle-row-${wordleAttempt}`);
   if (!rowEl) return;
-  rowEl.classList.remove('shake'); void rowEl.offsetWidth; rowEl.classList.add('shake');
+  rowEl.classList.remove('shake');
+  void rowEl.offsetWidth;
+  rowEl.classList.add('shake');
 }
 
 function handleWordleKey(key) {
-  if (wordleLocked || currentGameMode !== 'wordle') return;
+  if (wordleLocked) return;
+  if (currentGameMode !== 'wordle') return;
+
   const len = wordleAnswer.length;
-  if (key === 'Enter') { submitWordleGuess(); return; }
-  if (key === 'Backspace') { wordleCurrentGuess = wordleCurrentGuess.slice(0,-1); renderWordleBoard(); return; }
-  if (!/^[a-zA-Z0-9 ]$/.test(key)) return;
+
+  if (key === 'Enter') {
+    submitWordleGuess();
+    return;
+  }
+  if (key === 'Backspace') {
+    wordleCurrentGuess = wordleCurrentGuess.slice(0, -1);
+    wordlePopIdx = -1; wordleRevealRow = -1;
+    renderWordleBoard();
+    return;
+  }
+  // Accept letters, digits, and spaces (names like "Lag0n" and "Mega Bot" need both)
+  if (!/^[a-zA-Z0-9]$/.test(key)) return;
   if (wordleCurrentGuess.length >= len) return;
   wordleCurrentGuess += key.toLowerCase();
+  wordlePopIdx = wordleCurrentGuess.length - 1; wordleRevealRow = -1;
   renderWordleBoard();
 }
 
 function submitWordleGuess() {
   const len = wordleAnswer.length;
-  if (wordleCurrentGuess.length === 0 || wordleCurrentGuess.length < len) {
-    showWordleToast('Not enough letters'); shakeCurrentRow(); return;
+
+  if (wordleCurrentGuess.length === 0) {
+    showWordleToast('Not enough letters');
+    shakeCurrentRow();
+    return;
   }
-  const guess = wordleCurrentGuess;
+  if (wordleCurrentGuess.length < len) {
+    showWordleToast('Not enough letters');
+    shakeCurrentRow();
+    return;
+  }
+
+  const guess  = wordleCurrentGuess;
   const colors = evaluateWordle(guess, wordleAnswer);
+
   wordleGuesses.push({ guess, colors });
   wordleAttempt++;
   wordleCurrentGuess = '';
   updateAttemptsPill();
-  const rank = { gray:0, yellow:1, green:2 };
+
+  // Update key states (don't downgrade green -> yellow/gray)
+  const rank = { gray: 0, yellow: 1, green: 2 };
   guess.split('').forEach((ch, i) => {
     const col = colors[i];
-    if (!wordleKeyState[ch] || rank[col] > rank[wordleKeyState[ch]]) wordleKeyState[ch] = col;
+    if (!wordleKeyState[ch] || rank[col] > rank[wordleKeyState[ch]]) {
+      wordleKeyState[ch] = col;
+    }
   });
+
+  // Build share emoji row
   const emojiMap = { green:'🟩', yellow:'🟨', gray:'⬛' };
   wordleShareStr += colors.map(c => emojiMap[c]).join('') + '\n';
+
+  wordleRevealRow = wordleAttempt - 1; wordlePopIdx = -1;
   renderWordleBoard();
   renderWordleKeyboard();
+
   const won = colors.every(c => c === 'green');
-  const fb = document.getElementById('feedback');
+  const fb  = document.getElementById('feedback');
+
   if (won) {
     wordleLocked = true;
-    new Audio('https://mathuniverse.online/correctanswer.MP3').play();
-    const lastRow = document.getElementById(`wordle-row-${wordleAttempt-1}`);
-    if (lastRow) [...lastRow.children].forEach((tile, i) => setTimeout(() => tile.classList.add('bounce'), i*80+500));
-    const pts = Math.max(10, (WORDLE_MAX-wordleAttempt+1)*10);
+    sfx('https://mathuniverse.online/correctanswer.MP3');
+    const lastRow = document.getElementById(`wordle-row-${wordleAttempt - 1}`);
+    if (lastRow) {
+      [...lastRow.children].forEach((tile, i) => {
+        setTimeout(() => tile.classList.add('bounce'), i * 80 + 500);
+      });
+    }
+    const pts = Math.max(10, (WORDLE_MAX - wordleAttempt + 1) * 10);
     score += pts;
     document.getElementById('score').textContent = score;
     updateStreak(true);
-    setTimeout(() => showCorrectPopup(pts, true), 900);
+    const t3 = roundToken;
+    setTimeout(() => { if (t3 === roundToken) showCorrectPopup(pts, true); }, 900);
   } else if (wordleAttempt >= WORDLE_MAX) {
     wordleLocked = true;
-    new Audio('https://mathuniverse.online/wrong.MP3').play();
+    sfx('https://blooket.mathuniverse.online/wrong2.MP3');
     fb.textContent = `Out of guesses! It was ${current.name}.`;
     fb.className = 'feedback wrong';
     updateStreak(false);
-    setTimeout(() => revealAnswer(), 500);
+    const t4 = roundToken;
+    setTimeout(() => { if (t4 === roundToken) revealAnswer(); }, 500);
   } else {
     fb.textContent = '';
   }
@@ -1155,7 +1635,12 @@ function evaluateWordle(guess, answer) {
   const colors = Array(guess.length).fill('gray');
   const ansArr = answer.split('');
   const remaining = [...ansArr];
-  guess.split('').forEach((ch, i) => { if (ch === ansArr[i]) { colors[i] = 'green'; remaining[i] = null; } });
+
+  // First pass: greens
+  guess.split('').forEach((ch, i) => {
+    if (ch === ansArr[i]) { colors[i] = 'green'; remaining[i] = null; }
+  });
+  // Second pass: yellows
   guess.split('').forEach((ch, i) => {
     if (colors[i] === 'green') return;
     const ri = remaining.indexOf(ch);
@@ -1166,44 +1651,53 @@ function evaluateWordle(guess, answer) {
 
 let wordleShareFull = '';
 function copyWordleResult() {
-  navigator.clipboard.writeText(wordleShareFull).then(() => {
+  (navigator.clipboard?.writeText(wordleShareFull) ?? Promise.reject()).then(() => {
     const btn = document.querySelector('.wordle-copy-btn');
     btn.textContent = '✅ Copied!';
     setTimeout(() => btn.textContent = '📋 Copy Result', 2000);
-  });
+  }).catch(() => { document.querySelector('.wordle-copy-btn').textContent = '⚠️ Copy failed'; });
 }
 
+// Physical keyboard support for Wordle mode
 document.addEventListener('keydown', (e) => {
   if (currentGameMode !== 'wordle') return;
   if (document.getElementById('wordle-wrap').style.display === 'none') return;
   if (wordleLocked) return;
+  // Ignore if a popup is open (so typing doesn't leak through)
   if (document.getElementById('popup-overlay').classList.contains('show')) return;
   if (document.getElementById('mode-popup-overlay').classList.contains('show')) return;
-  if (e.key === 'Enter') handleWordleKey('Enter');
-  else if (e.key === 'Backspace') handleWordleKey('Backspace');
-  else if (e.key === ' ') { e.preventDefault(); handleWordleKey(' '); }
-  else if (/^[a-zA-Z0-9]$/.test(e.key)) handleWordleKey(e.key);
-});
 
-window.addEventListener('resize', () => {
-  if (currentGameMode === 'wordle' && wordleAnswer) {
-    applyTileSize(wordleAnswer.length);
-  }
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (document.getElementById('siteSidebar').classList.contains('show')) return;
+  const ae = document.activeElement;
+  if (ae && ae.tagName === 'BUTTON' && !ae.classList.contains('wordle-key')) return;
+  if (e.key === 'Enter' || e.key === 'Backspace' || e.key === ' ') e.preventDefault();
+  if (e.key === 'Enter' || e.key === 'Backspace') handleWordleKey(e.key);
+  else if (/^[a-zA-Z0-9]$/.test(e.key)) handleWordleKey(e.key);
 });
 
 // ── Popup ─────────────────────────────────────────────────────────────────────
 function showCorrectPopup(pts, isWordle = false) {
-  document.getElementById('guess-btn') && (document.getElementById('guess-btn').disabled = true);
+  document.getElementById('guess-btn')   && (document.getElementById('guess-btn').disabled   = true);
   document.getElementById('give-up-btn') && (document.getElementById('give-up-btn').disabled = true);
   document.getElementById('classic-input-container').style.display = 'none';
   document.getElementById('feedback').textContent = '';
   document.getElementById('clues-container').innerHTML = '';
   document.getElementById('trivia-container').style.display = 'none';
   document.getElementById('clue-label').textContent = '';
+
   document.getElementById('popup-pts').textContent = `+${pts} pts`;
+
+  // Streak message
   const streakEl = document.getElementById('popup-streak');
-  if (streak >= 3) { streakEl.textContent = `${'🔥'.repeat(Math.min(streak,5))} ${streak} in a row!`; streakEl.style.display = 'block'; }
-  else streakEl.style.display = 'none';
+  if (streak >= 3) {
+    streakEl.textContent = `${'🔥'.repeat(Math.min(streak, 5))} ${streak} in a row!`;
+    streakEl.style.display = 'block';
+  } else {
+    streakEl.style.display = 'none';
+  }
+
+  // Wordle result area
   const wordleArea = document.getElementById('wordle-result-area');
   if (isWordle) {
     wordleArea.style.display = 'block';
@@ -1222,10 +1716,12 @@ function showCorrectPopup(pts, isWordle = false) {
   } else {
     wordleArea.style.display = 'none';
   }
-  document.getElementById('popup-img').src = current.image;
+
+  document.getElementById('popup-img').src   = current.image;
   document.getElementById('popup-name').textContent = current.name;
   document.getElementById('popup-desc').textContent = current.desc;
   document.getElementById('popup-overlay').classList.add('show');
+
   launchConfetti();
 }
 
@@ -1236,18 +1732,23 @@ function closePopupAndNext() {
 
 // ── Reveal ────────────────────────────────────────────────────────────────────
 function revealAnswer() {
-  document.getElementById('guess-btn') && (document.getElementById('guess-btn').disabled = true);
+  document.getElementById('guess-btn')   && (document.getElementById('guess-btn').disabled   = true);
   document.getElementById('give-up-btn') && (document.getElementById('give-up-btn').disabled = true);
   document.getElementById('classic-input-container').style.display = 'none';
   document.getElementById('trivia-container').style.display = 'none';
+
   if (currentGameMode === 'classic' || currentGameMode === 'timer') {
-    revealedCount = shuffledClues.length; renderClues();
+    revealedCount = shuffledClues.length;
+    renderClues();
+  } else if (currentGameMode === 'wordle') {
+    document.getElementById('clue-label').textContent = 'CORRECT ANSWER';
   } else {
     document.getElementById('clue-label').textContent = 'CORRECT ANSWER';
     document.getElementById('clues-container').innerHTML = '';
   }
+
   const ab = document.getElementById('answer-box');
-  document.getElementById('answer-img').src = current.image;
+  document.getElementById('answer-img').src  = current.image;
   document.getElementById('answer-name').textContent = current.name;
   document.getElementById('answer-desc').textContent = current.desc;
   ab.style.display = 'block';
@@ -1256,7 +1757,12 @@ function revealAnswer() {
 }
 
 function nextRound() { startRound(); }
-function checkGuessRouted() { if (currentGameMode === 'wordle') submitWordleGuess(); else checkGuess(); }
+
+// ── Route guess button (kept for non-wordle modes using the shared input) ────
+function checkGuessRouted() {
+  if (currentGameMode === 'wordle') submitWordleGuess();
+  else checkGuess();
+}
 
 // ── Easter egg ────────────────────────────────────────────────────────────────
 function triggerEasterEgg() {
@@ -1269,9 +1775,123 @@ function triggerEasterEgg() {
 
 // ── Event listeners ───────────────────────────────────────────────────────────
 document.getElementById('guess-btn').onclick = checkGuessRouted;
-document.getElementById('guess-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkGuessRouted(); });
+document.getElementById('guess-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkGuessRouted();
+});
+
+// ── Shared BlookTools sidebar + theme support ─────────────────────────────────
+const GUESS_THEME_KEY='blooktools_theme', GUESS_CUSTOM_KEY='blooktools_custom_theme';
+const GUESS_THEMES=['normal','dark','winter','spring','autumn','independence','custom'];
+const GUESS_FX={normal:'none',dark:'none',winter:'snow',spring:'petals',autumn:'leaves',independence:'fireworks'};
+const GUESS_DEFAULT_CUSTOM={top:'#0bc2cf',bottom:'#349aef',accent:'#9a49aa',fx:'none'};
+let guessCustomTheme=(()=>{try{return {...GUESS_DEFAULT_CUSTOM,...JSON.parse(localStorage.getItem(GUESS_CUSTOM_KEY)||'{}')}}catch(e){return {...GUESS_DEFAULT_CUSTOM}}})();
+let guessThemeFxTimer=null, guessThemeFxKind='none', guessFxParticles=[];
+function guessHexOk(v,d){return /^#[0-9a-f]{6}$/i.test(v||'')?v:d}
+function guessSetCustomColors(){const root=document.documentElement;const a=guessHexOk(guessCustomTheme.accent,GUESS_DEFAULT_CUSTOM.accent);root.style.setProperty('--bg-top',guessHexOk(guessCustomTheme.top,GUESS_DEFAULT_CUSTOM.top));root.style.setProperty('--bg-bottom',guessHexOk(guessCustomTheme.bottom,GUESS_DEFAULT_CUSTOM.bottom));root.style.setProperty('--accent',a);const rgb=[1,3,5].map(i=>parseInt(a.slice(i,i+2),16));root.style.setProperty('--accent-dark','#'+rgb.map(v=>Math.round(v*.72).toString(16).padStart(2,'0')).join(''))}
+function guessClearCustomColors(){['--bg-top','--bg-bottom','--accent','--accent-dark'].forEach(k=>document.documentElement.style.removeProperty(k))}
+function guessSyncCustomControls(){document.getElementById('guessCustomTop').value=guessHexOk(guessCustomTheme.top,GUESS_DEFAULT_CUSTOM.top);document.getElementById('guessCustomBottom').value=guessHexOk(guessCustomTheme.bottom,GUESS_DEFAULT_CUSTOM.bottom);document.getElementById('guessCustomAccent').value=guessHexOk(guessCustomTheme.accent,GUESS_DEFAULT_CUSTOM.accent);document.getElementById('guessCustomEffect').value=guessCustomTheme.fx||'none'}
+function guessSpawnFx(kind,seed=false){const host=document.getElementById('guess-theme-fx');if(!host||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const e=document.createElement('span'),rnd=Math.random,s=kind==='snow'?2+rnd()*6:kind==='blooks'?48+rnd()*45:18+rnd()*16,d=kind==='blooks'?14+rnd()*8:kind==='snow'?3.8+rnd()*4.5:6+rnd()*5;e.className='gparticle '+kind;e.style.cssText=`--x:${rnd()*100}vw;--s:${s}px;--d:${d}s;--dx:${(rnd()-.5)*180}px;--r:${kind==='snow'?0:(rnd()-.5)*720}deg`;const pick=a=>a[Math.floor(rnd()*a.length)];if(kind==='petals')e.textContent=pick(['🌸','🌸','🌼']);else if(kind==='leaves')e.textContent=pick(['🍂','🍁','🍃']);else if(kind==='blooks')e.innerHTML=`<img src="https://ac.blooket.com/marketassets/blooks/${pick(['chick','dragon','cow','blueastronaut','springdragon','partypig'])}.svg" alt="">`;if(seed)e.style.animationDelay='-'+(rnd()*d)+'s';host.appendChild(e);e.addEventListener('animationend',()=>e.remove())}
+function guessSetFx(kind){if(guessThemeFxKind===kind)return;guessThemeFxKind=kind;clearInterval(guessThemeFxTimer);guessThemeFxTimer=null;document.querySelectorAll('#guess-theme-fx .gparticle').forEach(e=>e.remove());if(kind==='none'||matchMedia('(prefers-reduced-motion: reduce)').matches)return;if(kind==='fireworks'){// Lightweight animated spark/firework effect without external dependencies.
+  for(let i=0;i<15;i++)guessSpawnFx('blooks',true);guessThemeFxTimer=setInterval(()=>{if(!document.hidden)guessSpawnFx('petals')},600);return}
+  const gap={snow:90,petals:360,leaves:330,blooks:2400}[kind]||400,seed={snow:65,petals:10,leaves:10,blooks:4}[kind]||8;for(let i=0;i<seed;i++)guessSpawnFx(kind,true);guessThemeFxTimer=setInterval(()=>{if(!document.hidden)guessSpawnFx(kind)},gap)}
+function guessApplyTheme(theme){if(!GUESS_THEMES.includes(theme))theme='normal';document.documentElement.setAttribute('data-theme',theme);if(theme==='custom')guessSetCustomColors();else guessClearCustomColors();document.querySelectorAll('.guess-swatch[data-theme]').forEach(el=>el.classList.toggle('active',el.dataset.theme===theme));document.getElementById('guessSeasonToggle').classList.toggle('active',['winter','spring','autumn','independence'].includes(theme));document.getElementById('guessSeasonSub').classList.toggle('show',['winter','spring','autumn','independence'].includes(theme));document.getElementById('guessCustomPanel').classList.toggle('show',theme==='custom');if(theme==='custom')guessSyncCustomControls();guessSetFx(theme==='custom'?guessCustomTheme.fx:(GUESS_FX[theme]||'none'));try{localStorage.setItem(GUESS_THEME_KEY,theme)}catch(e){}}
+function guessCustomChanged(){guessCustomTheme={top:document.getElementById('guessCustomTop').value,bottom:document.getElementById('guessCustomBottom').value,accent:document.getElementById('guessCustomAccent').value,fx:document.getElementById('guessCustomEffect').value||'none'};try{localStorage.setItem(GUESS_CUSTOM_KEY,JSON.stringify(guessCustomTheme))}catch(e){}guessApplyTheme('custom')}
+function guessRandomHex(){return '#'+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0')}
+function guessOpenSidebar(){document.getElementById('sidebarOverlay').classList.add('show');document.getElementById('siteSidebar').classList.add('show')}
+function guessCloseSidebar(){document.getElementById('sidebarOverlay').classList.remove('show');document.getElementById('siteSidebar').classList.remove('show')}
+const guessTitleTrigger=document.getElementById('title-menu-trigger');
+guessTitleTrigger.addEventListener('click',e=>{e.preventDefault();guessOpenSidebar()});
+guessTitleTrigger.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();guessOpenSidebar()}});
+document.getElementById('sidebarClose').addEventListener('click',guessCloseSidebar);document.getElementById('sidebarOverlay').addEventListener('click',guessCloseSidebar);
+document.querySelectorAll('.guess-swatch[data-theme]').forEach(el=>el.addEventListener('click',()=>guessApplyTheme(el.dataset.theme)));
+document.getElementById('guessSeasonToggle').addEventListener('click',()=>document.getElementById('guessSeasonSub').classList.toggle('show'));
+['guessCustomTop','guessCustomBottom','guessCustomAccent'].forEach(id=>document.getElementById(id).addEventListener('input',guessCustomChanged));document.getElementById('guessCustomEffect').addEventListener('change',guessCustomChanged);
+document.getElementById('guessCustomRandom').addEventListener('click',()=>{guessCustomTheme={...guessCustomTheme,top:guessRandomHex(),bottom:guessRandomHex(),accent:guessRandomHex()};guessSyncCustomControls();guessCustomChanged()});document.getElementById('guessCustomReset').addEventListener('click',()=>{guessCustomTheme={...GUESS_DEFAULT_CUSTOM};guessSyncCustomControls();guessCustomChanged()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')guessCloseSidebar()});
+try{const savedTheme=localStorage.getItem(GUESS_THEME_KEY)||'normal';guessApplyTheme(savedTheme)}catch(e){guessApplyTheme('normal')}
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
+// ── Higher or Lower ───────────────────────────────────────────────────────────
+let hlPair = [], hlLocked = false;
+function startHigherLowerRound() {
+  ['wordle-wrap','trivia-container','classic-input-container','clues-container'].forEach(id => $(id).style.display = 'none');
+  $('hl-wrap').style.display = 'block';
+  $('hl-next').style.display = 'none';
+  const lbl = $('clue-label'); lbl.style.display = 'block'; lbl.textContent = 'Which Blooktuber has more subscribers?';
+  const pool = activePool, a = pool[Math.floor(Math.random() * pool.length)];
+  // Pairs get closer in size as the streak grows.
+  const cands = pool.filter(c => c.name !== a.name && formatSubs(c.subs) !== formatSubs(a.subs))
+    .sort((x, y) => Math.abs(Math.log(x.subs / a.subs)) - Math.abs(Math.log(y.subs / a.subs)));
+  const b = cands[Math.floor(Math.random() * Math.min(cands.length, Math.max(4, cands.length - streak * 4)))];
+  hlPair = Math.random() < .5 ? [a, b] : [b, a];
+  hlLocked = false;
+  const board = $('hl-board'); board.classList.remove('locked'); board.innerHTML = '';
+  hlPair.forEach((c, i) => {
+    if (i) { const vs = document.createElement('div'); vs.className = 'hl-vs'; vs.textContent = 'VS'; board.appendChild(vs); }
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'hl-card';
+    btn.innerHTML = '<img alt=""><span class="hl-name"></span><span class="hl-subs">???</span>';
+    btn.querySelector('img').src = c.image;
+    btn.querySelector('.hl-name').textContent = c.name;
+    btn.onclick = () => hlPick(i);
+    board.appendChild(btn);
+  });
+}
+function hlCountUp(el, n) {
+  const t0 = performance.now();
+  (function tick(now) {
+    const p = Math.min(1, (now - t0) / 700);
+    el.textContent = formatSubs(Math.round(n * (1 - Math.pow(1 - p, 3)))) + ' subs';
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+function hlPick(i) {
+  if (hlLocked || currentGameMode !== 'higher') return;
+  hlLocked = true;
+  const win = hlPair[0].subs > hlPair[1].subs ? 0 : 1, fb = $('feedback');
+  $('hl-board').classList.add('locked');
+  [...$('hl-board').querySelectorAll('.hl-card')].forEach((el, j) => {
+    el.classList.add(j === win ? 'win' : 'lose');
+    if (j === i) el.classList.add('picked');
+    hlCountUp(el.querySelector('.hl-subs'), hlPair[j].subs);
+  });
+  if (i === win) {
+    sfx('https://mathuniverse.online/correctanswer.MP3');
+    score += 15; $('score').textContent = score; updateStreak(true);
+    fb.textContent = `Correct! ${hlPair[win].name} has more subscribers.`; fb.className = 'feedback correct';
+    $('hl-next').textContent = 'Next pair ▶';
+  } else {
+    sfx('https://blooket.mathuniverse.online/wrong2.MP3');
+    updateStreak(false);
+    fb.textContent = `Not quite. ${hlPair[win].name} has more subscribers.`; fb.className = 'feedback wrong';
+    $('hl-next').textContent = 'Play again ▶';
+  }
+  $('hl-next').style.display = 'block'; $('hl-next').focus();
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModePopup();
+  if (currentGameMode !== 'higher' || hlLocked || $('hl-wrap').style.display === 'none') return;
+  if (e.ctrlKey || e.metaKey || e.altKey || document.querySelector('.popup-overlay.show')) return;
+  if (e.key === 'ArrowLeft' || e.key === '1') hlPick(0);
+  else if (e.key === 'ArrowRight' || e.key === '2') hlPick(1);
+});
+
+// Broken profile pictures fall back to a blook instead of an empty circle.
+document.addEventListener('error', e => {
+  const t = e.target;
+  if (t.tagName === 'IMG' && t.getAttribute('src') && t.src !== FALLBACK_IMG && !t.classList.contains('blook')) t.src = FALLBACK_IMG;
+}, true);
+
+(function () {
+  const link = $('title-menu-trigger');
+  link.replaceChildren(...Array.from(link.textContent).map((ch, i) => {
+    const sp = document.createElement('span');
+    sp.className = 'title-letter'; sp.setAttribute('aria-hidden', 'true');
+    sp.style.setProperty('--i', i); sp.textContent = ch === ' ' ? '\u00a0' : ch;
+    return sp;
+  }));
+})();
+$('best-count').textContent = bestStreak;
 loadLiveData();
 </script>
 </body>
