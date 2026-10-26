@@ -839,9 +839,7 @@ input[type=text]::placeholder{color:#8a7a99}
 </div>
 
 <script>
-// ── YouTube API ──────────────────────────────────────────────────────────────
-const API_KEY = "AIzaSyBUj3qxFbI2-IWeRU1EEa4w_ChFoZgSjUE";
-
+// ── Creator data ─────────────────────────────────────────────────────────────
 const creatorList = [
   ["Waymore", "WaymoreYT", "https://www.youtube.com/@WaymoreYT", "https://yt3.googleusercontent.com/fpVQ5VoYlN-UptRogESSqHnxEX61T-7YW1YNGObVrFX2w_1jBO-njl76kt-6vkPF_2cC9x66kQ=s800-c-k-c0x00ffffff-no-rj"],
   ["iBlooket", "iBlooket", "https://www.youtube.com/@iBlooket", "https://yt3.googleusercontent.com/OmDwNKSgt4mxydmndADjlva5mWYKLVpm2BGLrzMlU7GWIRTgE3eReMX40s147P31K4Z1k51Phg=s800-c-k-c0x00ffffff-no-rj"],
@@ -1057,83 +1055,122 @@ function getTimerBonus() {
   return Math.floor((timerRemaining / TIMER_SECONDS) * 20);
 }
 
-// ── YouTube API ───────────────────────────────────────────────────────────────
-const idCache = {};
-async function resolveHandle(handle) {
-  if (handle.startsWith("UC")) return handle;
-  if (idCache[handle]) return idCache[handle];
-  try {
-    const res  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${encodeURIComponent(handle)}&key=${API_KEY}`);
-    const data = await res.json();
-    return (idCache[handle] = data.items?.[0]?.id || null);
-  } catch (e) { return null; }
+// ── Live subscriber data (via BlookTools worker) ─────────────────────────────
+const API_URL    = "https://blooktools-api.fastyjayden.workers.dev/";
+const REFRESH_MS = 5 * 60 * 1000;
+const RETRY_MS   = 60 * 1000;
+
+const normKey = s => String(s ?? '').toLowerCase().replace(/^@/, '').replace(/[^a-z0-9]/g, '');
+
+// Turns whatever the worker returns into Map<normalizedKey, subscriberCount>
+function extractSubs(payload) {
+  const map = new Map();
+  const readNum = v => {
+    if (v && typeof v === 'object') {
+      v = v.subs ?? v.subscribers ?? v.subscriberCount ?? v.subscriber_count ?? v.statistics?.subscriberCount;
+    }
+    const n = Number.parseInt(v, 10);
+    return Number.isFinite(n) ? n : null;
+  };
+
+  let data = payload;
+  if (data && !Array.isArray(data) && typeof data === 'object') {
+    for (const k of ['creators', 'channels', 'data', 'subs', 'results', 'items']) {
+      if (data[k] && typeof data[k] === 'object') { data = data[k]; break; }
+    }
+  }
+
+  if (Array.isArray(data)) {
+    data.forEach(item => {
+      const n = readNum(item);
+      if (n === null) return;
+      [item.name, item.title, item.handle, item.id, item.channelId].forEach(k => {
+        if (k) map.set(normKey(k), n);
+      });
+    });
+  } else if (data && typeof data === 'object') {
+    Object.entries(data).forEach(([k, v]) => {
+      const n = readNum(v);
+      if (n !== null) map.set(normKey(k), n);
+    });
+  }
+  return map;
 }
 
-async function fetchSubsBatch(ids) {
+async function fetchWorkerSubs() {
+  const ctrl = new AbortController();
+  const timeout = setTimeout(() => ctrl.abort(), 10000);
   try {
-    const res  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${ids.join(',')}&key=${API_KEY}`);
-    const data = await res.json();
-    const map  = {};
-    data.items?.forEach(item => { const n = Number.parseInt(item.statistics?.subscriberCount, 10); if (Number.isFinite(n)) map[item.id] = n; });
-    return map;
-  } catch (e) { return {}; }
+    const res = await fetch(API_URL, { signal: ctrl.signal, headers: { Accept: 'application/json' } });
+    if (!res.ok) throw new Error('Worker HTTP ' + res.status);
+    return extractSubs(await res.json());
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function buildCreators(subMap) {
+  let liveCount = 0;
+  const list = creatorList.map(([name, handle, url, img]) => {
+    const live = subMap.get(normKey(name)) ?? subMap.get(normKey(handle)) ?? null;
+    if (live !== null) liveCount++;
+    return {
+      name, url,
+      subs: live !== null ? live : (fallbackSubs[name] || 0),
+      status: inactiveCreators.includes(name.toLowerCase()) ? 'Inactive' : 'Active',
+      image: img || defaultImage
+    };
+  }).filter(c => Number.isFinite(c.subs) && c.subs > 500);
+  list.sort((a, b) => b.subs - a.subs);
+  return { list, liveCount };
 }
 
 async function loadLiveData() {
-  const dot = document.getElementById('live-dot'), text = document.getElementById('live-text');
+  const dot  = document.getElementById('live-dot');
+  const text = document.getElementById('live-text');
+  const logo = document.getElementById('live-loading-logo');
+
   if (!loadedCreators.length) {
     document.getElementById('loading-overlay')?.classList.add('show');
     dot.style.display = 'none';
-    document.getElementById('live-loading-logo').style.display = 'inline-flex';
+    logo.style.display = 'inline-flex';
     text.textContent = '';
   }
-  try {
-    const resolvedIds = await Promise.all(creatorList.map(([,h]) => resolveHandle(h)));
-    const subMap = {};
-    const validIds = resolvedIds.filter(Boolean);
-    for (let i = 0; i < validIds.length; i += 50)
-      Object.assign(subMap, await fetchSubsBatch(validIds.slice(i, i+50)));
 
-    const liveCount = Object.keys(subMap).length;
-    loadedCreators = creatorList.map(([name,,url,img], idx) => {
-      const cid = resolvedIds[idx];
-      const liveSubs = cid && Number.isFinite(subMap[cid]) ? subMap[cid] : null;
-      const subs = liveSubs !== null ? liveSubs : (fallbackSubs[name] || 0);
-      return { name, url, subs, status: inactiveCreators.includes(name.toLowerCase()) ? 'Inactive' : 'Active', image: img || defaultImage };
-    }).filter(c => Number.isFinite(c.subs) && c.subs > 500);
-    loadedCreators.sort((a,b) => b.subs - a.subs);
+  let liveCount = 0, failed = false;
+  try {
+    const subMap = await fetchWorkerSubs();
+    const built = buildCreators(subMap);
+    loadedCreators = built.list;
+    liveCount = built.liveCount;
+    if (!liveCount) failed = true;          // worker answered but nothing matched
+  } catch (e) {
+    console.warn('BlookTools worker failed:', e);
+    failed = true;
+    if (!loadedCreators.length) loadedCreators = buildCreators(new Map()).list; // fallback numbers
+  }
+
+  logo.style.display = 'none';
+  document.getElementById('loading-view').style.display = 'none';
+  document.getElementById('loading-overlay')?.classList.remove('show');
+
+  if (!failed) {
     lastUpdated = new Date();
-    document.getElementById('live-loading-logo').style.display = 'none';
-    dot.style.display = 'inline-block';
-    dot.style.display = liveCount ? 'inline-block' : 'none';
     dot.className = 'live-dot';
-    text.textContent = liveCount ? `Live counts • Updated ${lastUpdated.toLocaleTimeString()}` : '';
-    document.getElementById('loading-view').style.display = 'none';
-    document.getElementById('loading-overlay')?.classList.remove('show');
-    // Refreshing live counts in the background must never interrupt an active game.
-    if (!gameHasStarted) {
-      document.getElementById('welcome-message').style.display = 'block';
-      document.getElementById('error-view').style.display = 'none';
-    }
-    setTimeout(loadLiveData, 5*60*1000);
-  } catch(e) {
-    document.getElementById('live-loading-logo').style.display = 'none';
+    dot.style.display = 'inline-block';
+    text.textContent = `Live counts • Updated ${lastUpdated.toLocaleTimeString()}`;
+  } else {
     dot.style.display = 'none';
     text.textContent = '';
-    setTimeout(loadLiveData, 60*1000);
-    if (!loadedCreators.length) loadedCreators = creatorList.map(([name,,url,img]) => ({
-      name, url, subs: fallbackSubs[name]||0,
-      status: inactiveCreators.includes(name.toLowerCase()) ? 'Inactive' : 'Active',
-      image: img||defaultImage
-    })).filter(c => Number.isFinite(c.subs) && c.subs > 500);
-    loadedCreators.sort((a,b) => b.subs - a.subs);
-    document.getElementById('loading-view').style.display = 'none';
-    document.getElementById('loading-overlay')?.classList.remove('show');
-    if (!gameHasStarted) {
-      document.getElementById('welcome-message').style.display = 'none';
-      document.getElementById('error-view').style.display = 'block';
-    }
   }
+
+  // Background refreshes must never interrupt an active game.
+  if (!gameHasStarted) {
+    document.getElementById('welcome-message').style.display = failed ? 'none' : 'block';
+    document.getElementById('error-view').style.display     = failed ? 'block' : 'none';
+  }
+
+  setTimeout(loadLiveData, failed ? RETRY_MS : REFRESH_MS);
 }
 
 // ── Mode popup ────────────────────────────────────────────────────────────────
@@ -1374,11 +1411,8 @@ function checkTriviaAnswer(btn, selected, correct) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// WORDLE MODE — rebuilt
+// WORDLE MODE
 // ══════════════════════════════════════════════════════════════════════════
-
-// Only consider real letters when computing the "length" of a name for Wordle
-// purposes — spaces are kept as fixed, pre-filled, non-guessable tiles.
 function wordleCells(name) {
   return name.toLowerCase().split('');
 }
@@ -1411,9 +1445,6 @@ function startWordleRound() {
   renderWordleBoard();
   renderWordleKeyboard();
 
-  // Reuse the classic input box as the typing field for wordle mode too,
-  // but make it feel native to wordle: hide it and drive everything from
-  // the on-screen keyboard + a hidden capture field for physical keyboards.
   document.getElementById('classic-input-container').style.display = 'none';
 }
 
@@ -1553,7 +1584,6 @@ function handleWordleKey(key) {
     renderWordleBoard();
     return;
   }
-  // Accept letters, digits, and spaces (names like "Lag0n" and "Mega Bot" need both)
   if (!/^[a-zA-Z0-9]$/.test(key)) return;
   if (wordleCurrentGuess.length >= len) return;
   wordleCurrentGuess += key.toLowerCase();
@@ -1663,7 +1693,6 @@ document.addEventListener('keydown', (e) => {
   if (currentGameMode !== 'wordle') return;
   if (document.getElementById('wordle-wrap').style.display === 'none') return;
   if (wordleLocked) return;
-  // Ignore if a popup is open (so typing doesn't leak through)
   if (document.getElementById('popup-overlay').classList.contains('show')) return;
   if (document.getElementById('mode-popup-overlay').classList.contains('show')) return;
 
@@ -1688,7 +1717,6 @@ function showCorrectPopup(pts, isWordle = false) {
 
   document.getElementById('popup-pts').textContent = `+${pts} pts`;
 
-  // Streak message
   const streakEl = document.getElementById('popup-streak');
   if (streak >= 3) {
     streakEl.textContent = `${'🔥'.repeat(Math.min(streak, 5))} ${streak} in a row!`;
@@ -1697,7 +1725,6 @@ function showCorrectPopup(pts, isWordle = false) {
     streakEl.style.display = 'none';
   }
 
-  // Wordle result area
   const wordleArea = document.getElementById('wordle-result-area');
   if (isWordle) {
     wordleArea.style.display = 'block';
@@ -1758,7 +1785,6 @@ function revealAnswer() {
 
 function nextRound() { startRound(); }
 
-// ── Route guess button (kept for non-wordle modes using the shared input) ────
 function checkGuessRouted() {
   if (currentGameMode === 'wordle') submitWordleGuess();
   else checkGuess();
@@ -1810,7 +1836,6 @@ document.getElementById('guessCustomRandom').addEventListener('click',()=>{guess
 document.addEventListener('keydown',e=>{if(e.key==='Escape')guessCloseSidebar()});
 try{const savedTheme=localStorage.getItem(GUESS_THEME_KEY)||'normal';guessApplyTheme(savedTheme)}catch(e){guessApplyTheme('normal')}
 
-// ── Boot ──────────────────────────────────────────────────────────────────────
 // ── Higher or Lower ───────────────────────────────────────────────────────────
 let hlPair = [], hlLocked = false;
 function startHigherLowerRound() {
