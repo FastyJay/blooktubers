@@ -622,44 +622,6 @@ body::before {
     box-shadow: none;
 }
 
-/* Leaderboard-style button treatment — theme-aware colors and eased press feedback. */
-.container .btn, .btn-row .btn, a.btn, button.btn {
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
-    font-weight: 900;
-    letter-spacing: 0;
-    color: #fff;
-    background: var(--accent);
-    border: 6px solid rgba(255,255,255,.2);
-    border-radius: 12px;
-    box-shadow: 4px 4px rgba(0,0,0,.18);
-    text-shadow: none;
-    padding: 10px 16px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: transform .24s cubic-bezier(.34,1.56,.64,1),
-                background-color .35s ease, box-shadow .24s ease, border-color .3s ease;
-    will-change: transform;
-}
-.container .btn::after, .btn-row .btn::after, a.btn::after { display: none; }
-.container .btn:hover, .btn-row .btn:hover, a.btn:hover, button.btn:hover {
-    background: var(--accent-dark);
-    transform: translateY(-3px) scale(1.025);
-    box-shadow: 4px 7px rgba(0,0,0,.2);
-    border-color: rgba(255,255,255,.32);
-}
-.container .btn:active, .btn-row .btn:active, a.btn:active, button.btn:active {
-    transform: translateY(2px) scale(.975);
-    box-shadow: 1px 1px rgba(0,0,0,.18);
-}
-.container .btn-green, .container .btn-blook, .container .btn-red,
-.container .btn-blue, .container .btn-gray { background: var(--accent); }
-.container .btn-green:hover, .container .btn-blook:hover, .container .btn-red:hover,
-.container .btn-blue:hover, .container .btn-gray:hover { background: var(--accent-dark); }
-
 /* Leaderboard-style title treatment: chunky Titan One lettering, crisp outline/shadow, and springy per-letter entrance. */
 .hero h1#siteTitleTrigger {
     font-family: 'Titan One', cursive;
@@ -809,6 +771,17 @@ body::before {
 }
 @media (max-width: 768px) {
     .hero h1#siteTitleTrigger { font-size: clamp(44px, 10vw, 56px) !important; }
+}
+</style>
+
+<style id="card-title-tweak">
+.card h2 {
+    font-family: 'Titan One', cursive;
+    font-weight: 400;
+    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+    min-height: 2.5em;
+    text-shadow: none;
+    -webkit-text-stroke: 0;
 }
 </style>
 <script>
