@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Guess the Blooktuber</title>
-<link rel="icon" type="image/png" href="https://blooket.mathuniverse.online/blooktools.png">
+<link rel="icon" type="image/png" href="https://btools.qwizard.app/blooktools.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Titan+One&display=swap">
@@ -323,8 +323,6 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 .wordle-tile.empty  { opacity: .55; }
 .wordle-tile.bounce { animation: wordleBounce .5s ease .15s; }
 
-/* stagger the flip per tile via inline animation-delay set in JS */
-
 .wordle-status-row {
   display: flex;
   align-items: center;
@@ -491,6 +489,14 @@ input[type="text"].locked { opacity:.55; cursor:not-allowed; }
 #loading-overlay.show{display:flex}
 #loading-overlay .logo-spinner img{width:88px;height:88px;filter:drop-shadow(0 0 18px rgba(255,255,255,.35))}
 
+/* ── Restore Streak popup polish ── */
+#restore-overlay .popup-title { text-shadow:2px 2px 0 rgba(0,0,0,.25); }
+#restore-do-btn:not(:disabled) {
+  opacity:1 !important;
+  cursor:pointer !important;
+  animation: flamePop .5s ease-out;
+}
+
 </style>
 
 <style id="blooktools-shared-guess-style">
@@ -648,7 +654,7 @@ input[type=text]::placeholder{color:#8a7a99}
 <div id="sidebarOverlay" class="guess-overlay"></div>
 <nav id="siteSidebar" class="guess-sidebar" aria-label="Site navigation">
   <div class="guess-sidebar-head"><h3>BlookTools</h3><button id="sidebarClose" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button></div>
-  <a class="guess-home" href="https://blooket.mathuniverse.online/"><i class="fa-solid fa-house"></i> Home</a>
+  <a class="guess-home" href="https://btools.qwizard.app/"><i class="fa-solid fa-house"></i> Home</a>
   <div class="guess-sidebar-links">
     <a href="leaderboard"><i class="fa-solid fa-trophy"></i> Leaderboard</a>
     <a href="guess" class="active"><i class="fa-solid fa-question"></i> Guess the Blooktuber</a>
@@ -682,7 +688,7 @@ input[type=text]::placeholder{color:#8a7a99}
 </nav>
 
 <canvas id="confetti-canvas"></canvas>
-<div id="loading-overlay" aria-label="Loading BlookTools data" role="status"><span class="logo-spinner"><img src="https://blooket.mathuniverse.online/blooktools.png" alt="Loading"></span></div>
+<div id="loading-overlay" aria-label="Loading BlookTools data" role="status"><span class="logo-spinner"><img src="https://btools.qwizard.app/blooktools.png" alt="Loading"></span></div>
 
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/chick.svg"   alt="" aria-hidden="true" style="left:5%;  width:80px;  animation-duration:16s; animation-delay:-2s;">
 <img class="blook" src="https://ac.blooket.com/marketassets/blooks/dragon.svg"  alt="" aria-hidden="true" style="left:75%; width:100px; animation-duration:20s; animation-delay:-8s;">
@@ -700,7 +706,7 @@ input[type=text]::placeholder{color:#8a7a99}
   <p class="subtitle">Guess the Blooktuber! 🎮</p>
 
   <div class="live-status" id="live-status" aria-live="polite">
-    <span class="logo-spinner small" id="live-loading-logo"><img src="https://blooket.mathuniverse.online/blooktools.png" alt="Loading"></span>
+    <span class="logo-spinner small" id="live-loading-logo"><img src="https://btools.qwizard.app/blooktools.png" alt="Loading"></span>
     <span class="live-dot loading" id="live-dot" style="display:none"></span>
     <span id="live-text"></span>
   </div>
@@ -718,7 +724,7 @@ input[type=text]::placeholder{color:#8a7a99}
   <div class="card">
     <!-- Loading -->
     <div id="loading-view" class="loading-card" aria-label="Loading Blooktuber data">
-      <span class="logo-spinner large"><img src="https://blooket.mathuniverse.online/blooktools.png" alt="Loading"></span>
+      <span class="logo-spinner large"><img src="https://btools.qwizard.app/blooktools.png" alt="Loading"></span>
     </div>
 
     <!-- Welcome -->
@@ -832,6 +838,25 @@ input[type=text]::placeholder{color:#8a7a99}
       <button class="btn btn-green" onclick="closePopupAndNext()">Next Round ▶</button>
     </div>
   </div>
+
+  <!-- Restore Streak popup -->
+  <div class="popup-overlay" id="restore-overlay">
+    <div class="popup-box">
+      <div class="popup-emoji">🔥</div>
+      <div class="popup-title" style="color:#f59e0b;">Don't lose that streak!</div>
+      <div class="popup-streak" id="restore-lost" style="display:block;margin-bottom:10px;"></div>
+      <p style="color:rgba(255,255,255,.9);font-size:14px;font-weight:800;line-height:1.5;margin-bottom:14px;">
+        Subscribe to the creator of BlookTools on YouTube to restore your streak.
+      </p>
+      <a id="restore-sub-btn" class="btn btn-red"
+         href="https://www.youtube.com/@FastyJay?sub_confirmation=1"
+         target="_blank" rel="noopener"
+         style="text-decoration:none;display:block;">▶ Subscribe on YouTube</a>
+      <button class="btn btn-green" id="restore-do-btn" onclick="doRestoreStreak()" disabled
+              style="margin-top:12px;opacity:.5;cursor:not-allowed;">🔥 Restore Streak</button>
+      <button class="btn btn-blue" onclick="closeRestoreStreak()" style="margin-top:12px;">No thanks</button>
+    </div>
+  </div>
 </div>
 
 <div class="easter-egg" id="easter-egg">
@@ -922,6 +947,12 @@ let wordleToastTimeout = null;
 // Confetti state
 let confettiParticles = [], confettiRAF = null;
 
+// Restore Streak state
+const RESTORE_MIN_STREAK = 5;          // only offer when the lost streak was >= this
+let restoreUsedThisSession = false;    // one restore per page load
+let pendingRestoreStreak = 0;          // the streak value we'd give back
+let restoreSubClicked = false;         // did they click the Subscribe link yet
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function formatSubs(n) {
   if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M';
@@ -990,7 +1021,9 @@ function updateStreak(correct) {
   if (correct) {
     streak++;
   } else {
+    const lost = streak;            // capture BEFORE zeroing
     streak = 0;
+    maybeOfferRestore(lost);        // offer a restore if the streak was big
   }
   const countEl = document.getElementById('streak-count');
   const flameEl = document.getElementById('flame-icon');
@@ -998,17 +1031,71 @@ function updateStreak(correct) {
   if (streak > bestStreak) { bestStreak = streak; try { localStorage.setItem('guess_best_streak', bestStreak); } catch (e) {} }
   $('best-count').textContent = bestStreak;
 
-  // Update flame emoji based on streak
   if (streak === 0)      flameEl.textContent = '🔥';
   else if (streak < 3)   flameEl.textContent = '🔥';
   else if (streak < 6)   flameEl.textContent = '🔥🔥';
   else                   flameEl.textContent = '🔥🔥🔥';
 
-  // Pop animation
   flameEl.classList.remove('pop');
   void flameEl.offsetWidth;
   if (correct) flameEl.classList.add('pop');
 }
+
+// ── Restore Streak ────────────────────────────────────────────────────────────
+function maybeOfferRestore(lostStreak) {
+  if (restoreUsedThisSession) return;
+  if (lostStreak < RESTORE_MIN_STREAK) return;
+  pendingRestoreStreak = lostStreak;
+  restoreSubClicked = false;
+
+  const overlay = document.getElementById('restore-overlay');
+  document.getElementById('restore-lost').textContent =
+    `You had a ${lostStreak} streak 🔥`;
+  const doBtn = document.getElementById('restore-do-btn');
+  doBtn.disabled = true;
+  doBtn.style.opacity = '0.5';
+  doBtn.style.cursor = 'not-allowed';
+
+  overlay.classList.add('show');
+}
+
+function doRestoreStreak() {
+  if (!restoreSubClicked || restoreUsedThisSession) return;
+  restoreUsedThisSession = true;
+
+  // Restore the exact streak that was lost.
+  streak = pendingRestoreStreak;
+  document.getElementById('streak-count').textContent = streak;
+  const flameEl = document.getElementById('flame-icon');
+  if (streak < 3)       flameEl.textContent = '🔥';
+  else if (streak < 6)  flameEl.textContent = '🔥🔥';
+  else                  flameEl.textContent = '🔥🔥🔥';
+  flameEl.classList.remove('pop');
+  void flameEl.offsetWidth;
+  flameEl.classList.add('pop');
+
+  document.getElementById('restore-overlay').classList.remove('show');
+  sfx('https://mathuniverse.online/correctanswer.MP3');
+
+  const fb = document.getElementById('feedback');
+  if (fb) {
+    fb.textContent = `🔥 Streak restored to ${streak}! Thanks for subscribing!`;
+    fb.className = 'feedback correct';
+  }
+}
+
+function closeRestoreStreak() {
+  document.getElementById('restore-overlay').classList.remove('show');
+}
+
+// The Subscribe link enables the Restore button once the player clicks it.
+document.getElementById('restore-sub-btn').addEventListener('click', () => {
+  restoreSubClicked = true;
+  const doBtn = document.getElementById('restore-do-btn');
+  doBtn.disabled = false;
+  doBtn.style.opacity = '1';
+  doBtn.style.cursor = 'pointer';
+});
 
 // ── Timer ────────────────────────────────────────────────────────────────────
 function startTimer() {
@@ -1051,7 +1138,6 @@ function timerExpired() {
 }
 
 function getTimerBonus() {
-  // up to +20 bonus for fast answer
   return Math.floor((timerRemaining / TIMER_SECONDS) * 20);
 }
 
@@ -1063,6 +1149,7 @@ const RETRY_MS   = 60 * 1000;
 const normKey = s => String(s ?? '').toLowerCase().replace(/^@/, '').replace(/[^a-z0-9]/g, '');
 
 // Turns whatever the worker returns into Map<normalizedKey, subscriberCount>
+// Unwraps `payload.stats` first (the same shape the leaderboard page reads).
 function extractSubs(payload) {
   const map = new Map();
   const readNum = v => {
@@ -1074,7 +1161,11 @@ function extractSubs(payload) {
   };
 
   let data = payload;
-  if (data && !Array.isArray(data) && typeof data === 'object') {
+
+  if (data && !Array.isArray(data) && typeof data === 'object'
+      && data.stats && typeof data.stats === 'object') {
+    data = data.stats;
+  } else if (data && !Array.isArray(data) && typeof data === 'object') {
     for (const k of ['creators', 'channels', 'data', 'subs', 'results', 'items']) {
       if (data[k] && typeof data[k] === 'object') { data = data[k]; break; }
     }
@@ -1090,6 +1181,7 @@ function extractSubs(payload) {
     });
   } else if (data && typeof data === 'object') {
     Object.entries(data).forEach(([k, v]) => {
+      if (k === 'updatedAt' || k === 'timestamp' || k === 'error') return;
       const n = readNum(v);
       if (n !== null) map.set(normKey(k), n);
     });
@@ -1143,7 +1235,7 @@ async function loadLiveData() {
     const built = buildCreators(subMap);
     loadedCreators = built.list;
     liveCount = built.liveCount;
-    if (!liveCount) failed = true;          // worker answered but nothing matched
+    if (!liveCount) console.warn('Live counts empty; using fallback subscriber numbers.');
   } catch (e) {
     console.warn('BlookTools worker failed:', e);
     failed = true;
@@ -1158,13 +1250,14 @@ async function loadLiveData() {
     lastUpdated = new Date();
     dot.className = 'live-dot';
     dot.style.display = 'inline-block';
-    text.textContent = `Live counts • Updated ${lastUpdated.toLocaleTimeString()}`;
+    text.textContent = liveCount
+      ? `Live counts • Updated ${lastUpdated.toLocaleTimeString()}`
+      : `Using last known counts • ${lastUpdated.toLocaleTimeString()}`;
   } else {
     dot.style.display = 'none';
     text.textContent = '';
   }
 
-  // Background refreshes must never interrupt an active game.
   if (!gameHasStarted) {
     document.getElementById('welcome-message').style.display = failed ? 'none' : 'block';
     document.getElementById('error-view').style.display     = failed ? 'block' : 'none';
@@ -1175,8 +1268,7 @@ async function loadLiveData() {
 
 // ── Mode popup ────────────────────────────────────────────────────────────────
 function openModePopup() {
-  sfx('https://blooket.mathuniverse.online/select.ogg');
-  // Mode changes are available during gameplay; no subscriber ranking preview is shown.
+  sfx('https://btools.qwizard.app/select.ogg');
   document.getElementById('popup-menu-view').style.display = 'block';
   const scoreView = document.getElementById('popup-scoreboard-view');
   if (scoreView) scoreView.style.display = 'none';
@@ -1193,7 +1285,7 @@ function backToModeSelect() {
 
 function clickMode(mode) {
   if (!['classic','trivia','timer','wordle','higher'].includes(mode)) return;
-  sfx('https://blooket.mathuniverse.online/compare.ogg');
+  sfx('https://btools.qwizard.app/compare.ogg');
   selectMode(mode);
 }
 
@@ -1316,7 +1408,7 @@ function checkGuess() {
     updateStreak(true);
     showCorrectPopup(pts);
   } else {
-    sfx('https://blooket.mathuniverse.online/wrong2.MP3');
+    sfx('https://btools.qwizard.app/wrong2.MP3');
     if (revealedCount < shuffledClues.length) {
       revealedCount++;
       renderClues();
@@ -1398,7 +1490,7 @@ function checkTriviaAnswer(btn, selected, correct) {
     const t1 = roundToken;
     setTimeout(() => { if (t1 === roundToken) showCorrectPopup(20); }, 400);
   } else {
-    sfx('https://blooket.mathuniverse.online/wrong2.MP3');
+    sfx('https://btools.qwizard.app/wrong2.MP3');
     updateStreak(false);
     const t2 = roundToken;
     setTimeout(() => {
@@ -1453,7 +1545,6 @@ function updateAttemptsPill() {
   document.getElementById('wordle-attempts-pill').textContent = `${left} GUESS${left===1?'':'ES'} LEFT`;
 }
 
-// current in-progress guess (not yet submitted)
 let wordleCurrentGuess = '';
 
 function renderWordleBoard() {
@@ -1613,7 +1704,6 @@ function submitWordleGuess() {
   wordleCurrentGuess = '';
   updateAttemptsPill();
 
-  // Update key states (don't downgrade green -> yellow/gray)
   const rank = { gray: 0, yellow: 1, green: 2 };
   guess.split('').forEach((ch, i) => {
     const col = colors[i];
@@ -1622,7 +1712,6 @@ function submitWordleGuess() {
     }
   });
 
-  // Build share emoji row
   const emojiMap = { green:'🟩', yellow:'🟨', gray:'⬛' };
   wordleShareStr += colors.map(c => emojiMap[c]).join('') + '\n';
 
@@ -1650,7 +1739,7 @@ function submitWordleGuess() {
     setTimeout(() => { if (t3 === roundToken) showCorrectPopup(pts, true); }, 900);
   } else if (wordleAttempt >= WORDLE_MAX) {
     wordleLocked = true;
-    sfx('https://blooket.mathuniverse.online/wrong2.MP3');
+    sfx('https://btools.qwizard.app/wrong2.MP3');
     fb.textContent = `Out of guesses! It was ${current.name}.`;
     fb.className = 'feedback wrong';
     updateStreak(false);
@@ -1666,11 +1755,9 @@ function evaluateWordle(guess, answer) {
   const ansArr = answer.split('');
   const remaining = [...ansArr];
 
-  // First pass: greens
   guess.split('').forEach((ch, i) => {
     if (ch === ansArr[i]) { colors[i] = 'green'; remaining[i] = null; }
   });
-  // Second pass: yellows
   guess.split('').forEach((ch, i) => {
     if (colors[i] === 'green') return;
     const ri = remaining.indexOf(ch);
@@ -1688,13 +1775,13 @@ function copyWordleResult() {
   }).catch(() => { document.querySelector('.wordle-copy-btn').textContent = '⚠️ Copy failed'; });
 }
 
-// Physical keyboard support for Wordle mode
 document.addEventListener('keydown', (e) => {
   if (currentGameMode !== 'wordle') return;
   if (document.getElementById('wordle-wrap').style.display === 'none') return;
   if (wordleLocked) return;
   if (document.getElementById('popup-overlay').classList.contains('show')) return;
   if (document.getElementById('mode-popup-overlay').classList.contains('show')) return;
+  if (document.getElementById('restore-overlay').classList.contains('show')) return;
 
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   if (document.getElementById('siteSidebar').classList.contains('show')) return;
@@ -1817,8 +1904,7 @@ function guessSetCustomColors(){const root=document.documentElement;const a=gues
 function guessClearCustomColors(){['--bg-top','--bg-bottom','--accent','--accent-dark'].forEach(k=>document.documentElement.style.removeProperty(k))}
 function guessSyncCustomControls(){document.getElementById('guessCustomTop').value=guessHexOk(guessCustomTheme.top,GUESS_DEFAULT_CUSTOM.top);document.getElementById('guessCustomBottom').value=guessHexOk(guessCustomTheme.bottom,GUESS_DEFAULT_CUSTOM.bottom);document.getElementById('guessCustomAccent').value=guessHexOk(guessCustomTheme.accent,GUESS_DEFAULT_CUSTOM.accent);document.getElementById('guessCustomEffect').value=guessCustomTheme.fx||'none'}
 function guessSpawnFx(kind,seed=false){const host=document.getElementById('guess-theme-fx');if(!host||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const e=document.createElement('span'),rnd=Math.random,s=kind==='snow'?2+rnd()*6:kind==='blooks'?48+rnd()*45:18+rnd()*16,d=kind==='blooks'?14+rnd()*8:kind==='snow'?3.8+rnd()*4.5:6+rnd()*5;e.className='gparticle '+kind;e.style.cssText=`--x:${rnd()*100}vw;--s:${s}px;--d:${d}s;--dx:${(rnd()-.5)*180}px;--r:${kind==='snow'?0:(rnd()-.5)*720}deg`;const pick=a=>a[Math.floor(rnd()*a.length)];if(kind==='petals')e.textContent=pick(['🌸','🌸','🌼']);else if(kind==='leaves')e.textContent=pick(['🍂','🍁','🍃']);else if(kind==='blooks')e.innerHTML=`<img src="https://ac.blooket.com/marketassets/blooks/${pick(['chick','dragon','cow','blueastronaut','springdragon','partypig'])}.svg" alt="">`;if(seed)e.style.animationDelay='-'+(rnd()*d)+'s';host.appendChild(e);e.addEventListener('animationend',()=>e.remove())}
-function guessSetFx(kind){if(guessThemeFxKind===kind)return;guessThemeFxKind=kind;clearInterval(guessThemeFxTimer);guessThemeFxTimer=null;document.querySelectorAll('#guess-theme-fx .gparticle').forEach(e=>e.remove());if(kind==='none'||matchMedia('(prefers-reduced-motion: reduce)').matches)return;if(kind==='fireworks'){// Lightweight animated spark/firework effect without external dependencies.
-  for(let i=0;i<15;i++)guessSpawnFx('blooks',true);guessThemeFxTimer=setInterval(()=>{if(!document.hidden)guessSpawnFx('petals')},600);return}
+function guessSetFx(kind){if(guessThemeFxKind===kind)return;guessThemeFxKind=kind;clearInterval(guessThemeFxTimer);guessThemeFxTimer=null;document.querySelectorAll('#guess-theme-fx .gparticle').forEach(e=>e.remove());if(kind==='none'||matchMedia('(prefers-reduced-motion: reduce)').matches)return;if(kind==='fireworks'){for(let i=0;i<15;i++)guessSpawnFx('blooks',true);guessThemeFxTimer=setInterval(()=>{if(!document.hidden)guessSpawnFx('petals')},600);return}
   const gap={snow:90,petals:360,leaves:330,blooks:2400}[kind]||400,seed={snow:65,petals:10,leaves:10,blooks:4}[kind]||8;for(let i=0;i<seed;i++)guessSpawnFx(kind,true);guessThemeFxTimer=setInterval(()=>{if(!document.hidden)guessSpawnFx(kind)},gap)}
 function guessApplyTheme(theme){if(!GUESS_THEMES.includes(theme))theme='normal';document.documentElement.setAttribute('data-theme',theme);if(theme==='custom')guessSetCustomColors();else guessClearCustomColors();document.querySelectorAll('.guess-swatch[data-theme]').forEach(el=>el.classList.toggle('active',el.dataset.theme===theme));document.getElementById('guessSeasonToggle').classList.toggle('active',['winter','spring','autumn','independence'].includes(theme));document.getElementById('guessSeasonSub').classList.toggle('show',['winter','spring','autumn','independence'].includes(theme));document.getElementById('guessCustomPanel').classList.toggle('show',theme==='custom');if(theme==='custom')guessSyncCustomControls();guessSetFx(theme==='custom'?guessCustomTheme.fx:(GUESS_FX[theme]||'none'));try{localStorage.setItem(GUESS_THEME_KEY,theme)}catch(e){}}
 function guessCustomChanged(){guessCustomTheme={top:document.getElementById('guessCustomTop').value,bottom:document.getElementById('guessCustomBottom').value,accent:document.getElementById('guessCustomAccent').value,fx:document.getElementById('guessCustomEffect').value||'none'};try{localStorage.setItem(GUESS_CUSTOM_KEY,JSON.stringify(guessCustomTheme))}catch(e){}guessApplyTheme('custom')}
@@ -1844,7 +1930,6 @@ function startHigherLowerRound() {
   $('hl-next').style.display = 'none';
   const lbl = $('clue-label'); lbl.style.display = 'block'; lbl.textContent = 'Which Blooktuber has more subscribers?';
   const pool = activePool, a = pool[Math.floor(Math.random() * pool.length)];
-  // Pairs get closer in size as the streak grows.
   const cands = pool.filter(c => c.name !== a.name && formatSubs(c.subs) !== formatSubs(a.subs))
     .sort((x, y) => Math.abs(Math.log(x.subs / a.subs)) - Math.abs(Math.log(y.subs / a.subs)));
   const b = cands[Math.floor(Math.random() * Math.min(cands.length, Math.max(4, cands.length - streak * 4)))];
@@ -1886,7 +1971,7 @@ function hlPick(i) {
     fb.textContent = `Correct! ${hlPair[win].name} has more subscribers.`; fb.className = 'feedback correct';
     $('hl-next').textContent = 'Next pair ▶';
   } else {
-    sfx('https://blooket.mathuniverse.online/wrong2.MP3');
+    sfx('https://btools.qwizard.app/wrong2.MP3');
     updateStreak(false);
     fb.textContent = `Not quite. ${hlPair[win].name} has more subscribers.`; fb.className = 'feedback wrong';
     $('hl-next').textContent = 'Play again ▶';
